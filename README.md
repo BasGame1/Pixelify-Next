@@ -1,6 +1,6 @@
   ## PIXELIFY NEXT BETA VERSION!
 
-### Please Read [this](https://github.com/Kingsman44/magisk_module_pixelify/new/main?readme=1#-how-to-enable-features) before installing
+### Please Read [this](https://github.com/Kingsman44/magisk_module_pixelify#-how-to-enable-features) before installing
 
 ## ⭐ Requirements
 - **Arm64 device**
