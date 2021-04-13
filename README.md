@@ -21,11 +21,11 @@
 -   Google Gboard Lens support
 -   Google Sans Font
 -   Live captions (11+)
--   Next Generation Assistant (10+)
+-   Next Generation Assistant (10+)(Optional)
 -   Now Playing Export (Works only on Pixel Phone)
--   Pixel 5 spoof
+-   Pixel 5 spoof (Optional)
 -   Pixel Blue theme accent
--   Pixelbootanimation
+-   Pixel bootanimation (Optional)
 -   Portrait Light (10+)
 -   Shareable Google Recorder
 
