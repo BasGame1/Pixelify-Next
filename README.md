@@ -7,7 +7,6 @@
 - **Volume Keys**
 
 ## ⭐ Features
--   ARcore & Playground in playstore
 -   Adaptive Charging (Google SystemUI)
 -   Adaptive Sound (11+)
 -   Enables Google Dialer install via Playstore
@@ -27,6 +26,7 @@
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
 -   Portrait Light (10+)
+-   Screen Attention Service
 -   Shareable Google Recorder
 
 ## ⭐ How to Enable Features
@@ -67,7 +67,19 @@
 
 ### Version Beta 1.1
 - Add Next gen Assitant
-- Fixes crash of GoogleDialer
+- Fixed crash of GoogleDialer
 - Removed Google Framework
 - Added Option to backup NGA Resources
 - Fixed CTS fail for some devices with Spoof 
+
+### Version Beta 1.2
+- Fixed NGA Mic
+- Added Settings Overlay for Screen Attention and Adaptive Charging
+- Update Permissions for Dialer and DevicePersonalisation
+- Fixed NGA on Roms using PropUtils
+
+### Version Beta 1.3
+- Fixed Installation stuck on NGA resources
+- Some Minor Fixes
+- Fixed velvet (if non system app) is gone after unistall
+
