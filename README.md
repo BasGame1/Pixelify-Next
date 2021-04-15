@@ -7,7 +7,6 @@
 - **Volume Keys**
 
 ## ⭐ Features
--   Arcore support on Playstore
 -   Adaptive Charging (Google SystemUI)
 -   Adaptive Sound (11+)
 -   Enables Google Dialer install via Playstore
