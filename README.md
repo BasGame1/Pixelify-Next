@@ -13,6 +13,7 @@
 -   Enables Google Dialer install via Playstore
 -   Enables Google Dialer's Call Screening (9+)
 -   Enables Nexus, Pixel, and Android One app support
+-   Google Digital Wellbeing Heads up (Beta only)
 -   Google Duo features
 -   Google Fit Heart rate (needed reboot if installed after module installtion)
 -   Google Fit Respiratory rate (needed reboot if installed after module installtion)
@@ -85,7 +86,7 @@
 ### Version Beta 1.3
 - Fixed Installation stuck on NGA resources
 - Some Minor Fixes
-- Fixed velvet (if non system app) is gone after unistall
+- Fixed velvet (if non system app) is gone after uninstall
 
 ### Version Beta 1.4
 - Added Pixel Live Wallpapers
