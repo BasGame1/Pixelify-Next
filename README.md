@@ -95,3 +95,8 @@
 - Updated DevicePersonalisationSevice
 - updated Turbo
 - Fixed compatibility for sdk 26-29
+
+### Version Beta 1.5
+- Improved backups support
+- Fixed Google crashes
+- Add Wellbeing headsup (beta only)
