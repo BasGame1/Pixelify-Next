@@ -21,6 +21,7 @@
 -   Google GBoard New Design
 -   Google Gboard Assistant Mic (If Preinstalled & NGA installed)
 -   Google Gboard Lens support
+-   Google Gboard Smart Compose
 -   Google Sans Font
 -   Live captions (11+)
 -   Next Generation Assistant (10+)(Optional)
@@ -107,3 +108,9 @@
 ### Version 1.0
 - Fixed Bootloops because of permissions
 - Added Styles and Wallpapers for Pie and Ten
+
+### Version 1.1
+- Added NGA support without Pixel spoof
+- Added Gboard Smart Compose
+- Call Screening Optional
+
