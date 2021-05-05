@@ -114,3 +114,6 @@
 - Added Gboard Smart Compose
 - Call Screening Optional
 
+### Version 1.2
+- Updated Pixel Props to may
+- Updated GEL.GSAPrefs.xml
