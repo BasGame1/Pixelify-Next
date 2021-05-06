@@ -117,3 +117,5 @@
 ### Version 1.2
 - Updated Pixel Props to may
 - Updated GEL.GSAPrefs.xml
+- Fixed Pixel Launcher not installed
+- Disabled Call screening if not selected
