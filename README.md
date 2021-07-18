@@ -140,6 +140,9 @@
 - Google Assistant to Answer Call, Reject Call 
 - Updated GEL.GSAPrefs.xml
 - Introduced Logs, saved at Internal Storage > Pixelify > logs.txt (Beta)
-- Forced Enable Caption Call (In Live Caption Settings)
+- Forced Enable Caption Call (In Live Caption Settings)(Depends on ROM)
 - Bug Fixes
 - Support for Live Caption and Pixel Launcher for Android Q
+- July Sec Patch
+- Fixed small Issues
+- Added Google Call Recording (Beta)
