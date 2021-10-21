@@ -1,5 +1,7 @@
   ## PIXELIFY NEXT BETA VERSION!
 
+<a href="https://photos.app.goo.gl/jBPm3zTHHhc67Pdy7"><img src="https://img.shields.io/badge/Screenshots-red.svg"></a>
+
 ## ⭐ Requirements
 - **Android Version: 7.0+**
 - **Arm64 device**
@@ -7,6 +9,13 @@
 - **Internet for NGA Resources & Pixel Livewallpaper**
 
 ## ⭐ Features
+### Pixel 6 Features Enables
+-   Pixel 6 Live Wallpapers *
+-   Google Dialer Direct Call (<a href="https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/GoogleDialer.apk">USE THIS APK</a>)(7+)
+-   Live Transcript (Not working on my device)(12+)
+-   Google Quick Pharse*
+
+### Other Features
 -   Adaptive Charging (Google SystemUI)
 -   Adaptive Connectivty (11+)
 -   Adaptive Sound (11+)
@@ -20,14 +29,10 @@
 -   Google Duo features
 -   Google Fit Heart rate (needed reboot if installed after module installtion)
 -   Google Fit Respiratory rate (needed reboot if installed after module installtion)
--   Google GBoard New Design*
--   Google Gboard Assistant Mic* (NGA installed)
--   Google Gboard Lens support*
--   Google Gboard Smart Compose*
 -   Google Sans Font
 -   Live captions (10+)
--   Next Generation Assistant (10+)(Optional)
--   Now Playing Export (Works only on Pixel Phone)
+-   Next Generation Assistant* (10+)(Optional)
+-   Now Playing Export* (Works only on Pixel Phone)
 -   Pixel Device spoof (Optional)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
@@ -35,9 +40,8 @@
 -   Pixel Live Wallpapers (Optional)
 -   Portrait Light (10+)
 -   Screen Attention Service
--   Shareable Google Recorder 
 <br>
-* - There are two types of Gboard (com.android.inputmethod.latin and com.google.android.inputmethod.latin), These are only available for com.google.android.inputmethod.latin
+* - Requires Spoofing to Pixel device
 
 ## ⭐ Bugs and Fixes
 - **Call Screening**: caller can't hear your voice.<br>
@@ -45,7 +49,6 @@
 - **Call Screening**: can't able to download call screening files.<br>
 **Fix:** Set WIFI to unmetered connection. <br>
 - **Google**: Ok Google doesn't work without hotword with spoof to pixel.<br>
-- **Google**: Next Generation Assistant Continued Conversation doesn't work without spoof to pixel<br>
 
 ## ⭐ Credits
 - [topjohnwu](https://github.com/topjohnwu) for Magisk
@@ -54,8 +57,15 @@
 - [Pranav Pandey](https://forum.xda-developers.com/m/pranav-pandey.3962236/) for BreelWallpaper2020 Port
 
 ## ⭐ ChangeLogs
+### Version 1.71
+- Fingerprint - October Security patch (A12)
+- Enabled Direct Call in Google Dialer (<a href="https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/GoogleDialer.apk">USE THIS APK</a>)
+- Enabled Live Transcript (Not working on my device)
+- Enabled Google Quick Pharse
+- Enabled Pixel 6 Live Wallpapers (Update APK from playstore)
+
 ### Version 1.7
-- Oct Sec. Patch (A11)
+- Fingerprint - October Security patch (A11)
 - Fixed Photos Editor & not detecting pixel devices on spoof (Need Clear data)
 - Added Small patch for call screening voice fix (may not work with all devices)
 - Updated Live Wallpaper (all) and Device Personalisation (A11+A12) packages
@@ -68,7 +78,7 @@
 
 ### Version 1.6
 - Fixed Android S dimension problem and Accent colors problem
-- Sept Sec Patch
+- Fingerprint - September Security patch
 - Fixed bootloop on some devices due to Extreme battery Saver
 - Added Pixel Photos Unlimted storage backup
 - Minor bug fixes 
@@ -76,7 +86,7 @@
 
 ### Version 1.5
 - Fixed No Internet Connection problem on some roms.
-- August Sec Patch
+- Fingerprint - August Security patch
 - Fixes Camera Crash for some deivces
 - Device Personalisation is Optional
 - Size of Module Reduze to 25Mb
@@ -95,7 +105,7 @@
 - Forced Enable Caption Call (In Live Caption Settings)(Depends on ROM)
 - Bug Fixes
 - Support for Live Caption and Pixel Launcher for Android Q
-- July Sec Patch
+- Fingerprint - July Security patch
 - Fixed small Issues
 - Added Google Call Recording (Beta)
 - Fixed now playing for pixel devices
