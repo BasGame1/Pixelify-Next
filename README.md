@@ -40,6 +40,7 @@
 -   Pixel Live Wallpapers (Optional)
 -   Portrait Light (10+)
 -   Screen Attention Service
+-   Unlimited Photos backup (Storage Saver)
 <br>
 * - Requires Spoofing to Pixel device
 
@@ -58,7 +59,13 @@
 
 ## ⭐ ChangeLogs
 ### Version 1.71
-- Fingerprint - October Security patch (A12)
+- Dropped fingerprint spoof
+- Dropped SimpleDeviceConfig
+- Update Bootanim and media from pixel 6
+- introduced auto generate apps permissions
+- Fixed Magic earser
+- Switched model Spoof to Pixel 5
+- Added Unlimited Photos backup (Storage Saver)
 - Enabled Direct Call in Google Dialer (<a href="https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/GoogleDialer.apk">USE THIS APK</a>)
 - Enabled Live Transcript (Not working on my device)
 - Enabled Google Quick Pharse
