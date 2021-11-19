@@ -15,11 +15,12 @@
 -   Google Dialer Direct Call (<a href="https://www.apkmirror.com/apk/google-inc/google-phone/google-phone-72-0-407683083-publicbeta-pixel2021-release/">USE THIS APK</a>)(7+)
 -   Live Transcript (Not working on my device)(12+)
 -   Google Quick Pharse*
+-   Google Next Generation Assistant Typing (Next Generation Assistant Required)*
 
 ### Other Features
 -   Adaptive Charging (Google SystemUI)
 -   Adaptive Connectivty (11+)
--   Adaptive Sound (11+)
+-   Adaptive Sound (11+)*
 -   Call Captions (11+)(Depends on Rom)
 -   Enables Nexus, Pixel, and Android One app support
 -   Extreme Battery Saver (11+) [ Settings > Battery > Extreme Battery Saver - 11 | Settings > Battery > Battery Saver > Extreme Battery Saver -12 ]
@@ -37,8 +38,9 @@
 -   Pixel Device spoof (Optional)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
--   Pixel Launcher (11)
+-   Pixel Launcher (10+)(Optional)
 -   Pixel Live Wallpapers (Optional)
+-   Pokemon SideKick Live Wallpaper (Optional-Included with LiveWallpapers)
 -   Portrait Light (10+)
 -   Screen Attention Service
 -   Unlimited Photos backup (Storage Saver)
@@ -59,6 +61,16 @@
 - [Pranav Pandey](https://forum.xda-developers.com/m/pranav-pandey.3962236/) for BreelWallpaper2020 Port
 
 ## ⭐ ChangeLogs
+### Version 1.8
+- Introduced Installation Logs (/sdcard/Pixelify/logs.txt) 
+- New way for SimpleDeviceConfig
+- introduced auto generate apps permissions
+- Added Pokemon SideKick LiveWallpaper
+- Small bugs fixes and Ui changes
+- Updated Device Personalisation services (a12)
+- Fixes on Unlimited Photos Backup
+- Added more themed icon on Pixel Launcher (a12)
+
 ### Version 1.71
 - Attempt to enable Direct my Call and Call Recording to all countries
 - Dropped fingerprint spoof
