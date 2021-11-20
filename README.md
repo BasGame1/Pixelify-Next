@@ -1,6 +1,7 @@
   ## PIXELIFY NEXT BETA VERSION!
 
 <a href="https://photos.app.goo.gl/jBPm3zTHHhc67Pdy7"><img src="https://img.shields.io/badge/Screenshots-red.svg"></a>
+<a href="https://t.me/pixelifysupport"><img src="https://img.shields.io/badge/Telegram-Support_Group-blue.svg"></a>
 
 ## ⭐ Requirements
 - **Android Version: 7.0+**
