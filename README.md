@@ -106,7 +106,7 @@
 - Donation
 
 ### Donation link
-- **Paypal link** - [https://paypal.me/shivan999?country.x=IN&locale.x=en_GB](https://telegra.ph/Pixelify-Troubleshooting-guide-03-12)
+- **Paypal link** - [https://paypal.me/shivan999?country.x=IN&locale.x=en_GB](https://paypal.me/shivan999?country.x=IN&locale.x=en_GB)
 - **UPI id (India only)** - shivan.0972@okhdfcbank
 
 ## ⭐ Credits
