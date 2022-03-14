@@ -48,7 +48,7 @@
 ## ⭐ Features
 ### Pixel 6 Features Enables
 -   Pixel 6 Live Wallpapers *
--   Magic Earser (<a href="https://t.me/google_nws/864">USE THIS APK</a>)(7+)
+-   Magic Eraser (<a href="https://t.me/google_nws/864">USE THIS APK</a>)(7+)
 -   Google Dialer Direct Call (12+)
 -   Live Transcript (12+)
 -   New At a Glance feature (12+ & Dec+ Patch) 
