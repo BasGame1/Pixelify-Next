@@ -127,6 +127,11 @@ Enable Pixel Ui and Some Exclusive Features.<br>
 - Creating pull request to enable new feature or code improvements
 - Donation
 
+## Thanks to project contributer
+- @HiFiiDev, @ChrisvanChip, @anant-strong for Pull request
+- Johannes Drechsler, David Cash, Hendrik Roggenbuck for Donation
+- Pixelify Support Group Members for testing beta versions
+
 ### Donation link
 - **Paypal link** - [https://paypal.me/shivan999?country.x=IN&locale.x=en_GB](https://paypal.me/shivan999?country.x=IN&locale.x=en_GB)
 - **UPI id (India only)** - shivan.0972@okhdfcbank
