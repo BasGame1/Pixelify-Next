@@ -43,7 +43,7 @@ Enable Pixel Ui and Some Exclusive Features.<br>
 - Use packages with Pixelify-${version}-no_VK.zip
 - Place config.prop to internal storage>Pixelify (/sdcard/Pixelify/config.prop)
 - Edit prop according what you want to select
-- (If you have any problem placing no-VK.prop there then you also can extract and update no-VK.prop inside the packages it automatcally use it.) 
+- (If you have any problem placing config.prop there then you also can extract and update config.prop inside the packages it automatically use it.) 
 
 ### Zygisk and Riru spoofing configuration
 - Pixel 5:- Google TTS, Google Play services, Pixel Buds
@@ -131,8 +131,9 @@ Enable Pixel Ui and Some Exclusive Features.<br>
 - Creating pull request to enable new feature or code improvements
 - Donation
 
-## Thanks to project contributer
-- @HiFiiDev, @ChrisvanChip, @anant-strong for Pull request
+## Thanks to the following project contributors
+- <a href="https://github.com/HiFiiDev">@HifiiDev, </a> <a href="https://github.com/ChrisvanChip, ">@ChrisvanChip</a> <a href="https://github.com/Anant-Strong">and @anant-strong</a>
+ for Pull Requests that got merged 
 - Johannes Drechsler, David Cash, Hendrik Roggenbuck for Donation
 - Pixelify Support Group Members for testing beta versions
 
