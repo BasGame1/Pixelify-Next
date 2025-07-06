@@ -1,7 +1,6 @@
 # PIXELIFY MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
-
-*[WORKING AT THE MOMENT, DONT USE IT OR U WILL BRICK UR PHONE]
+# [ISNT WORKING AT THE MOMENT, DONT USE IT OR U WILL BRICK UR PHONE]
 
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 15**
