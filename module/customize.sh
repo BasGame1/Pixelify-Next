@@ -597,7 +597,7 @@ elif [ $MODULE_TYPE -eq 2 ] || [ $MODULE_TYPE -eq 3 ]; then
     drop_sys
 else
     # As there is No option for Particular apps spooifng with zygsik or Riru, go with legacy one
-    print "  Do you want to Spoof your device to Pixel 5/Pixel 6 Pro?"
+    print "  Do you want to Spoof your device to Pixel 5 /Pixel 9 Pro XL?"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
     no_vk "ENABLE_PIXEL_SPOOFING"
@@ -608,12 +608,12 @@ else
         print "  Please Select Pixel 6 Pro"
         print "---------"
         print ""
-        print "  Select Spoof to Pixel 5 (recommended) or Pixel 6 Pro?"
+        print "  Select Spoof to Pixel 5 (recommended) or Pixel 9 Pro XL?"
         print "   Vol Up += Pixel 5"
-        print "   Vol Down += Pixel 6 Pro (Google Photos Unlimited backup may not work properly)"
+        print "   Vol Down += Pixel 9 Pro XL (Google Photos Unlimited backup may not work properly)"
         no_vk "TARGET_USES_PIXEL5_SPOOF"
         if $VKSEL; then
-            sed -i -e "s/Pixel 6 Pro/Pixel 5/g" $MODPATH/spoof.prop
+            sed -i -e "s/Pixel 9 Pro XL/Pixel 5/g" $MODPATH/spoof.prop
         fi
         # Remove Pixel Experience 2021 to 2023
         KEEP_PIXEL_2021=0
