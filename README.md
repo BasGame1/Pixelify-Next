@@ -1,8 +1,6 @@
 # PIXELIFY MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
-
-*[WORKING AT THE MOMENT, DONT USE IT OR U WILL BRICK UR PHONE]
-
+# WORK IN PROGRESS
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 15**
 - **ARM64 device**
@@ -17,23 +15,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - Realme Ui (Android 14), Oxygen Os (Android 14) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. Don't Flash Pixelify on it. Pixelify sub modules will work on them.
 
 ### Supported Roms
-- OneUI
-- AOSP Based Roms
-- Pixel Stock
-- Android One
-- MIUI
-- FunTouchOS
-- OxygenOS
-- ColorOS
-- Windows Subsystem for Android
-
-### Pixelify Sub Modules <br>
-If the main Pixelify module is not functioning properly, or is too big for your phone, Pixelify module also provides some sub-modules for standalone features:
-- Call Screening 
-- Now Playing (Android System Intelligence required)
-- Google Hotword
-- Google Photos Unlimited Backup
-- Google Bootanimation
+-Tested on LineageOS 22.2 (Galaxy A21s)
 
 ### Installation instructions for v3
 - Make Sure Play Store not installing when Pixelify is installing.
