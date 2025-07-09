@@ -1,5 +1,8 @@
 #!/system/bin/sh
-
+if [ -f "$MODPATH/banner.txt" ]; then
+  cat "$MODPATH/banner.txt"
+  ui_print " "
+fi
 # run Pixelify Functions and Variables
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
@@ -1177,190 +1180,6 @@ else
     rm -rf $MODPATH/system$product/overlay/PixelifyGD.apk
 fi
 
-# Next Generation assistant installation
-if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
-    print "  Google is installed."
-    print "  Do you want to installed Next generation assistant?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
-    no_vk "ENABLE_NGA"
-    if $VKSEL; then
-        echo " - Installing Next generation assistant" >>$logfile
-        # Check backup is present ot not, older Pixelify uses NgaResources.apk and new ones nga.tar.xz
-        if [ -f /sdcard/Pixelify/backup/nga.tar.xz ] || [ -f /sdcard/Pixelify/backup/NgaResources.apk ]; then
-
-            # Check backup is upto date
-            if [ "$(cat /sdcard/Pixelify/version/nga.txt)" != "$NGAVERSION" ]; then
-                echo " - New Version Detected for NGA Resources" >>$logfile
-                echo " - Installed version: $(cat /sdcard/Pixelify/version/nga.txt) , New Version: $NGAVERSION " >>$logfile
-                print "  (Network Connection Needed)"
-                print "  New version Detected."
-                print "  Do you Want to update or use Old Backup?"
-                print "  Version: $NGAVERSION"
-                print "  Size: $NGASIZE"
-                print "   Vol Up += Update"
-                print "   Vol Down += Use old backup"
-                no_vk "UPDATE_NGA_RES"
-                if $VKSEL; then
-                    # check internet is avail or not
-                    online
-                    if [ $internet -eq 1 ]; then
-                        echo " - Downloading, Installing and creating backup NGA Resources" >>$logfile
-                        rm -rf /sdcard/Pixelify/backup/NgaResources.apk
-                        rm -rf /sdcard/Pixelify/backup/nga.tar.xz
-                        rm -rf /sdcard/Pixelify/version/nga.txt
-                        cd $MODPATH/files
-                        # Download version according to variables
-                        # OSR with Offline Speech Recogonition 50xx
-                        # DOES_NOT_REQ_SPEECH_PACK to forcelly disable with speechpack one only NGA Resources
-                        if [ $ENABLE_OSR -eq 1 ] || [ $DOES_NOT_REQ_SPEECH_PACK -eq 1 ]; then
-                            if [ $API -eq 30 ] || [ $API -eq 33 ]; then
-                                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new-$API.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
-                            else
-                                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new-31.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
-                            fi
-                        else
-                            $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
-                        fi
-                        cd /
-                        # Create backup
-                        print ""
-                        print "- Creating Backup"
-                        print ""
-                        cp -Tf $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
-                        echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
-                    else
-                        # No internet dected
-                        print " ! No internet detected"
-                        print ""
-                        print " ! Using Old backup for now."
-                        print ""
-                        echo " ! using old backup for NGA Resources due to no internet" >>$logfile
-                    fi
-                else
-                    echo " - using old backup for NGA Resources" >>$logfile
-                fi
-            fi
-            print "- Installing NgaResources from backups"
-            print ""
-            # Extract nga.tar.xz
-            tar -xf /sdcard/Pixelify/backup/nga.tar.xz -C $MODPATH/system/product
-        else
-            print "  (Network Connection Needed)"
-            print "  Do you want to install and Download NGA Resources"
-            print "  Size: $NGASIZE"
-            print "   Vol Up += Yes"
-            print "   Vol Down += No"
-            no_vk "DOWNLOAD_NGA_RES"
-            if $VKSEL; then
-                online
-                if [ $internet -eq 1 ]; then
-                    echo " - Downloading and Installing NGA Resources" >>$logfile
-                    print " - Downloading NGA Resources"
-                    cd $MODPATH/files
-                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new.tar.xz -o nga.tar.xz -O &>/proc/self/fd/$OUTFD
-                    cd /
-                    tar -xf $MODPATH/files/nga.tar.xz -C $MODPATH/system/product
-                    print ""
-                    print "  Do you want to create backup of NGA Resources"
-                    print "  so that you don't need redownload it every time."
-                    print "   Vol Up += Yes"
-                    print "   Vol Down += No"
-                    no_vk "BACKUP_NGA"
-                    if $VKSEL; then
-                        echo " - Creating backup for NGA Resources" >>$logfile
-                        print "- Creating Backup"
-                        mkdir -p /sdcard/Pixelify/backup
-                        rm -rf /sdcard/Pixelify/backup/NgaResources.apk
-                        rm -rf /sdcard/Pixelify/backup/nga.tar.xz
-                        cp -f $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
-                        mkdir -p /sdcard/Pixelify/version
-                        echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
-                        print ""
-                        print "- NGA Resources installation complete"
-                        print ""
-                    fi
-                else
-                    print " ! No internet detected"
-                    print ""
-                    print "- Skipping NGA Resources."
-                    print ""
-                    echo " - skipping NGA Resources due to no internet" >>$logfile
-                fi
-            else
-                echo " - skipping NGA Resources" >>$logfile
-            fi
-        fi
-
-        # Patching starts
-        db_edit com.google.android.googlequicksearchbox stringVal "Cheetah" "13477"
-        #db_edit com.google.android.googlequicksearchbox boolVal 1  10579 11627 14759 15114 16197 16347 16464 45351462 45352335 45353388 45353425 45354090 45355242 45355425 45357281 45357460 45357462 45357463 45357466 45357467 45357468 45357469 45357470 45357471 45357508 45358425 45368123 45368150 45368483 45374247 45375269 45386105 8674 9449 10596 3174 45357539 45358426 45360742 45372547 45372935 45373820 45374858 45376106 45380073 45380867 45385075 45385287 45386702 7882 8932 9418
-        [ $TENSOR -eq 0 ] && db_edit_bin com.google.android.googlequicksearchbox 5470 $GOOGLEBIN
-        db_edit com.google.android.libraries.search.googleapp.device#com.google.android.googlequicksearchbox boolVal 1 45410632 45410315 45369077
-        db_edit com.google.android.apps.search.assistant.device#com.google.android.googlequicksearchbox extensionVal 45377874 $GSPOOF
-        #sed -i -e 's/com.google.android.feature.PIXEL_2021_EXPERIENCE/com.google.android.feature.PIXEL_2019_EXPERIENCE/g' $VELVET_APK
-        #am force-stop com.google.android.googlequicksearchbox
-        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.g10040oogle.android.googlequicksearchbox' AND name='5470'"
-        #$sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.googlequicksearchbox', '', '5470', 0, x'$GOOGLEBIN', 0)"
-        # Patching ends
-
-        # copy NGA files
-        cp -f $MODPATH/files/nga.xml $MODPATH/system$product/etc/sysconfig/nga.xml
-        cp -f $MODPATH/files/PixelifyGA.apk $MODPATH/system/product/overlay/PixelifyGA.apk
-        # ok_google_hotword
-        if [ $ENABLE_OSR -eq 1 ]; then
-            osr_ins
-        fi
-
-        # Option to make Google app as system app or not forcely
-        # in /sdcard/Pixelify/apps.txt add velet=1
-        if [ -f $FORCE_FILE ]; then
-            is_velvet="$(grep velvet= $FORCE_FILE | cut -d= -f2)"
-            if [ $is_velvet -eq 1 ]; then
-                FORCE_VELVET=1
-            elif [ $is_velvet -eq 0 ]; then
-                FORCE_VELVET=0
-            else
-                FORCE_VELVET=2
-            fi
-        else
-            FORCE_VELVET=2
-        fi
-
-        # Make Google app as system app
-        if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
-            print "- Google is not installed as a system app !!"
-            print "- Making Google a system app"
-            echo " - Making Google a system app" >>$logfile
-            print ""
-            if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
-                cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
-                mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
-            else
-                cp -r /data/adb/modules/Pixelify/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
-            fi
-            rm -rf $MODPATH/system/product/priv-app/Velvet/oat
-            #mv $MODPATH/files/privapp-permissions-com.google.android.googlequicksearchbox.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.googlequicksearchbox.xml
-
-        # If Pixelify made system app then remake it
-        elif [ -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ]; then
-            if [ $FORCE_VELVET -eq 2 ]; then
-                print "- Google is not installed as a system app !!"
-                print "- Making Google a system app"
-                echo " - Making Google a system app" >>$logfile
-                print ""
-                if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
-                    cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
-                    mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
-                else
-                    cp -r data/adb/modules/Pixelify/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
-                fi
-                rm -rf $MODPATH/system/product/priv-app/Velvet/oat
-            fi
-            #mv $MODPATH/files/privapp-permissions-com.google.android.googlequicksearchbox.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.googlequicksearchbox.xml
-        fi
-    fi
-fi
 
 # Pixel Wallpapers
 if [ $API -ge 28 ]; then
@@ -1574,160 +1393,22 @@ else
     rm -rf $MODPATH/system$product/media/boot*.zip
 fi
 
-# Pixel Launcher
-if [ $API -ge 29 ]; then
-    PL=$(find /system -name *Launcher* | grep -v overlay | grep -v Nexus | grep -v bin | grep -v "\.")
-    TR=$(find /system -name *Trebuchet* | grep -v overlay | grep -v "\.")
-    QS=$(find /system -name *QuickStep* | grep -v overlay | grep -v "\.")
-    LW=$(find /system -name *MiuiHome* | grep -v overlay | grep -v "\.")
-    TW=$(find /system -name *TouchWizHome* | grep -v overlay | grep -v "\.")
-    KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
-
-    if [ -f /sdcard/Pixelify/backup/pl-$API.tar.xz ]; then
-        echo " - Backup Detected for Pixel Launcher" >>$logfile
-        print "  Do you want to install Pixel Launcher?"
-        print "  (Backup detected, no internet needed)"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
-        no_vk "ENABLE_PIXEL_LAUNCHER"
-        if $VKSEL; then
-            REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-            cp -f $MODPATH/files/PixelifyPixelLauncherCustomOverlay.apk $MODPATH/system/product/overlay/PixelifyPixelLauncherCustomOverlay.apk
-            if [ "$(cat /sdcard/Pixelify/version/pl-$API.txt)" != "$PLVERSION" ]; then
-                echo " - New Version Backup Detected for Pixel Launcher" >>$logfile
-                echo " - Old version:$(cat /sdcard/Pixelify/version/pl-$API.txt), New Version:  $PLVERSION " >>$logfile
-                print "  (Network Connection Needed)"
-                print "  New version Detected "
-                print "  Do you Want to update or use Old Backup?"
-                print "  Version: $PLVERSION"
-                print "  Size: $PLSIZE"
-                print "   Vol Up += Update"
-                print "   Vol Down += Use old backup"
-                no_vk "UPDATE_PIXEL_LAUNCHER"
-                if $VKSEL; then
-                    online
-                    if [ $internet -eq 1 ]; then
-                        echo " - Downloading and Installing New Backup for Pixel Launcher" >>$logfile
-                        rm -rf /sdcard/Pixelify/backup/pl-$API.tar.xz
-                        rm -rf /sdcard/Pixelify/version/pl-$API.txt
-                        cd $MODPATH/files
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/PixelLauncher/$API/$PL_VERSION.tar.xz -O &>/proc/self/fd/$OUTFD
-                        mv $PL_VERSION.tar.xz pl-$API.tar.xz
-                        cd /
-                        print "- Creating Backup"
-                        print ""
-                        cp -f $MODPATH/files/pl-$API.tar.xz /sdcard/Pixelify/backup/pl-$API.tar.xz
-                        echo " - Creating Backup for Pixel Launcher" >>$logfile
-                        echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
-                    else
-                        print " ! No internet detected"
-                        print ""
-                        print " ! Using Old backup for now."
-                        print ""
-                        echo " ! Using old Backup for Pixel Launcher due to no internet" >>$logfile
-                    fi
-                fi
-            fi
-            print "- Installing Pixel Launcher"
-            print ""
-            pl_fix
-
-            if [ $API -ge 31 ]; then
-                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product
-            else
-                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product/priv-app
-            fi
-
-            if [ $WALL_DID -eq 0 ]; then
-                install_wallpaper_with_backup
-            fi
-        else
-            echo " - Skipping Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-        fi
-    else
-        print "  (Network Connection Needed)"
-        print "  Do you want to install and Download Pixel Launcher?"
-        print "  Size: $PLSIZE"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
-        no_vk "ENABLE_PIXEL_LAUNCHER"
-        if $VKSEL; then
-            online
-            if [ $internet -eq 1 ]; then
-                print "- Downloading Pixel Launcher"
-                echo " - Downloading and Installing Pixel Launcher" >>$logfile
-                print ""
-                cd $MODPATH/files
-                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/PixelLauncher/$API/$PL_VERSION.tar.xz -O &>/proc/self/fd/$OUTFD
-                mv $PL_VERSION.tar.xz pl-$API.tar.xz
-                cd /
-                print ""
-                print "- Installing Pixel Launcher"
-                if [ $API -ge 31 ]; then
-                    tar -xf $MODPATH/files/pl-$API.tar.xz -C $MODPATH/system$product
-                else
-                    tar -xf $MODPATH/files/pl-$API.tar.xz -C $MODPATH/system$product/priv-app
-                fi
-                pl_fix
-                REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-                print ""
-                print "  Do you want to create backup of Pixel Launcher?"
-                print "  so that you don't need redownload it every time."
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
-                no_vk "BACKUP_PIXEL_LAUNCHER"
-                if $VKSEL; then
-                    print "- Creating Backup"
-                    mkdir -p /sdcard/Pixelify/backup
-                    rm -rf /sdcard/Pixelify/backup/pl-$API.tar.xz
-                    cp -f $MODPATH/files/pl-$API.tar.xz /sdcard/Pixelify/backup/pl-$API.tar.xz
-                    print ""
-                    mkdir -p /sdcard/Pixelify/version
-                    echo " - Creating Backup for Pixel Launcher" >>$logfile
-                    echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
-                    print " - Done"
-                    print ""
-                fi
-
-                if [ $WALL_DID -eq 0 ]; then
-                    install_wallpaper_with_backup
-                fi
-            else
-                print " ! No internet detected"
-                print ""
-                print " ! Skipping Pixel launcher"
-                print ""
-                echo " ! Skipping Pixel Launcher due to no internet" >>$logfile
-                rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-                rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-            fi
-        else
-            echo " - Skipping Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-        fi
-    fi
-else
-    echo " - Skipping Pixel Launcher" >>$logfile
-    rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-    rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-fi
 
 #Adding Google san font.
-print ""
+#print ""
 #print "  (NOTE: Playstore or Google or GMS crashes then dont enable it)"
-print "  Do you want add Google San Fonts?"
-print "    Vol Up += Yes"
-print "    Vol Down += No"
-no_vk "GSAN_FONT"
-if $VKSEL; then
-    patch_font
-else
-    rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
-    rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
-fi
+ #print "  Do you want add Google San Fonts?"
+# print "    Vol Up += Yes"
+# print "    Vol Down += No"
+# no_vk "GSAN_FONT"
+#if $VKSEL; then
+    #rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
+    #rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
+    ###THIS IS TEMPORARY, ONLY FOR TESTING, BC THIS IS THE CAUSE OF BOOTLOOPS##
+#else
+    #rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
+    #rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
+#fi
 # rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
 # rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
 # rm -rf $MODPATH/system/fonts
