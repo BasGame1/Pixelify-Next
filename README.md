@@ -11,7 +11,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **NOTE: Flash the module zip file in the  Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
 ### Contact
- - Telegram (https:/t.me/basgame1)
+ - Telegram (https://t.me/basgame1)
  - XDA (I dont get some messages) (https://xdaforums.com/m/basgame1.13021465/)
  - GITHUB Issues
 ### Unsupported Roms
