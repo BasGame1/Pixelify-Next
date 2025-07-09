@@ -10,8 +10,8 @@ check_install_type() {
             ui_print "- Changing installation mode to zygisk"
             ui_print "- Installation Type: Zygisk"
         else
-            ui_print "- Changing installation mode to normal magisk"
-            ui_print "- Installation Type: Normal Magisk"
+            ui_print "- Changing installation mode to normal magisk/ksu"
+            ui_print "- Installation Type: Normal Magisk/KSU"
         fi
     else
         MODULE_TYPE=3
@@ -22,12 +22,12 @@ check_install_type() {
 # This function will be used when util_functions.sh not exists
 enforce_install_from_magisk_app() {
     if $BOOTMODE; then
-        ui_print "- Installing from Magisk app"
+        ui_print "- Installing from Magisk/KSU app"
     else
         ui_print "*********************************************************"
         ui_print "! Install from recovery is NOT supported"
         ui_print "! Some recovery has broken implementations, install with such recovery will finally cause Riru or Riru modules not working"
-        ui_print "! Please install from Magisk app"
+        ui_print "! Please install from Magisk/KSU app"
         abort "*********************************************************"
     fi
 }

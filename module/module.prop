@@ -1,8 +1,8 @@
-id=${id}
-name=${name}
-version=${version}
-versionCode=${versionCode}
-author=${author}
+id=PIxelifyNext
+name=PIxelifyNext
+version=1.0
+versionCode=1.0
+author= Kingsman44 + BasGame1
 description=${description}
 # 0 -  Disable, 1 - Enable
 DEVICE_USES_VOLUME_KEY=${volType}
