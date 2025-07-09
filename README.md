@@ -1,9 +1,15 @@
-# PIXELIFY MAGISK MODULE
+# PIXELIFY NEXT MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
-# [ISNT WORKING AT THE MOMENT, DONT USE IT OR U WILL BRICK UR PHONE]
-
+# WORK IN PROGRESS
+## WORKING 
+ - **Call recording**
+ - **NGA (Next Generation Assistant)**
+## NOT WORKING
+ - **Pixel Launcher**
+ - **Flipendo (Extreme Battery Saver)**
+ 
 ## ⭐ Requirements
-- **Supported Android Versions: Android 7.0 to Android 15**
+- **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 device**
 - **Volume Keys (optional)**
 - **Internet for downloading NGA Resources, Pixel Livewallpaper, Device Personalization Services & Pixel Launcher**
@@ -11,37 +17,23 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **Zygisk or Riru (Recommended but not mandatory)**
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
-
+## Contact (for errors or suggestions)
+- Telegram (t.me/@basgame1)
+- Xda (https://xdaforums.com/m/basgame1.13021465/)
+- Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 ### Unsupported Roms
-- Realme Ui (Android 14), Oxygen Os (Android 14) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. Don't Flash Pixelify on it. Pixelify sub modules will work on them.
+- Realme Ui (Android 14), Oxygen Os (Android 14) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. Don't Flash Pixelify Next on it
 
 ### Supported Roms
-- OneUI
-- AOSP Based Roms
-- Pixel Stock
-- Android One
-- MIUI
-- FunTouchOS
-- OxygenOS
-- ColorOS
-- Windows Subsystem for Android
+- Tested on Android 15 LineageOS
 
-### Pixelify Sub Modules <br>
-If the main Pixelify module is not functioning properly, or is too big for your phone, Pixelify module also provides some sub-modules for standalone features:
-- Call Screening 
-- Now Playing (Android System Intelligence required)
-- Google Hotword
-- Google Photos Unlimited Backup
-- Google Bootanimation
-
-### Installation instructions for v3
+### Installation instructions for v4 aplpha
 - Make Sure Play Store not installing when Pixelify is installing.
--  Magisk is Recommend
 - If using KSU, install KSU zygisk module first
 - Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
 - On installation, If see error when installing Google Photos, then uninstalling updates of google apps
 
-### After Installations (For First Time Pixelify Installation):-
+### After Installations (For First Time Pixelify Next Installation):-
 1) Playstore
 - Clear Playstore data
 - Open Playstore for 5-10 secs
@@ -101,7 +93,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Initial Size of module is low
 - Open Source
 - Works with Riru as well as Zygisk
-- Works with most of Android version (Nougat to 13)
+- Works with most of Android version
 - Uses Dynamic spoofing (Riru & Zygisk) for only Google apps to prevent crashes and other issues
 - Provides most of the Pixel exclusive features
 - Installation of features is optional
@@ -137,7 +129,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Battery Widget (Working depends on rom)
 -   Call Captions (11+)(Depends on Rom)
 -   Enables Nexus, Pixel, and Android One app support
--   Extreme Battery Saver (11+) [ Settings > Battery > Battery Saver > Extreme Battery Saver -12 ]
 -   Google Dialer Call Screening
 -   Google Dialer Hold for me
 -   Google Dialer Call Recording (Device depended for working)
@@ -152,7 +143,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Pixel Device spoofing (Optional)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
--   Pixel Launcher (10+)(Optional)
 -   Pixel Live Wallpapers (Optional)
 -   Pokemon SideKick Live Wallpaper (Optional-Included with LiveWallpapers)
 -   Portrait Light (10+)
@@ -173,19 +163,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ## Contribute to project
 - Reporting bugs with logs
 - Feature Requests
-- Supporting other persons on issues or telegram group
+- Supporting other persons on issues or telegram (t.me/@basgame1)
 - Creating pull request to enable new feature or code improvements
-- Donation
-
-## Thanks to the following project contributors
-- <a href="https://github.com/HiFiiDev">@HifiiDev, </a> <a href="https://github.com/theritikchoure">@theritikchoure,</a> <a href="https://github.com/ChrisvanChip">@ChrisvanChip</a> <a href="https://github.com/Anant-Strong">and @anant-strong</a>
- for Pull Requests that got merged 
-- Johannes Drechsler, David Cash, Hendrik Roggenbuck, Ravijot Dhadial, Skyler Coles for Donation
-- Pixelify Support Group Members for testing beta versions
-
-### Donation
-- **Paypal link** - [https://paypal.me/shivan999?country.x=IN&locale.x=en_GB](https://paypal.me/shivan999?country.x=IN&locale.x=en_GB)
-- **UPI id (India only)** - shivan.0972@okicici
 
 ## ⭐ Credits
 - Google for creating these awesome features
@@ -200,6 +179,10 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Pixelify Support Group Members for testing beta versions
 
 ## ⭐ ChangeLogs
+### Version 4 ALPHA
+- Fixed android 15 crash
+- Removed Pixel launcher (temporary)
+- Removed flipendo (temporary)
 ### Version 3.0
 - Added Proofread
 - Added New automatic Call Screening (en-US)
