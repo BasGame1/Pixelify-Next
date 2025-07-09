@@ -18,7 +18,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
 ## Contact (for errors or suggestions)
-- Telegram (t.me/@basgame1)
+- Telegram (https://t.me/basgame1)
 - Xda (https://xdaforums.com/m/basgame1.13021465/)
 - Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 ### Unsupported Roms
