@@ -86,7 +86,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Initial Size of module is low
 - Open Source
 - Works with Riru as well as Zygisk
-- Works with most of Android version (Nougat to 13)
+- Works with most of Android version
 - Uses Dynamic spoofing (Riru & Zygisk) for only Google apps to prevent crashes and other issues
 - Provides most of the Pixel exclusive features
 - Installation of features is optional
@@ -136,6 +136,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Pixel Device spoofing (Optional)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
+-   Spoof to komodo (Pixel 9 pro XL)
 -   **Pixel 9 gemini bootaniamtion (in the future)**
 -   Pixel Launcher (10+)(Optional)
 -   Pixel Live Wallpapers (Optional)
