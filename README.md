@@ -1,12 +1,9 @@
 # PIXELIFY NEXT MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
-## WORKING 
- - **Call recording**
- - **NGA (Next Generation Assistant)**
 ## NOT WORKING
- - **Pixel Launcher**
  - **Flipendo (Extreme Battery Saver)**
+ - **Pixel Launcher (For pixel launcher use Nik Gapps until new advice)**
  
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
