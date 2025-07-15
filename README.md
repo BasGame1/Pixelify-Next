@@ -1,32 +1,36 @@
 # PIXELIFY NEXT MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
+## NOT WORKING
+ - **Flipendo (Extreme Battery Saver)**
+ - **Pixel Launcher (For pixel launcher use Nik Gapps until new advice)**
+ 
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 device**
 - **Volume Keys (optional)**
 - **Internet for downloading NGA Resources, Pixel Livewallpaper, Device Personalization Services & Pixel Launcher**
-- **Magisk v24 / KSU / KSU next (any version)or above from Pixelify v2+**
+- **Magisk v24 or above from Pixelify v2+**
 - **Zygisk or Riru (Recommended but not mandatory)**
-- **NOTE: Flash the module zip file in the  Manager app only; flashing the module in TWRP or any other recovery won't work.**
+- **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
-### Contact
- - Telegram (https://t.me/basgame1)
- - XDA (I dont get some messages) (https://xdaforums.com/m/basgame1.13021465/)
- - GITHUB Issues
+## Contact (for errors or suggestions)
+- Telegram (https://t.me/basgame1)
+- Xda (https://xdaforums.com/m/basgame1.13021465/)
+- Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 ### Unsupported Roms
-- Realme Ui (Android 14), Oxygen Os (Android 14) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. Don't Flash Pixelify on it. Pixelify sub modules will work on them.
+- Realme Ui (Android 14), Oxygen Os (Android 14) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. Don't Flash Pixelify Next on it
 
 ### Supported Roms
--Tested on LineageOS 22.2 (Galaxy A21s)
+- Tested on Android 15 LineageOS
 
-### Installation instructions for v3
+### Installation instructions for v4 aplpha
 - Make Sure Play Store not installing when Pixelify is installing.
-- If using KSU/KSUN, install KSU zygisk module first
+- If using KSU, install KSU zygisk module first
 - Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
 - On installation, If see error when installing Google Photos, then uninstalling updates of google apps
 
-### After Installations (For First Time Pixelify Installation):-
+### After Installations (For First Time Pixelify Next Installation):-
 1) Playstore
 - Clear Playstore data
 - Open Playstore for 5-10 secs
@@ -60,7 +64,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 *Note:* Photos editor tool struck  Editing Tool will install soon 
 - First Wait for sometimes and connect with WiFi
 - Reboot
-- if still not fixed (Reinstall Pixelify Next;- sometimes flags doesn't get patched due to gms performing action on database)
+- if still not fixed (Reinstall Pixelify;- sometimes flags doesn't get patched due to gms performing action on database)
 
 Working of Magic Editor, New Automatic Call Screening depends on Device, Kernel.
 
@@ -136,9 +140,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Pixel Device spoofing (Optional)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
--   Spoof to komodo (Pixel 9 pro XL)
--   **Pixel 9 gemini bootaniamtion (in the future)**
--   Pixel Launcher (10+)(Optional)
 -   Pixel Live Wallpapers (Optional)
 -   Pokemon SideKick Live Wallpaper (Optional-Included with LiveWallpapers)
 -   Portrait Light (10+)
@@ -159,14 +160,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ## Contribute to project
 - Reporting bugs with logs
 - Feature Requests
-- Supporting other persons on issues or telegram group
+- Supporting other persons on issues or telegram (t.me/@basgame1)
 - Creating pull request to enable new feature or code improvements
-
-## Thanks to the following project contributors
-- <a href="https://github.com/HiFiiDev">@HifiiDev, </a> <a href="https://github.com/theritikchoure">@theritikchoure,</a> <a href="https://github.com/ChrisvanChip">@ChrisvanChip</a> <a href="https://github.com/Anant-Strong">and @anant-strong</a>
- for Pull Requests that got merged 
-- Johannes Drechsler, David Cash, Hendrik Roggenbuck, Ravijot Dhadial, Skyler Coles for Donation
-- Pixelify Support Group Members for testing beta versions
 
 ## ⭐ Credits
 - Google for creating these awesome features
@@ -181,8 +176,10 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Pixelify Support Group Members for testing beta versions
 
 ## ⭐ ChangeLogs
-### Version 4.0 Alpha
- - Updated to Android 15/16
+### Version 4 ALPHA
+- Fixed android 15 crash
+- Removed Pixel launcher (temporary)
+- Removed flipendo (temporary)
 ### Version 3.0
 - Added Proofread
 - Added New automatic Call Screening (en-US)
