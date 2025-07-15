@@ -1,14 +1,16 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ""
-labels: "bug"
+title: ''
+labels: bug
+assignees: ''
+
 ---
 
 Device name:
 Rom name:
 Android version:
-Pixelify version:
+Pixelify branch:
 
 <!-- About the bug -->
 Bug Description:

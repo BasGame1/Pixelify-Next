@@ -1,8 +1,10 @@
 ---
 name: Feature request
 about: Suggest an idea or feature to add in the module
-title: ""
-labels: "enhancement"
+title: ''
+labels: enhancement
+assignees: ''
+
 ---
 
 Feature Description:
