@@ -47,6 +47,106 @@ online_mb() {
     done
 }
 
+# Android System Intelligence version detection with fallback and override support
+fetch_dps_version() {
+    local ver="$1"
+    local target_api=$API
+    local dps_filename=""
+    local dps_url_pattern=""
+    
+    # Check for version override configuration
+    if [ "$DPS_VERSION_OVERRIDE" != "0" ]; then
+        echo "- Using DPS version override: API $DPS_VERSION_OVERRIDE" >>$logfile
+        target_api=$DPS_VERSION_OVERRIDE
+    fi
+    
+    # Try to get version for target API first
+    if [ $target_api -eq 31 ] || [ $target_api -eq 32 ]; then
+        DPVERSION=$(echo "$ver" | grep asi-new-31 | cut -d'=' -f2)
+        dps_filename="asi-new-31.tar.xz"
+        dps_url_pattern="asi-new-31"
+        DPS_API_USED=31
+    elif [ $target_api -eq 33 ]; then
+        DPVERSION=$(echo "$ver" | grep asis-new-33 | cut -d'=' -f2)
+        dps_filename="asis-new-33.tar.xz"
+        dps_url_pattern="asis-new-33"
+        DPS_API_USED=33
+    elif [ $target_api -eq 34 ]; then
+        DPVERSION=$(echo "$ver" | grep asis-new-34 | cut -d'=' -f2)
+        dps_filename="asis-new-34.tar.xz"
+        dps_url_pattern="asis-new-34"
+        DPS_API_USED=34
+    elif [ $target_api -ge 35 ]; then
+        # For API 35+, try latest available (API 34 first, then fallback)
+        DPVERSION=$(echo "$ver" | grep asis-new-34 | cut -d'=' -f2)
+        dps_filename="asis-new-34.tar.xz"
+        dps_url_pattern="asis-new-34"
+        DPS_API_USED=34
+    else
+        # For older APIs, use legacy dp-$API format
+        DPVERSION=$(echo "$ver" | grep dp-$target_api | cut -d'=' -f2)
+        dps_filename="dp-$target_api.tar.xz"
+        dps_url_pattern="dp-$target_api"
+        DPS_API_USED=$target_api
+    fi
+    
+    # If version not found and fallback is enabled, try newer versions
+    if [ -z "$DPVERSION" ] && [ "$ENABLE_DPS_FALLBACK" = "1" ] && [ "$DPS_VERSION_OVERRIDE" = "0" ]; then
+        echo "- Android System Intelligence version not found for API $API, trying fallback" >>$logfile
+        
+        # Try API 34 first (latest)
+        if [ -z "$DPVERSION" ]; then
+            DPVERSION=$(echo "$ver" | grep asis-new-34 | cut -d'=' -f2)
+            if [ ! -z "$DPVERSION" ]; then
+                dps_filename="asis-new-34.tar.xz"
+                dps_url_pattern="asis-new-34"
+                DPS_API_USED=34
+                echo "- Using Android System Intelligence from API 34 as fallback" >>$logfile
+            fi
+        fi
+        
+        # Try API 33 if 34 not available
+        if [ -z "$DPVERSION" ]; then
+            DPVERSION=$(echo "$ver" | grep asis-new-33 | cut -d'=' -f2)
+            if [ ! -z "$DPVERSION" ]; then
+                dps_filename="asis-new-33.tar.xz"
+                dps_url_pattern="asis-new-33"
+                DPS_API_USED=33
+                echo "- Using Android System Intelligence from API 33 as fallback" >>$logfile
+            fi
+        fi
+        
+        # Try API 31 if 33 not available
+        if [ -z "$DPVERSION" ]; then
+            DPVERSION=$(echo "$ver" | grep asi-new-31 | cut -d'=' -f2)
+            if [ ! -z "$DPVERSION" ]; then
+                dps_filename="asi-new-31.tar.xz"
+                dps_url_pattern="asi-new-31"
+                DPS_API_USED=31
+                echo "- Using Android System Intelligence from API 31 as fallback" >>$logfile
+            fi
+        fi
+        
+        # Final fallback to legacy format
+        if [ -z "$DPVERSION" ]; then
+            DPVERSION=$(echo "$ver" | grep dp-$API | cut -d'=' -f2)
+            if [ ! -z "$DPVERSION" ]; then
+                dps_filename="dp-$API.tar.xz"
+                dps_url_pattern="dp-$API"
+                DPS_API_USED=$API
+                echo "- Using legacy Android System Intelligence format for API $API" >>$logfile
+            fi
+        fi
+    fi
+    
+    # Calculate download size
+    if [ ! -z "$dps_filename" ]; then
+        DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/$dps_filename | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
+        DPS_FILENAME="$dps_filename"
+        DPS_URL_PATTERN="$dps_url_pattern"
+    fi
+}
+
 fetch_version() {
     if [ $internet -eq 1 ]; then
         echo "- Fetching version of online packages" >>$logfile
@@ -65,22 +165,14 @@ fetch_version() {
         fi
         LWVERSION=$(echo "$ver" | grep wallpaper | cut -d'=' -f2)
         OSRVERSION=$(echo "$ver" | grep os-new | cut -d'=' -f2)
-        DPVERSION=$(echo "$ver" | grep dp-$API | cut -d'=' -f2)
+        # Fetch other package versions
         PCSVERSION=$(echo "$ver" | grep pcs | cut -d'=' -f2)
         GPH8VERSION=$(echo "$ver" | grep gph8 | cut -d'=' -f2)
         GPH8SIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/gphotos8.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
         PCSSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/pcs.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
-        DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/dp-$API.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
-        if [ $API -eq 31 ] || [ $API -eq 32 ]; then
-            DPVERSION=$(echo "$ver" | grep asi-new-31 | cut -d'=' -f2)
-            DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asi-new-31.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
-        elif [ $API -eq 33 ]; then
-            DPVERSION=$(echo "$ver" | grep asis-new-33 | cut -d'=' -f2)
-            DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-33.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
-        elif [ $API -eq 34 ]; then
-            DPVERSION=$(echo "$ver" | grep asis-new-34 | cut -d'=' -f2)
-            DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-34.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
-        fi
+        
+        # Android System Intelligence version detection with fallback support
+        fetch_dps_version "$ver"
         if [ $REQ_NEW_WLP -eq 1 ]; then
             WLPVERSION="$(echo "$ver" | grep wpg-new-$API | cut -d'=' -f2)"
             WLPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/wpg-new-$API.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"

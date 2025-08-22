@@ -682,13 +682,8 @@ if [ $DPAS -eq 1 ]; then
                     cd $MODPATH/files
                     rm -rf /sdcard/Pixelify/backup/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-net-$API.tar.xz /sdcard/Pixelify/version/dp.txt /sdcard/Pixelify/version/dp-$API.txt
                     # Fetch and download Android system Intelligence
-                    if [ $API -eq 31 ] || [ $API -eq 32 ]; then
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asi-new-31.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
-                    elif [ $API -ge 33 ]; then
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
-                    else
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/dp-$API.tar.xz -O &>/proc/self/fd/$OUTFD
-                    fi
+                    echo " - Downloading Android System Intelligence: $DPS_FILENAME (from API $DPS_API_USED)" >>$logfile
+                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/$DPS_FILENAME -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                     cp -f $MODPATH/files/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-$API.tar.xz
                     echo "$DPVERSION" >>/sdcard/Pixelify/version/dp-$API.txt
                     cd /
@@ -734,13 +729,8 @@ if [ $DPAS -eq 1 ]; then
                 print ""
                 cd $MODPATH/files
                 # Fetch and download Android System intelligence
-                if [ $API -eq 31 ] || [ $API -eq 32 ]; then
-                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asi-new-31.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
-                elif [ $API -ge 33 ]; then
-                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
-                else
-                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/dp-$API.tar.xz -O &>/proc/self/fd/$OUTFD
-                fi
+                echo " - Downloading Android System Intelligence: $DPS_FILENAME (from API $DPS_API_USED)" >>$logfile
+                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/$DPS_FILENAME -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                 cd /
                 #now_playing
                 print ""

@@ -34,6 +34,17 @@ UPDATE_DPS=1
 # Create Backup for Device Personalistaion Services
 BACKUP_DPS=1
 
+# Enable Android System Intelligence version fallback to newer API levels
+# If current API version is not available, use the latest available version
+ENABLE_DPS_FALLBACK=1
+
+# Override Android System Intelligence version detection
+# 0 - Use automatic detection based on API level
+# 31 - Force use API 31 version (asi-new-31.tar.xz)
+# 33 - Force use API 33 version (asis-new-33.tar.xz) 
+# 34 - Force use API 34 version (asis-new-34.tar.xz)
+DPS_VERSION_OVERRIDE=0
+
 # Google Dialer Features
 # Includes Call Recording, Hold for Me, Direct My Call
 ENABLE_DIALER_FEATURES=1
