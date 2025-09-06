@@ -24,7 +24,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 ### Supported Roms
 - Tested on Android 15 LineageOS
 
-### Installation instructions for v4 aplpha
+### Installation instructions for v4 stable and beta
 - Make Sure Play Store not installing when Pixelify is installing.
 - If using KSU, install KSU zygisk module first
 - Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
@@ -524,3 +524,4 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 
 ### Beta 1.0
 - Initial repo
+
