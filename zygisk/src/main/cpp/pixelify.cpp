@@ -55,7 +55,7 @@ public:
         {
         case 1:
             injectBuild("Pixel XL", "marlin", P1_FP);
-            injectversion(34);
+            injectversion(25);
             break;
         case 2:
             injectBuild("Pixel 2", "walleye", P2_FP);
