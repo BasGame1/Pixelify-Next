@@ -10,11 +10,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         externalNativeBuild {
             cmake {
-                arguments "-DMODULE_NAME:STRING=$moduleLibraryName",
+                                arguments "-DMODULE_NAME:STRING=$moduleLibraryName",
                         "-DRIRU_MODULE_API_VERSION=$moduleRiruApiVersion",
                         "-DRIRU_MODULE_VERSION=$moduleVersionCode",
                         "-DRIRU_MODULE_VERSION_NAME:STRING=\"$moduleVersion\"",
                         "-DRIRU_MODULE_MIN_API_VERSION=$moduleMinRiruApiVersion"
+
             }
         }
     }
