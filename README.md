@@ -3,11 +3,11 @@
   This version is expeimental, untested and created from zero, dont use it on main devices
 
   Contact for errors or suggestions
-  # Telegram - https://t.me/@basgame1
-  #          - https;//t.me/PixelifyNext (group chat)
+  Telegram - https://t.me/@basgame1
+           - https;//t.me/PixelifyNext (group chat)
 
-  # Xda (https://xdaforums.com/m/basgame1.13021465/)
-  # Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
+   Xda (https://xdaforums.com/m/basgame1.13021465/)
+   Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 
 
 
