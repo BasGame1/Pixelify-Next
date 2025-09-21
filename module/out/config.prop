@@ -1,0 +1,156 @@
+# 0 - Disable(No), 1 - Enable(Yes)
+
+# If module doesn't able to detect internet even it is turn on, then enable it will fix your internet issue
+FORCE_ENABLE_ONLINE=0
+
+# Disable Internal spoofing of particular rom
+DISABLE_INTERNAL_SPOOFING=0
+
+# Google Photos Original Unlimited Backup
+ENABLE_PHOTOS_UNLIMITED=1
+
+# Update Google Photos App for Magic Editor, Voice Eraser
+UPDATE_GOOGLE_PHOTOS=1
+
+# Download Google Photos App for Magic Editor, Voice Eraser
+DOWNLOAD_GOOGLE_PHOTOS=1
+
+# Backup Google Photos App for Magic Editor, Voice Eraser
+BACKUP_GOOGLE_PHOTOS=1
+
+# Pixel 5/6 Spoofing
+ENABLE_PIXEL_SPOOFING=0
+
+# 1 - spoof to pixel 5
+# 0 - spoof to pixel 6 pro
+TARGET_USES_PIXEL5_SPOOF=1
+
+# Install Device Personalistaion Services
+ENABLE_DPS=1
+
+# Download Install Device Personalistaion Services new backup if available
+UPDATE_DPS=1
+
+# Create Backup for Device Personalistaion Services
+BACKUP_DPS=1
+
+# Google Dialer Features
+# Includes Call Recording, Hold for Me, Direct My Call
+ENABLE_DIALER_FEATURES=1
+
+# 1 - English (en)
+# 2 - Hindi (hi)
+# 3 - Japanese (jp)
+# 4 - French (fr)
+# 5 - German (de)
+# 6 - Italian (it)
+# 7 - Spanish (es)
+CALL_SCREENING_LANG=1
+
+# 1 American (US)
+# 2 Indian (IN)
+# 3 Australian (AU)
+# 4 Britain (GB)
+ENGLISH_COUNTRY_ACCENT=1
+
+# Automatic Call Screening
+AUTO_CALL_SCREENING=1
+
+# Download lang Specific files for Call Screenining in DE,JP,IT,FR..
+ADD_CALL_SCREENING_FILES=1
+
+# BAckup Lang Specific files for Call Screenining in DE,JP,IT,FR..
+BACKUP_CALL_SCREENING_FILES=1
+
+# Remove Samsung Dialer
+ENABLE_S_DIALER=0
+
+# Enable Next Generation Assistant
+ENABLE_NGA=1
+
+# Update NGA Resources if new version available
+UPDATE_NGA_RES=1
+
+# Download and install NGA Resources
+DOWNLOAD_NGA_RES=1
+
+# Backup NGA Resources
+BACKUP_NGA=1
+
+# Download Styles and Wallpapers
+DOWN_WGA=0
+
+# Install Styles and Wallpapers
+ENABLE_WLP=1
+
+# Download and install Styles and Wallpapers
+DOWNLOAD_WLP=0
+
+# Backup Styles and Wallpapers
+BACKUP_WLP=0
+
+# Update Styles and Wallpapers
+UPDATE_WLP=1
+
+# Install/ Download Google LiveWallpapers
+ENABLE_LIVE_WALLPAPERS=1
+
+# Update Google LiveWallpapers if new version detected
+DOWNLOAD_LIVE_WALLPAPERS=1
+
+# Backup Live Wallpapers
+BACKUP_LIVE_WALLPAPERS=1
+
+# Google San fonts
+GSAN_FONT=0
+
+# Enable Google Bootanimation
+ENABLE_BOOTANIMATION=0
+
+# Enable Pixel Launcher
+ENABLE_PIXEL_LAUNCHER=0
+
+# Update Pixel Launcher if available
+UPDATE_PIXEL_LAUNCHER=1
+
+# Backup Pixel Launcher
+BACKUP_PIXEL_LAUNCHER=1
+
+# Enable installation of Google settings intelligence
+ENABLE_GSI=0
+
+# Disable GMS overide flags for Rboard user for Gboard
+DISABLE_GBOARD_GMS_OVERRIDE=0
+
+# Google Extreme Battery Saver
+ENABLE_EXTREME_BATTERY_SAVER=0
+
+# G Logo in Gboard
+G_LOGO=0
+
+# Depreciated features
+# As per the Pixelify v3
+
+# Download Google offline speech recogonition
+DOWNLOAD_OSR=0
+
+# Update Google offline speech recogonition
+UPDATE_OSR=1
+
+# Backup Google offline speech recogonition
+BACKUP_OSR=1
+
+# Pixel camera services
+ENABLE_PCS=0
+
+# Download updates of Pixel camera services.
+UPDATE_PCS=1
+
+# Pixel camera services backup
+BACKUP_PCS=1
+
+# Ok google fix Google hotword
+OK_GOOGLE_HOTWORD=0
+
+# Enable Google Now playing
+ENABLE_NOW_PLAYING=0

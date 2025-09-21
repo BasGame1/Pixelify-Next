@@ -971,7 +971,7 @@ if [ -d /data/data/$DIALER ]; then
         P2="$(echo $P2 | xxd -p)"
         P2=${P2/0a/}
         CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
-        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer'"
+        #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer'"
         if [ $ISEN_US -eq 1 ]; then
             print "  Do you want to enable automatic Call Screening"
             print "   Vol Up += Yes"
@@ -988,7 +988,7 @@ if [ -d /data/data/$DIALER ]; then
                 db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
                 db_edit com.google.android.dialer boolVal 1 $CS_LANG
             else
-                $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
+                $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
             fi
             db_edit com.google.android.dialer boolVal 1 $CS_REV
         else
@@ -1000,12 +1000,12 @@ if [ -d /data/data/$DIALER ]; then
         db_edit com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
         db_edit com.google.android.dialer boolVal 1 $DIALERFLAGS
 
-        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
-        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0)"
-        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='Xatu__lp_preferences'"
-        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'Xatu__lp_preferences', 0, x'$XATUBIN', 0)"
-        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='atlas_enabled_business_number_country_codes'"
-        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'atlas_enabled_business_number_country_codes', 0, x'$ATSBIN', 0)"
+        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
+        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0, '', '', '', '', 0, '', '')"
+        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='Xatu__lp_preferences'"
+        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'Xatu__lp_preferences', 0, x'$XATUBIN', 0, '', '', '', '', 0, '', '')"
+        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='atlas_enabled_business_number_country_codes'"
+        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'atlas_enabled_business_number_country_codes', 0, x'$ATSBIN', 0, '', '', '', '', 0, '', '')"
         # db_edit_bin com.google.android.dialer G__atlas_mdd_ph_config $ATLASBIN
         # db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45413189 $ATLASBIN
         # db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45402582 $TKBIN
@@ -1300,8 +1300,8 @@ fi
         db_edit com.google.android.apps.search.assistant.device#com.google.android.googlequicksearchbox extensionVal 45377874 $GSPOOF
         #sed -i -e 's/com.google.android.feature.PIXEL_2021_EXPERIENCE/com.google.android.feature.PIXEL_2019_EXPERIENCE/g' $VELVET_APK
         #am force-stop com.google.android.googlequicksearchbox
-        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.g10040oogle.android.googlequicksearchbox' AND name='5470'"
-        #$sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.googlequicksearchbox', '', '5470', 0, x'$GOOGLEBIN', 0)"
+        #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.g10040oogle.android.googlequicksearchbox' AND name='5470'"
+        #$sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.g10040oogle.android.googlequicksearchbox', '', '5470', 0, x'$GOOGLEBIN', 0, '', '', '', '', 0, '', '')"
         # Patching ends
 
         # copy NGA files
@@ -1660,7 +1660,7 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
     echo " - Patching Google Keyboard's bools" >>$logfile
     patch_gboard
 
-    #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
+    #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
     if [ $DISABLE_GBOARD_GMS -eq 0 ]; then
         db_edit com.google.android.gms.learning#com.google.android.inputmethod.latin boolVal 1 "PredictorFeature__is_predict_enabled"
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin boolVal 1 $GBOARD_FLAGS
@@ -1731,15 +1731,15 @@ ui_print " - Patching GMS flags to enable features"
 ui_print " - This may take a minute or two"
 
 # Android System Intelligence
-$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.device_personalization_services' AND name LIKE 'Echo__search_%'"
+$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.device_personalization_services' AND name LIKE 'Echo__search_%'"
 db_edit com.google.android.platform.device_personalization_services boolVal 1 $ASI_FLAGS
 db_edit com.google.android.platform.launcher boolVal 1 "enable_quick_launch_v2" "ENABLE_QUICK_LAUNCH_V2" "GBOARD_UPDATE_ENTER_KEY" "ENABLE_SMARTSPACE_ENHANCED"
 #db_edit com.google.android.platform.device_personalization_services boolVal $TENSOR "Translate__enable_opmv4_service" "VisualCortex__enable_control_system"
 if [ $TENSOR -eq 0 ]; then
     db_edit com.google.android.platform.device_personalization_services extensionVal SpeechPack__downloadable_language_packs_raw $ASIBIN
 
-# $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.device_personalization_services' AND name='SpeechPack__downloadable_language_packs_raw'"
-# $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.platform.device_personalization_services', '', 'SpeechPack__downloadable_language_packs_raw', 0, x'$ASIBIN', 0)"
+# $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.device_personalization_services' AND name='SpeechPack__downloadable_language_packs_raw'"
+# $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.platform.device_personalization_services', '', 'SpeechPack__downloadable_language_packs_raw', 0, x'$ASIBIN', 0, '', '', '', '', 0, '', '')"
 fi
 #db_edit_bin com.google.android.platform.device_personalization_services WallpaperEffects__cinematic_models_mdd_manifest_config $WLPEFFECTCONFIG
 db_edit com.google.android.platform.device_personalization_services extensionVal WallpaperEffects__cinematic_models_mdd_manifest_config $WLPEFFECTCONFIG
@@ -1811,7 +1811,7 @@ db_edit com.google.android.apps.photos extensionVal "3015" "$GPHOTOS"
 db_edit com.google.android.apps.photos extensionVal "45378073" "$ERASER"
 
 # Digital Wellbeing
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing'"
 db_edit com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing boolVal 1 "ScreenTimeWidget__enable_pin_screen_time_widget_intent" "ScreenTimeWidget__enable_screen_time_widget" "HatsSurveys__enable_testing_mode" "WindDown__enable_wallpaper_dimming" "WalkingDetection__enable_outdoor_detection_v2" "Clockshine__enable_sleep_detection" "Clockshine__show_sleep_insights_screen" "Clockshine__show_manage_data_screen" "WebsiteUsage__display_website_usage"
 
 # Google messages
@@ -1824,26 +1824,26 @@ db_edit com.google.android.contacts#com.google.android.contacts boolVal 1 "45402
 db_edit com.google.android.deskclock#com.google.android.deskclock boolVal 1 "45408428" "45410158"
 
 # Google translate
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.translate'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.translate'"
 db_edit com.google.android.apps.translate boolVal 1 "Widgets__enable_quick_actions_widget" "Widgets__enable_saved_history_widget"
 
 # Google settings Services
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.settings.intelligence'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.settings.intelligence'"
 db_edit com.google.android.settings.intelligence boolVal 1 "RoutinesPrototype__is_activities_enabled" "RoutinesPrototype__is_module_enabled" "RoutinesPrototype__is_manual_location_rule_adding_enabled" "RoutinesPrototype__is_routine_inference_enabled" "BatteryWidget__is_widget_enabled" "BatteryWidget__is_enabled"
 
 # Fix Precise Location
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.privacy'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.privacy'"
 db_edit com.google.android.platform.privacy boolVal 1 "location_accuracy_enabled" "permissions_hub_enabled" "privacy_dashboard_7_day_toggle" "safety_protection_enabled"
 
 # Live Wallpapers
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.pixel.livewallpaper'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.pixel.livewallpaper'"
 db_edit com.google.pixel.livewallpaper stringVal "" DownloadableWallpaper__blocking_module_list
 
 #turbo
 #db_edit com.google.android.apps.turbo boolVal 1 $TURBO_FLAGS
 
 # Google Recorder
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.recorder#com.google.android.apps.recorder'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.recorder#com.google.android.apps.recorder'"
 
 # Calendar New widget Theme
 db_edit com.google.android.calendar boolVal 1 "Gm3Widget_Enabled"
@@ -1874,7 +1874,7 @@ db_edit com.google.android.gms.phenotype boolVal 1 PhenotypeFeature__allow_gmsco
 db_edit com.google.android.gms.multideice#com.google.android.gms boolVal 1 MultideviceSettingsConfig__enable_link_your_devices
 
 # System
-#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.systemui'"
+#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.systemui'"
 db_edit com.google.android.platform.systemui boolVal 1 "clipboard_overlay_show_actions"
 
 #Google TTS

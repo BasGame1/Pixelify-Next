@@ -1,8 +1,6 @@
 id=PIxelifyNext
 name=PIxelifyNext
-version=1.0
-versionCode=1.0
-author= Kingsman44 + BasGame1
-description=${description}
-# 0 -  Disable, 1 - Enable
-DEVICE_USES_VOLUME_KEY=${volType}
+version=2.0
+versionCode=2.0
+author=BasGame1
+description=Module to enable pixel functions on almost every android :)
