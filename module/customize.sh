@@ -814,6 +814,15 @@ if [ -d /data/data/$DIALER ]; then
         print "- Enabling Call Screening & Hold for me & Direct My Call"
         print " "
         print "- Enabling Call Recording (Working is device dependent)"
+        print ""
+        print "  Do you want to enable call recording for all countries?"
+        print "  Note: This may not work on all devices."
+        print "   Vol Up += Yes"
+        print "   Vol Down += No"
+        no_vk "ENABLE_CALL_RECORDING_FOR_ALL_COUNTRIES"
+        if $VKSEL; then
+            db_edit com.google.android.dialer boolVal 1 "G__force_within_call_recording_geofence_value"
+        fi
 
         ui_print ""
         ui_print " Please Select Desired Call Screening language"
@@ -832,6 +841,7 @@ if [ -d /data/data/$DIALER ]; then
         ui_print " [5] German       [de-DE]"
         ui_print " [6] Italian      [it-IT]"
         ui_print " [7] Spanish      [es-ES]"
+        ui_print " [8] Portuguese   [pt-BR] [BETA]"
         ui_print "--------------------------------"
 
         ui_print ""
@@ -845,7 +855,7 @@ if [ -d /data/data/$DIALER ]; then
             while true; do
                 ui_print " Current cursor:  $SM"
                 "$VKSEL" && SM="$((SM + 1))" || break
-                [[ "$SM" -gt "7" ]] && SM=1
+                [[ "$SM" -gt "8" ]] && SM=1
             done
         else
             SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
@@ -904,6 +914,10 @@ if [ -d /data/data/$DIALER ]; then
         "7")
             P2="es-ES"
             lang="es"
+            ;;
+        "8")
+            P2="pt-BR"
+            lang="pt"
             ;;
         esac
 
