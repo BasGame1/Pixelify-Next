@@ -809,213 +809,257 @@ if [ -d /data/data/$DIALER ]; then
     if $VKSEL; then
         echo " - Installing Google Dialer features" >>$logfile
 
-        # Enable it to let service.sh to know callscreening enabled
-        sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
-        print "- Enabling Call Screening & Hold for me & Direct My Call"
-        print " "
-        print "- Enabling Call Recording (Working is device dependent)"
-        print ""
-        print "  Do you want to enable call recording for all countries?"
-        print "  Note: This may not work on all devices."
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
-        no_vk "ENABLE_CALL_RECORDING_FOR_ALL_COUNTRIES"
+        print "  Which features do you want to enable?"
+        print "   Vol Up += Select/Unselect"
+        print "   Vol Down += Next"
+
+        DIALER_FEATURES=""
+
+        print "  [ ] Enable Call Screening"
         if $VKSEL; then
-            db_edit com.google.android.dialer boolVal 1 "G__force_within_call_recording_geofence_value"
+            DIALER_FEATURES="$DIALER_FEATURES call_screening"
+            print "  [X] Enable Call Screening"
         fi
 
-        ui_print ""
-        ui_print " Please Select Desired Call Screening language"
-        ui_print "    Vol Up += Switch Language (change cursor position)"
-        ui_print "    Vol Down +=  Select Language"
-        ui_print ""
-
-        # Give options for Call Screening language
-        sleep 0.5
-        lang=""
-        ui_print "--------------------------------"
-        ui_print " [1] English      [en]"
-        ui_print " [2] Hindi        [hi-in] [BETA]"
-        ui_print " [3] Japanese     [ja-JP]"
-        ui_print " [4] French       [fr-FR]"
-        ui_print " [5] German       [de-DE]"
-        ui_print " [6] Italian      [it-IT]"
-        ui_print " [7] Spanish      [es-ES]"
-        ui_print " [8] Portuguese   [pt-BR] [BETA]"
-        ui_print "--------------------------------"
-
-        ui_print ""
-        ui_print "- Select your Desired langauge"
-        ui_print ""
-
-        SM=1
-        if [ $VOL_KEYS -eq 1 ]; then
-            SM=1
-            TURN_OFF_SEL_VOL_PROMPT=1
-            while true; do
-                ui_print " Current cursor:  $SM"
-                "$VKSEL" && SM="$((SM + 1))" || break
-                [[ "$SM" -gt "8" ]] && SM=1
-            done
-        else
-            SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
-            #print "$SM"
+        print "  [ ] Enable Call Recording"
+        if $VKSEL; then
+            DIALER_FEATURES="$DIALER_FEATURES call_recording"
+            print "  [X] Enable Call Recording"
         fi
 
-        # Detect country code from gsm.sim.operator.iso-country
-        ISENG=0
-        ISEN_US=0
-        carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
-        if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
-            # if it is in format in,in then fetch first one
-            carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
-            if [ -z $carr_coun_small ]; then
-                # if it is in format ,in then fetch first second one
-                carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
-            fi
+        print "  [ ] Enable Hold for Me"
+        if $VKSEL; then
+            DIALER_FEATURES="$DIALER_FEATURES hold_for_me"
+            print "  [X] Enable Hold for Me"
         fi
-        # if empty then then set to 'in'
-        if [ -z $carr_coun_small ]; then
-            echo " - Unable to detect Country using 'in' as default" >>$logfile
-            carr_coun_small="in"
+
+        print "  [ ] Enable Direct My Call"
+        if $VKSEL; then
+            DIALER_FEATURES="$DIALER_FEATURES direct_my_call"
+            print "  [X] Enable Direct My Call"
         fi
-        echo " - Country code detected '$carr_coun_small'" >>$logfile
 
-        # Patch the selected file in dialer
-        sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
-        P1="$(echo $carr_coun_small | xxd -p)"
-        P1=${P1/0a/}
-        P2=""
-        case "$SM" in
-        "1")
-            P2="en"
-            ISENG=1
-            ;;
-        "2")
-            P2="hi-IN"
-            lang="hi"
-            ;;
-        "3")
-            P2="ja-JP"
-            lang="ja"
-            ;;
-        "4")
-            P2="fr-FR"
-            lang="fr"
-            ;;
-        "5")
-            P2="de-DE"
-            lang="de"
-            ;;
-        "6")
-            P2="it-IT"
-            lang="it"
-            ;;
-        "7")
-            P2="es-ES"
-            lang="es"
-            ;;
-        "8")
-            P2="pt-BR"
-            lang="pt"
-            ;;
-        esac
+        if [ ! -z "$DIALER_FEATURES" ]; then
+            if [[ "$DIALER_FEATURES" == *"call_screening"* ]]; then
+                sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
+                print "- Enabling Call Screening & Hold for me & Direct My Call"
+                print " "
 
-        ui_print ""
-        ui_print " - Selected: $P2"
-        ui_print ""
+                ui_print ""
+                ui_print " Please Select Desired Call Screening language"
+                ui_print "    Vol Up += Switch Language (change cursor position)"
+                ui_print "    Vol Down +=  Select Language"
+                ui_print ""
 
-        # Options for english language
-        if [ $ISENG -eq 1 ]; then
-            ui_print ""
-            ui_print " Please Select English Accent"
-            ui_print "    Vol Up += Switch Language (change cursor position)"
-            ui_print "    Vol Down +=  Select Language"
-            ui_print ""
+                # Give options for Call Screening language
+                sleep 0.5
+                lang=""
+                ui_print "--------------------------------"
+                ui_print " [1] English      [en]"
+                ui_print " [2] Hindi        [hi-in] [BETA]"
+                ui_print " [3] Japanese     [ja-JP]"
+                ui_print " [4] French       [fr-FR]"
+                ui_print " [5] German       [de-DE]"
+                ui_print " [6] Italian      [it-IT]"
+                ui_print " [7] Spanish      [es-ES]"
+                ui_print " [8] Portuguese   [pt-BR] [BETA]"
+                ui_print "--------------------------------"
 
-            sleep 0.5
+                ui_print ""
+                ui_print "- Select your Desired langauge"
+                ui_print ""
 
-            ui_print "--------------------------------"
-            ui_print " [1] American     [en-US] "
-            ui_print " [2] Indian       [en-IN] [BETA]"
-            ui_print " [3] Australian   [en-AU]"
-            ui_print " [4] Britain      [en-GB]"
-            ui_print "--------------------------------"
-
-            ui_print ""
-            ui_print "- Select your Desired langauge:"
-
-            if [ $VOL_KEYS -eq 1 ]; then
                 SM=1
-                TURN_OFF_SEL_VOL_PROMPT=1
-                while true; do
-                    ui_print " Current cursor:  $SM"
-                    "$VKSEL" && SM="$((SM + 1))" || break
-                    [[ "$SM" -gt "4" ]] && SM=1
-                done
-            else
-                SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
-                #print "$SM"
+                if [ $VOL_KEYS -eq 1 ]; then
+                    SM=1
+                    TURN_OFF_SEL_VOL_PROMPT=1
+                    while true; do
+                        ui_print " Current cursor:  $SM"
+                        "$VKSEL" && SM="$((SM + 1))" || break
+                        [[ "$SM" -gt "8" ]] && SM=1
+                    done
+                else
+                    SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
+                    #print "$SM"
+                fi
+
+                # Detect country code from gsm.sim.operator.iso-country
+                ISENG=0
+                ISEN_US=0
+                carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
+                if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
+                    # if it is in format in,in then fetch first one
+                    carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
+                    if [ -z $carr_coun_small ]; then
+                        # if it is in format ,in then fetch first second one
+                        carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
+                    fi
+                fi
+                # if empty then then set to 'in'
+                if [ -z $carr_coun_small ]; then
+                    echo " - Unable to detect Country using 'in' as default" >>$logfile
+                    carr_coun_small="in"
+                fi
+                echo " - Country code detected '$carr_coun_small'" >>$logfile
+
+                # Patch the selected file in dialer
+                sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
+                P1="$(echo $carr_coun_small | xxd -p)"
+                P1=${P1/0a/}
+                P2=""
+                case "$SM" in
+                "1")
+                    P2="en"
+                    ISENG=1
+                    ;;
+                "2")
+                    P2="hi-IN"
+                    lang="hi"
+                    ;;
+                "3")
+                    P2="ja-JP"
+                    lang="ja"
+                    ;;
+                "4")
+                    P2="fr-FR"
+                    lang="fr"
+                    ;;
+                "5")
+                    P2="de-DE"
+                    lang="de"
+                    ;;
+                "6")
+                    P2="it-IT"
+                    lang="it"
+                    ;;
+                "7")
+                    P2="es-ES"
+                    lang="es"
+                    ;;
+                "8")
+                    P2="pt-BR"
+                    lang="pt"
+                    ;;
+                esac
+
+                ui_print ""
+                ui_print " - Selected: $P2"
+                ui_print ""
+
+                # Options for english language
+                if [ $ISENG -eq 1 ]; then
+                    ui_print ""
+                    ui_print " Please Select English Accent"
+                    ui_print "    Vol Up += Switch Language (change cursor position)"
+                    ui_print "    Vol Down +=  Select Language"
+                    ui_print ""
+
+                    sleep 0.5
+
+                    ui_print "--------------------------------"
+                    ui_print " [1] American     [en-US] "
+                    ui_print " [2] Indian       [en-IN] [BETA]"
+                    ui_print " [3] Australian   [en-AU]"
+                    ui_print " [4] Britain      [en-GB]"
+                    ui_print "--------------------------------"
+
+                    ui_print ""
+                    ui_print "- Select your Desired langauge:"
+
+                    if [ $VOL_KEYS -eq 1 ]; then
+                        SM=1
+                        TURN_OFF_SEL_VOL_PROMPT=1
+                        while true; do
+                            ui_print " Current cursor:  $SM"
+                            "$VKSEL" && SM="$((SM + 1))" || break
+                            [[ "$SM" -gt "4" ]] && SM=1
+                        done
+                    else
+                        SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
+                        #print "$SM"
+                    fi
+
+                    case "$SM" in
+                    "1")
+                        P2="en-US"
+                        ISEN_US=1
+                        ;;
+                    "2")
+                        P2="en-IN"
+                        lang="in"
+                        ;;
+                    "3")
+                        P2="en-AU"
+                        lang="au"
+                        ;;
+                    "4")
+                        P2="en-GB"
+                        lang="gb"
+                        ;;
+                    esac
+                    ui_print " - Selected: $P2 OPTION"
+                    ui_print ""
+                fi
+
+                # Patching starts
+                TURN_OFF_SEL_VOL_PROMPT=0
+                TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
+                echo " - Selected $P2 callscreening language" >>$logfile
+                sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
+                P2="$(echo $P2 | xxd -p)"
+                P2=${P2/0a/}
+                CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
+                #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer'"
+                if [ $ISEN_US -eq 1 ]; then
+                    print "  Do you want to enable automatic Call Screening"
+                    print "   Vol Up += Yes"
+                    print "   Vol Down += No"
+                    no_vk "AUTO_CALL_SCREENING"
+                    if $VKSEL; then
+                        db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
+                        db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
+                        db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
+                        db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
+                        #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
+                        #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
+                        db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
+                        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
+                        db_edit com.google.android.dialer boolVal 1 $CS_LANG
+                    else
+                        $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
+                    fi
+                    db_edit com.google.android.dialer boolVal 1 $CS_REV
+                else
+                    db_edit com.google.android.dialer boolVal 1 $CS_LANG
+                fi
+                db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
+                db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
+                db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
+                db_edit com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
             fi
 
-            case "$SM" in
-            "1")
-                P2="en-US"
-                ISEN_US=1
-                ;;
-            "2")
-                P2="en-IN"
-                lang="in"
-                ;;
-            "3")
-                P2="en-AU"
-                lang="au"
-                ;;
-            "4")
-                P2="en-GB"
-                lang="gb"
-                ;;
-            esac
-            ui_print " - Selected: $P2 OPTION"
-            ui_print ""
-        fi
-
-        # Patching starts
-        TURN_OFF_SEL_VOL_PROMPT=0
-        TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
-        echo " - Selected $P2 callscreening language" >>$logfile
-        sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
-        P2="$(echo $P2 | xxd -p)"
-        P2=${P2/0a/}
-        CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
-        #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer'"
-        if [ $ISEN_US -eq 1 ]; then
-            print "  Do you want to enable automatic Call Screening"
-            print "   Vol Up += Yes"
-            print "   Vol Down += No"
-            no_vk "AUTO_CALL_SCREENING"
-            if $VKSEL; then
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
-                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
-                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
-                db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
-                db_edit com.google.android.dialer boolVal 1 $CS_LANG
-            else
-                $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
+            if [[ "$DIALER_FEATURES" == *"call_recording"* ]]; then
+                print "- Enabling Call Recording (Working is device dependent)"
+                print ""
+                print "  Do you want to enable call recording for all countries?"
+                print "  Note: This may not work on all devices."
+                print "   Vol Up += Yes"
+                print "   Vol Down += No"
+                no_vk "ENABLE_CALL_RECORDING_FOR_ALL_COUNTRIES"
+                if $VKSEL; then
+                    db_edit com.google.android.dialer boolVal 1 "G__force_within_call_recording_geofence_value"
+                fi
+                db_edit com.google.android.dialer boolVal 1 $DIALERFLAGS
             fi
-            db_edit com.google.android.dialer boolVal 1 $CS_REV
-        else
-            db_edit com.google.android.dialer boolVal 1 $CS_LANG
+
+            if [[ "$DIALER_FEATURES" == *"hold_for_me"* ]]; then
+                db_edit com.google.android.dialer boolVal 1 "G__enable_atlas"
+            fi
+
+            if [[ "$DIALER_FEATURES" == *"direct_my_call"* ]]; then
+                db_edit com.google.android.dialer boolVal 1 "G__enable_xatu"
+            fi
         fi
-        db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
-        db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
-        db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
-        db_edit com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
-        db_edit com.google.android.dialer boolVal 1 $DIALERFLAGS
 
         # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
         # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0, '', '', '', '', 0, '', '')"
