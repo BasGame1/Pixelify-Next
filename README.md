@@ -16,6 +16,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 
 ## Contact (for errors or suggestions)
 - Telegram (https://t.me/basgame1)
+- Group Chat (https://t.me/PixelifyNext)
 - Xda (https://xdaforums.com/m/basgame1.13021465/)
 - Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 ### Unsupported Roms
@@ -524,3 +525,4 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 
 ### Beta 1.0
 - Initial repo
+
