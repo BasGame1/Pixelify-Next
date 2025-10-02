@@ -18,58 +18,32 @@ chmod 0755 $sqlite
 # Fetch Zygisk is enabled or not from magisk database
 zygisk_enabled="$(magisk --sqlite "SELECT value FROM settings WHERE (key='zygisk')")"
 
-# Update Riru Path
-if [ "$MAGISK_VER_CODE" -ge 21000 ]; then
-    MAGISK_CURRENT_RIRU_MODULE_PATH=$(magisk --path)/.magisk/modules/riru-core
-else
-    MAGISK_CURRENT_RIRU_MODULE_PATH=/sbin/.magisk/modules/riru-core
-fi
-
-# Set Riru util_functions path
-if [ -f $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh ]; then
-    riru_path=$MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh
-elif [ -f /data/adb/riru/util_functions.sh ]; then
-    riru_path=$MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh
-else
-    riru_path=""
-fi
-
-# Set Installation type: Normal, Zygsik, Riru
+# Set Installation type: Normal, Zygsik
 if [ "$KSU" == true ]; then
     ui_print "- Root App: KSU"
-    if [ -d '/data/adb/modules/zygisksu' ]; then
-        # ZygiskSU is installed.
+    if [ -d '/data/adb/modules/zygisksu' -d '/data/adb/modules/rezygisk' ]; then
+        # Zygisk is installed.
         # Set the module type to ZygsikSU
         MODULE_TYPE=2
         ui_print "- Installation Type: Zygisk"
     else
-        # ZygiskSU is not installed.
+        # Zygisk is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
         ui_print "- Installation Type: normal installation"
     fi
 else
     ui_print "- Root App: Magisk"
-    if [ ! -z $riru_path ]; then
-        # Riru is installed.
         # Check if Zygisk is enabled.
         if [ "$zygisk_enabled" == "value=1" ]; then
             # Set the module type to Zygsik
             MODULE_TYPE=2
-            ui_print "! Riru Installed but disabled"
             ui_print "- Switching to zygisk mode"
             ui_print ""
             ui_print "- Installation Type: Zygisk"
-        else
-            # Riru is disabled.
-            ui_print "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
-            # Load the Riru utility functions.
-            . $riru_path
-            # Check the installation type.
-            check_install_type
         fi
     else
-        # Riru is not installed.
+        
         # Check if Magisk is at least version 24000.
         if [ "$MAGISK_VER_CODE" -ge 24000 ]; then
             # Magisk is at least version 24000.
@@ -78,7 +52,6 @@ else
             ui_print "- Installation Type: Zygisk"
             # Check if zygsik is enabled.
             if [ "$zygisk_enabled" != "value=1" ]; then
-                # Riru is not enabled.
                 ui_print "! Please enable zygisk in magisk"
             fi
         else
@@ -95,36 +68,6 @@ if [ $MODULE_TYPE -eq 2 ]; then
     # The module is using Zygisk.
     # Move the Zygisk libraries to the `zygisk` directory in the module path.
     mv "$ZYGISK_LIB_PATH" "$MODPATH/zygisk"
-elif [ $MODULE_TYPE -eq 3 ]; then
-    # The module is using Riru.
-    # Enforce installation from the Magisk app.
-    enforce_install_from_magisk_app
-    # Detect the API level and architecture.
-    api_level_arch_detect
-    # Create the `riru` directory in the module path.
-    mkdir "$MODPATH/riru"
-    # Check the 32-bit ABI.
-    if [ "$ABI32" == "armeabi-v7a" ]; then
-        # The module is using the 32-bit ARM ABI.
-        # Move the 32-bit ARM library to the `lib` directory in the `riru` directory.
-        mv -f "$RIRU_LIB_PATH/armeabi-v7a" "$MODPATH/riru/lib"
-        # Check if the module is using the 64-bit ARM ABI.
-        if [ "$IS64BIT" = true ]; then
-            # The module is using the 64-bit ARM ABI.
-            # Move the 64-bit ARM library to the `lib64` directory in the `riru` directory.
-            mv -f "$RIRU_LIB_PATH/arm64-v8a" "$MODPATH/riru/lib64"
-        fi
-    else
-        # The module is using the 32-bit x86 ABI.
-        # Move the 32-bit x86 library to the `lib` directory in the `riru` directory.
-        mv -f "$RIRU_LIB_PATH/x86" "$MODPATH/riru/lib"
-        # Check if the module is using the 64-bit x86 ABI.
-        if [ "$IS64BIT" = true ]; then
-            # The module is using the 64-bit x86 ABI.
-            # Move the 64-bit x86 library to the `lib64` directory in the `riru` directory.
-            mv -f "$RIRU_LIB_PATH/x86_64" "$MODPATH/riru/lib64"
-        fi
-    fi
 fi
 
 # Exit for Unsupported Android Versions (Required Nougat+)
@@ -406,7 +349,7 @@ set_version
 # Fixes for Pixel 4 devices, it gets hang when Android System intelligence gets spoofed to another pixel
 if [ "$(getprop ro.product.vendor.name)" == "coral" ] || [ "$(getprop ro.product.vendor.name)" == "flame" ]; then
     echo "- Pixel 4/XL Detected !" >>$logfile
-    for i in $MODPATH/zygisk/* $MODPATH/riru/*/*; do
+    for i in $MODPATH/zygisk/*; do
         sed -i -e "s/com.google.android.xx/com.google.android.as/g" $i
     done
 fi
@@ -591,12 +534,12 @@ if [ $TENSOR -eq 1 ]; then
         rm -rf $MODPATH/zygisk $MODPATH/zygisk_1
     fi
 
-# If Installation mode is Zygisk or Riru, Drop PIXEL_EXPERIENCES to support unlimited storage
-elif [ $MODULE_TYPE -eq 2 ] || [ $MODULE_TYPE -eq 3 ]; then
+# If Installation mode is Zygisk, Drop PIXEL_EXPERIENCES to support unlimited storage
+elif [ $MODULE_TYPE -eq 2 ]; then
     echo "- Enabling Unlimited storage" >>$logfile
     drop_sys
 else
-    # As there is No option for Particular apps spooifng with zygsik or Riru, go with legacy one
+    # As there is No option for Particular apps spooifng with zygsik, go with legacy one
     print "  Do you want to Spoof your device to Pixel 5 /Pixel 9 Pro XL?"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
