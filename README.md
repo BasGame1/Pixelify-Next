@@ -11,7 +11,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **Volume Keys (optional)**
 - **Internet for downloading NGA Resources, Pixel Livewallpaper, Device Personalization Services & Pixel Launcher**
 - **Magisk v24 or above from Pixelify v2+**
-- **Zygisk or Riru (Recommended but not mandatory)**
+- **Zygisk (Recommended but not mandatory)**
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
 ## Contact (for errors or suggestions)
@@ -79,7 +79,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Edit the prop file according to what features you want
 - (If you have any problem placing config.prop there then you also can extract and update config.prop inside the packages it automatically use it.) 
 
-### Zygisk and Riru spoofing configuration
+### Zygisk spoofing configuration
 - Pixel 5:- Google TTS, Google Play services, Pixel Buds, Nothing Smart Center, Netflix
 - Pixel XL:- Google Photos
 - Pixel 8 Pro:- Google app, Google one, Breel Wallpaper, Snapchat, Adobe Light Room
@@ -89,9 +89,9 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ### Features of Pixelify module
 - Initial Size of module is low
 - Open Source
-- Works with Riru as well as Zygisk
+
 - Works with most of Android version
-- Uses Dynamic spoofing (Riru & Zygisk) for only Google apps to prevent crashes and other issues
+- Uses Dynamic spoofing (Zygisk) for only Google apps to prevent crashes and other issues
 - Provides most of the Pixel exclusive features
 - Installation of features is optional
 - Supports (720p,1080p,1440p) Google bootanimation
@@ -101,7 +101,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Dynamic Permission generation of apps installed by pixelify
 - Config as well as Volume key installation
 - Patches Flags to force enable pixel features
-- Single zip works with Zygisk as well as Riru
 - Works on almost all roms.
 
 ## ⭐ Pixel Features
@@ -146,7 +145,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Screen Attention Service
 -   Smart Compose
 -   Unlimited Photos backup (Storage saver)
--   Unlimited Photos backup (original) (needs Zygisk or Riru)
+-   Unlimited Photos backup (original) (needs Zygisk)
 <br>
 * - Requires Spoofing to Pixel device
 
@@ -176,6 +175,10 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Pixelify Support Group Members for testing beta versions
 
 ## ⭐ ChangeLogs
+### Version 4  STABLE
+- Removed riru
+- Fixed some errors
+- no any other changes, really :)
 ### Version 4 ALPHA
 - Fixed android 15 crash
 - Removed Pixel launcher (temporary)
@@ -235,7 +238,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Fixed Phones automatically reboot and Pixelify Disabled
 - Fixed Pixel Launcher Crash on December Patches
 - Fixed Pixel Launcher Crash on OxygenOS 12
-- Fixed Riru Library for Pixel 6 models
 - Fixed Uninstaller may taking cpu in background for some users
 - Fixed crashes of styles and wallpapers on some ROMs (a13)
 - Fixed incompatible version speech pack given by Google Offline Speech pack
