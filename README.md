@@ -11,7 +11,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **Volume Keys (optional)**
 - **Internet for downloading NGA Resources, Pixel Livewallpaper, Device Personalization Services & Pixel Launcher**
 - **Magisk v24 or above from Pixelify v2+**
-- **Zygisk (Recommended but not mandatory)**
+- **Zygisk (Recommended but not mandatory, needed for spoofing functions)**
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
 ## Contact (for errors or suggestions)
@@ -530,5 +530,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 
 ### Beta 1.0
 - Initial repo
+
 
 
