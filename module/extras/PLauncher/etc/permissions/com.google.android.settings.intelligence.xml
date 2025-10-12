@@ -1,0 +1,31 @@
+<permissions>
+	<privapp-permissions package="com.google.android.settings.intelligence">
+		<permission name="com.google.android.settings.routines.ROUTINES_ACTIONS"/>
+		<permission name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+		<permission name="android.permission.READ_SEARCH_INDEXABLES"/>
+		<permission name="android.permission.ACCESS_NETWORK_STATE"/>
+		<permission name="Manifest.permission.RECEIVE_BOOT_COMPLETED"/>
+		<permission name="android.permission.MODIFY_PHONE_STATE"/>
+		<permission name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+		<permission name="com.google.android.settings.intelligence.BATTERY_DATA"/>
+		<permission name="android.permission.SCHEDULE_EXACT_ALARM"/>
+		<permission name="com.google.android.settings.intelligence.apiproxy"/>
+		<permission name="android.permission.READ_PHONE_STATE"/>
+		<permission name="android.permission.POST_NOTIFICATIONS"/>
+		<permission name="android.permission.MANAGE_FINGERPRINT"/>
+		<permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+		<permission name="android.permission.READ_DEVICE_CONFIG"/>
+		<permission name="android.permission.ACCESS_FINE_LOCATION"/>
+		<permission name="android.permission.GET_PACKAGE_SIZE"/>
+		<permission name="android.permission.INTERNET"/>
+		<permission name="android.permission.WRITE_SETTINGS_HOMEPAGE_DATA"/>
+		<permission name="com.google.android.settings.fuelgauge.BATTERY_SETTING"/>
+		<permission name="android.permission.ACCESS_WIFI_STATE"/>
+		<permission name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+		<permission name="android.permission.BLUETOOTH"/>
+		<permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND"/>
+		<permission name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+		<permission name="com.google.android.settings.intelligence.modules.routines.READ_ROUTINES"/>
+		<permission name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+	</privapp-permissions>
+</permissions>
