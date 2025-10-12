@@ -1432,28 +1432,6 @@ if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     fi
 fi
 
-# Extreme battery Saver
-if [ $API -ge 30 ]; then
-    print "  Do you want to install Extreme Battery Saver (Flipendo)?"
-    print "    Vol Up += Yes"
-    print "    Vol Down += No"
-    no_vk "ENABLE_EXTREME_BATTERY_SAVER"
-    if $VKSEL; then
-        print "- Installing Extreme Battery Saver (Flipendo)"
-        echo " - Installing Extreme Battery Saver (Flipendo)" >>$logfile
-        cp -f $MODPATH/files/PixelifyFilpendo.apk $MODPATH/system/product/overlay/PixelifyFilpendo.apk
-        if [ $API -eq 32 ]; then
-            tar -xf $MODPATH/files/flip-31.tar.xz -C $MODPATH/system
-        else
-            tar -xf $MODPATH/files/flip-$API.tar.xz -C $MODPATH/system
-        fi
-        FLIPENDO=$(find /system -name Flipendo)
-        REMOVE="$REMOVE $FLIPENDO"
-    else
-        echo " - Skipping Extreme Battery Saver (Flipendo)" >>$logfile
-    fi
-fi
-
 # Rboard app fixes
 if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
     print ""
@@ -1466,6 +1444,17 @@ if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
     no_vk "DISABLE_GBOARD_GMS_OVERRIDE"
     if $VKSEL; then
         DISABLE_GBOARD_GMS=1
+    fi
+fi
+#Pixel Launcher
+if [ $API -ge 33 ]; then
+print ""
+    print "  Do you want install Pixel launcher? (thx to Enzo Ariel)"
+    print "  Note: It may crash on some pixel function "
+    print "    Vol Up += Yes"
+    print "    Vol Down += No"
+    if $VKSEL; then
+        PLAUNCHER=1
     fi
 fi
 
@@ -1715,6 +1704,17 @@ done
 if [ $API -ge 32 ]; then
     rm -rf $MODPATH/system/product/overlay/PixelifyPixel12.apk
 fi
+#Install Pixel Launcher
+if [ $PLAUNCHER = 1 ]; then
+	if [ -f $MODPATH/files/PLauncher.apk ]; then
+		pm install $MODPATH/files/PLauncher.apk
+	else
+		echo "Pixel Launcher not found, skipping" >>$logfile
+		print "Pixel Launcher not found, skipping"
+	fi
+fi
+
+
 
 if [ $API -ge 31 ]; then
     rm -rf $MODPATH/system/product/overlay/PixelifyPixel.apk
