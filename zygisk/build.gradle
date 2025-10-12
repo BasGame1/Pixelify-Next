@@ -1,5 +1,6 @@
 import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.api.file.DuplicatesStrategy
 
 import java.security.MessageDigest
 
@@ -10,6 +11,7 @@ plugins {
 apply from: file(rootProject.file('module.gradle'))
 
 android {
+    namespace 'com.pixelify.next.zygisk'
     compileSdk target_sdk
     defaultConfig {
         minSdk min_sdk
@@ -45,6 +47,8 @@ afterEvaluate {
         def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a',Instance3: 'x86',Instance4: 'x86_64']
 
         task("prepareMagiskFiles${variantCapped}", type: Sync) {
+            duplicatesStrategy = DuplicatesStrategy.WARN
+        
             dependsOn("assemble$variantCapped")
             def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
 
@@ -95,6 +99,8 @@ afterEvaluate {
         }
 
         task("novk${variantCapped}", type: Sync) {
+            duplicatesStrategy = DuplicatesStrategy.WARN
+            
             dependsOn("assemble$variantCapped")
             def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
 
@@ -146,8 +152,8 @@ afterEvaluate {
         task("zip${variantCapped}", type: Zip) {
             dependsOn("prepareMagiskFiles${variantCapped}")
             from magiskDir
-            archiveName zipName
-            destinationDir outDir
+            archiveFileName = zipName
+            destinationDirectory = outDir
         }
 
         task("novkzip${variantCapped}", type: Zip) {
@@ -155,8 +161,8 @@ afterEvaluate {
             dependsOn("novk${variantCapped}")
             tasks.findByName("novk${variantCapped}").mustRunAfter "zip${variantCapped}"
             from magiskDir
-            archiveName zipNamenovk
-            destinationDir outDir
+            archiveFileName = zipNamenovk
+            destinationDirectory = outDir
             doLast {
                 delete {
                     from "$outDir"
