@@ -10,9 +10,9 @@ rm -rf /data/pixelify
 
 chmod 0755 /data/data/com.google.android.dialer/files/phenotype
 
-$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer'"
-$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.googlequicksearchbox'"
-$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
-$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.recorder'"
+$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer'"
+$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.googlequicksearchbox'"
+$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
+$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.recorder'"
 
 [[ -e "/data/system/package_cache" ]] && rm -rf /data/system/package_cache/*

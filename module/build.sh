@@ -1,9 +1,8 @@
 files=$(ls *.sh)
 files2=$(ls *.prop)
-cd module
-#for i in $files $files2 "deviceconfig.txt"; do
-	#dos2unix $i
-#done
+for i in $files $files2 "deviceconfig.txt"; do
+	dos2unix $i
+done
 version=$(cat module.prop | grep version= | cut -d= -f2)
 if [ -z $(echo version | grep beta) ]; then
 	BETA_BUILD=0

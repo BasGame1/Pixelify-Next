@@ -183,7 +183,7 @@ if [ ! -d /data/adb/modules/Pixelify ]; then
     rm -rf /data/data/com.google.android.dialer/files/phenotype/*
 
     #Remove GMS patches
-    $sqlite $gms "DELETE FROM Flags"
+    $sqlite $gms "DELETE FROM FlagOverrides"
     $sqlite $gser "DELETE FROM overrides"
 
     # Fixes Nexus Launcher gone

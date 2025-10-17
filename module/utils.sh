@@ -10,8 +10,8 @@ check_install_type() {
             ui_print "- Changing installation mode to zygisk"
             ui_print "- Installation Type: Zygisk"
         else
-            ui_print "- Changing installation mode to normal magisk/ksu"
-            ui_print "- Installation Type: Normal Magisk/KSU"
+            ui_print "- Changing installation mode to normal magisk"
+            ui_print "- Installation Type: Normal Magisk"
         fi
     else
         MODULE_TYPE=3
@@ -22,12 +22,12 @@ check_install_type() {
 # This function will be used when util_functions.sh not exists
 enforce_install_from_magisk_app() {
     if $BOOTMODE; then
-        ui_print "- Installing from Magisk/KSU app"
+        ui_print "- Installing from Magisk app"
     else
         ui_print "*********************************************************"
         ui_print "! Install from recovery is NOT supported"
         ui_print "! Some recovery has broken implementations, install with such recovery will finally cause Riru or Riru modules not working"
-        ui_print "! Please install from Magisk/KSU app"
+        ui_print "! Please install from Magisk app"
         abort "*********************************************************"
     fi
 }
@@ -404,7 +404,7 @@ db_edit() {
         shift
         all_flags=$@
     fi
-    OFLAGS="$("$sqlite" "$gms" "SELECT * FROM Flags WHERE packageName='$name';")"
+    OFLAGS="$("$sqlite" "$gms" "SELECT * FROM FlagOverrides WHERE packageName='$name';")"
     if [ $type == "stringVal" ]; then
         val="'$val'"
     fi
@@ -423,7 +423,7 @@ db_edit() {
             mkdir -p $MODPATH/flags
             rm -rf $MODPATH/sql.txt
             touch $MODPATH/sql.txt
-            $sqlite $gms "DELETE FROM Flags WHERE packageName='$name' AND name='$i'" &>$MODPATH/sql.txt
+            $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='$name' AND name='$i'" &>$MODPATH/sql.txt
             echo "different value of $i present" >>$flaglogfile
             echo "Patching Status: $(cat $MODPATH/sql.txt)" >>$flaglogfile
             if [ ! -z "$(cat $MODPATH/sql.txt | grep 'Error:')" ]; then
@@ -436,14 +436,14 @@ db_edit() {
             echo "Flag $i already present" >>$flaglogfile
         fi
         if [ $UPDATEFLAGS -eq 1 ]; then
-            #$sqlite $gms "DELETE FROM Flags WHERE packageName='$name' AND name='$i'"
+            #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='$name' AND name='$i'"
             #sleep .001
             rm -rf $MODPATH/sql.txt
             touch $MODPATH/sql.txt
             if [ $type == "extensionVal" ]; then
-                $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed) VALUES('$name', '', '$i', 0, x'$val', 0)" &>$MODPATH/sql.txt
+                $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('$name', '', '$i', 0, x'$val', 0)" &>$MODPATH/sql.txt
             else
-                $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, $type, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$name', '', '$i', 0, $val, 0, '', '', '', '', 0, '', '')" &>$MODPATH/sql.txt
+                $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, $type, committed) VALUES('$name', '', '$i', 0, $val, 0)" &>$MODPATH/sql.txt
             fi
             echo "patching $i" >>$flaglogfile
             echo "Patching Status: $(cat $MODPATH/sql.txt)" >>$flaglogfile
@@ -454,16 +454,16 @@ db_edit() {
                 return
             fi
             sleep .001
-            #$sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, $type, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$name', '', '$i', 0, $val, 1, '', '', '', '', 0, '', '')"
+            #$sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, $type, committed) VALUES('$name', '', '$i', 0, $val, 1)"
             #sleep .001
             #$sqlite $gms "UPDATE Flags SET $type='$val' WHERE packageName='$name' AND name='$i'"
             for j in $gacc; do
                 rm -rf $MODPATH/sql.txt
                 touch $MODPATH/sql.txt
                 if [ $type == "extensionVal" ]; then
-                    $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, $type, committed) VALUES('$name', '$j', '$i', 0, x'$val', 0)" &>$MODPATH/sql.txt
+                    $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, $type, committed) VALUES('$name', '$j', '$i', 0, x'$val', 0)" &>$MODPATH/sql.txt
                 else
-                    $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, $type, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$name', '$j', '$i', 0, $val, 0, '', '', '', '', 0, '', '')" &>$MODPATH/sql.txt
+                    $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, $type, committed) VALUES('$name', '$j', '$i', 0, $val, 0)" &>$MODPATH/sql.txt
                 fi
                 if [ ! -z "$(cat $MODPATH/sql.txt | grep 'Error:')" ]; then
                     mkdir -p $MODPATH/flags_$type/$name
@@ -484,7 +484,7 @@ db_edit_bin() {
     rm -rf $MODPATH/sql.txt
     touch $MODPATH/sql.txt
     echo "patching $2 for $1" >>$flaglogfile
-    $sqlite $gms "DELETE FROM Flags WHERE packageName='$1' AND name='$2'" &>$MODPATH/sql.txt
+    $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='$1' AND name='$2'" &>$MODPATH/sql.txt
     if [ ! -z "$(cat $MODPATH/sql.txt | grep 'Error:')" ]; then
         mkdir -p $MODPATH/flags_bin/$1
         echo "$3" >>$MODPATH/flags_bin/$1/$2
@@ -494,7 +494,7 @@ db_edit_bin() {
     fi
     rm -rf $MODPATH/sql.txt
     touch $MODPATH/sql.txt
-    $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$1', '', '$2', 0, x'$3', 0, '', '', '', '', 0, '', '')" &>$MODPATH/sql.txt
+    $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('$1', '', '$2', 0, x'$3', 0)" &>$MODPATH/sql.txt
     if [ ! -z "$(cat $MODPATH/sql.txt | grep 'Error:')" ]; then
         mkdir -p $MODPATH/flags_bin/$1
         echo "$3" >>$MODPATH/flags_bin/$1/$2
@@ -502,13 +502,13 @@ db_edit_bin() {
         echo "$(cat $MODPATH/sql.txt)" >>$flaglogfile
         return
     fi
-    #$sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$1', '', '$2', 0, x'$3', 1, '', '', '', '', 0, '', '')"
+    #$sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('$1', '', '$2', 0, x'$3', 1)"
     #$sqlite $gms "UPDATE Flags SET extensionVal=x'$3' WHERE packageName='$1' AND name='$2'"
     for j in $gacc; do
         j=${j/.db/}
         rm -rf $MODPATH/sql.txt
         touch $MODPATH/sql.txt
-        $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('$1', '$j', '$2', 0, x'$3', 0, '', '', '', '', 0, '', '')" &>$MODPATH/sql.txt
+        $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('$1', '$j', '$2', 0, x'$3', 0)" &>$MODPATH/sql.txt
         if [ ! -z "$(cat $MODPATH/sql.txt | grep 'Error:')" ]; then
             mkdir -p $MODPATH/flags_bin/$1
             echo "$3" >>$MODPATH/flags_bin/$1/$2
