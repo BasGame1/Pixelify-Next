@@ -1,8 +1,8 @@
-id=PIxelifyNext
-name=PIxelifyNext
-version=1.0
-versionCode=1.0
-author= Kingsman44 + BasGame1
-description=${description}
+id=PixelifyNextBeta
+name=Pixelify Next Beta
+version=v4
+versionCode=20231105
+author=Kingsman44 & BasGame1
+description=Enables pixel exclusive features :- Call Screening, Live Translate, Direct Call, Google Dialer Call Recording, Extreme Battery Saver, Hold For Me, Gboard Smart Compose, Adaptive Connectivity, Adaptive Sound, Next generation assistant, Pixel LiveWallpapers, Google Fit Heart rate and many more...
 # 0 -  Disable, 1 - Enable
-DEVICE_USES_VOLUME_KEY=${volType}
+DEVICE_USES_VOLUME_KEY=1
