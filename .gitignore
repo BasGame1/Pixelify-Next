@@ -16,3 +16,4 @@ build
 /riru/build
 /zygisk/build
 /module/files/system
+/module/out
