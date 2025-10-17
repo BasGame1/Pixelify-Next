@@ -1,8 +1,5 @@
 #!/system/bin/sh
-if [ -f "$MODPATH/banner.txt" ]; then
-  cat "$MODPATH/banner.txt"
-  ui_print " "
-fi
+
 # run Pixelify Functions and Variables
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
@@ -11,6 +8,17 @@ alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
 VOL_KEYS="$(grep 'DEVICE_USES_VOLUME_KEY=' $MODPATH/module.prop | cut -d= -f2)"
 
+db_edit_decoded() {
+    package_name=$1
+    flag_type=$2
+    flag_value=$3
+    shift 3
+    for flag in "$@"; do
+        decoded_flag=$(python "$MODPATH/gms_flag_decoder.py" "$flag" "$package_name")
+        db_edit "$package_name" "$flag_type" "$flag_value" "$decoded_flag"
+    done
+}
+
 chmod 0755 $sqlite
 
 [ -z "$MAGISKTMP" ] && MAGISKTMP=/sbin
@@ -18,32 +26,58 @@ chmod 0755 $sqlite
 # Fetch Zygisk is enabled or not from magisk database
 zygisk_enabled="$(magisk --sqlite "SELECT value FROM settings WHERE (key='zygisk')")"
 
-# Set Installation type: Normal, Zygsik
+# Update Riru Path
+if [ "$MAGISK_VER_CODE" -ge 21000 ]; then
+    MAGISK_CURRENT_RIRU_MODULE_PATH=$(magisk --path)/.magisk/modules/riru-core
+else
+    MAGISK_CURRENT_RIRU_MODULE_PATH=/sbin/.magisk/modules/riru-core
+fi
+
+# Set Riru util_functions path
+if [ -f $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh ]; then
+    riru_path=$MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh
+elif [ -f /data/adb/riru/util_functions.sh ]; then
+    riru_path=$MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh
+else
+    riru_path=""
+fi
+
+# Set Installation type: Normal, Zygsik, Riru
 if [ "$KSU" == true ]; then
     ui_print "- Root App: KSU"
-    if [ -d '/data/adb/modules/zygisksu' -d '/data/adb/modules/rezygisk' ]; then
-        # Zygisk is installed.
+    if [ -d '/data/adb/modules/zygisksu' ]; then
+        # ZygiskSU is installed.
         # Set the module type to ZygsikSU
         MODULE_TYPE=2
         ui_print "- Installation Type: Zygisk"
     else
-        # Zygisk is not installed.
+        # ZygiskSU is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
         ui_print "- Installation Type: normal installation"
     fi
 else
     ui_print "- Root App: Magisk"
+    if [ ! -z $riru_path ]; then
+        # Riru is installed.
         # Check if Zygisk is enabled.
         if [ "$zygisk_enabled" == "value=1" ]; then
             # Set the module type to Zygsik
             MODULE_TYPE=2
+            ui_print "! Riru Installed but disabled"
             ui_print "- Switching to zygisk mode"
             ui_print ""
             ui_print "- Installation Type: Zygisk"
+        else
+            # Riru is disabled.
+            ui_print "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
+            # Load the Riru utility functions.
+            . $riru_path
+            # Check the installation type.
+            check_install_type
         fi
     else
-        
+        # Riru is not installed.
         # Check if Magisk is at least version 24000.
         if [ "$MAGISK_VER_CODE" -ge 24000 ]; then
             # Magisk is at least version 24000.
@@ -52,6 +86,7 @@ else
             ui_print "- Installation Type: Zygisk"
             # Check if zygsik is enabled.
             if [ "$zygisk_enabled" != "value=1" ]; then
+                # Riru is not enabled.
                 ui_print "! Please enable zygisk in magisk"
             fi
         else
@@ -68,6 +103,36 @@ if [ $MODULE_TYPE -eq 2 ]; then
     # The module is using Zygisk.
     # Move the Zygisk libraries to the `zygisk` directory in the module path.
     mv "$ZYGISK_LIB_PATH" "$MODPATH/zygisk"
+elif [ $MODULE_TYPE -eq 3 ]; then
+    # The module is using Riru.
+    # Enforce installation from the Magisk app.
+    enforce_install_from_magisk_app
+    # Detect the API level and architecture.
+    api_level_arch_detect
+    # Create the `riru` directory in the module path.
+    mkdir "$MODPATH/riru"
+    # Check the 32-bit ABI.
+    if [ "$ABI32" == "armeabi-v7a" ]; then
+        # The module is using the 32-bit ARM ABI.
+        # Move the 32-bit ARM library to the `lib` directory in the `riru` directory.
+        mv -f "$RIRU_LIB_PATH/armeabi-v7a" "$MODPATH/riru/lib"
+        # Check if the module is using the 64-bit ARM ABI.
+        if [ "$IS64BIT" = true ]; then
+            # The module is using the 64-bit ARM ABI.
+            # Move the 64-bit ARM library to the `lib64` directory in the `riru` directory.
+            mv -f "$RIRU_LIB_PATH/arm64-v8a" "$MODPATH/riru/lib64"
+        fi
+    else
+        # The module is using the 32-bit x86 ABI.
+        # Move the 32-bit x86 library to the `lib` directory in the `riru` directory.
+        mv -f "$RIRU_LIB_PATH/x86" "$MODPATH/riru/lib"
+        # Check if the module is using the 64-bit x86 ABI.
+        if [ "$IS64BIT" = true ]; then
+            # The module is using the 64-bit x86 ABI.
+            # Move the 64-bit x86 library to the `lib64` directory in the `riru` directory.
+            mv -f "$RIRU_LIB_PATH/x86_64" "$MODPATH/riru/lib64"
+        fi
+    fi
 fi
 
 # Exit for Unsupported Android Versions (Required Nougat+)
@@ -349,7 +414,7 @@ set_version
 # Fixes for Pixel 4 devices, it gets hang when Android System intelligence gets spoofed to another pixel
 if [ "$(getprop ro.product.vendor.name)" == "coral" ] || [ "$(getprop ro.product.vendor.name)" == "flame" ]; then
     echo "- Pixel 4/XL Detected !" >>$logfile
-    for i in $MODPATH/zygisk/*; do
+    for i in $MODPATH/zygisk/* $MODPATH/riru/*/*; do
         sed -i -e "s/com.google.android.xx/com.google.android.as/g" $i
     done
 fi
@@ -534,13 +599,13 @@ if [ $TENSOR -eq 1 ]; then
         rm -rf $MODPATH/zygisk $MODPATH/zygisk_1
     fi
 
-# If Installation mode is Zygisk, Drop PIXEL_EXPERIENCES to support unlimited storage
-elif [ $MODULE_TYPE -eq 2 ]; then
+# If Installation mode is Zygisk or Riru, Drop PIXEL_EXPERIENCES to support unlimited storage
+elif [ $MODULE_TYPE -eq 2 ] || [ $MODULE_TYPE -eq 3 ]; then
     echo "- Enabling Unlimited storage" >>$logfile
     drop_sys
 else
-    # As there is No option for Particular apps spooifng with zygsik, go with legacy one
-    print "  Do you want to Spoof your device to Pixel 5 /Pixel 9 Pro XL?"
+    # As there is No option for Particular apps spooifng with zygsik or Riru, go with legacy one
+    print "  Do you want to Spoof your device to Pixel 5/Pixel 6 Pro?"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
     no_vk "ENABLE_PIXEL_SPOOFING"
@@ -553,7 +618,7 @@ else
         print ""
         print "  Select Spoof to Pixel 5 (recommended) or Pixel 9 Pro XL?"
         print "   Vol Up += Pixel 5"
-        print "   Vol Down += Pixel 9 Pro XL (Google Photos Unlimited backup may not work properly)"
+        print "   Vol Down += Pixel 9 Pro XL(Google Photos Unlimited backup may not work properly)"
         no_vk "TARGET_USES_PIXEL5_SPOOF"
         if $VKSEL; then
             sed -i -e "s/Pixel 9 Pro XL/Pixel 5/g" $MODPATH/spoof.prop
@@ -752,264 +817,206 @@ if [ -d /data/data/$DIALER ]; then
     if $VKSEL; then
         echo " - Installing Google Dialer features" >>$logfile
 
-        print "  Which features do you want to enable?"
-        print "   Vol Up += Select/Unselect"
-        print "   Vol Down += Next"
+        # Enable it to let service.sh to know callscreening enabled
+        sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
+        print "- Enabling Call Screening & Hold for me & Direct My Call"
+        print " "
+        print "- Enabling Call Recording (Working is device dependent)"
 
-        DIALER_FEATURES=""
+        ui_print ""
+        ui_print " Please Select Desired Call Screening language"
+        ui_print "    Vol Up += Switch Language (change cursor position)"
+        ui_print "    Vol Down +=  Select Language"
+        ui_print ""
 
-        print "  [ ] Enable Call Screening"
-        if $VKSEL; then
-            DIALER_FEATURES="$DIALER_FEATURES call_screening"
-            print "  [X] Enable Call Screening"
+        # Give options for Call Screening language
+        sleep 0.5
+        lang=""
+        ui_print "--------------------------------"
+        ui_print " [1] English      [en]"
+        ui_print " [2] Hindi        [hi-in] [BETA]"
+        ui_print " [3] Japanese     [ja-JP]"
+        ui_print " [4] French       [fr-FR]"
+        ui_print " [5] German       [de-DE]"
+        ui_print " [6] Italian      [it-IT]"
+        ui_print " [7] Spanish      [es-ES]"
+        ui_print "--------------------------------"
+
+        ui_print ""
+        ui_print "- Select your Desired langauge"
+        ui_print ""
+
+        SM=1
+        if [ $VOL_KEYS -eq 1 ]; then
+            SM=1
+            TURN_OFF_SEL_VOL_PROMPT=1
+            while true; do
+                ui_print " Current cursor:  $SM"
+                "$VKSEL" && SM="$((SM + 1))" || break
+                [[ "$SM" -gt "7" ]] && SM=1
+            done
+        else
+            SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
+            #print "$SM"
         fi
 
-        print "  [ ] Enable Call Recording"
-        if $VKSEL; then
-            DIALER_FEATURES="$DIALER_FEATURES call_recording"
-            print "  [X] Enable Call Recording"
+        # Detect country code from gsm.sim.operator.iso-country
+        ISENG=0
+        ISEN_US=0
+        carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
+        if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
+            # if it is in format in,in then fetch first one
+            carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
+            if [ -z $carr_coun_small ]; then
+                # if it is in format ,in then fetch first second one
+                carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
+            fi
         fi
-
-        print "  [ ] Enable Hold for Me"
-        if $VKSEL; then
-            DIALER_FEATURES="$DIALER_FEATURES hold_for_me"
-            print "  [X] Enable Hold for Me"
+        # if empty then then set to 'in'
+        if [ -z $carr_coun_small ]; then
+            echo " - Unable to detect Country using 'in' as default" >>$logfile
+            carr_coun_small="in"
         fi
+        echo " - Country code detected '$carr_coun_small'" >>$logfile
 
-        print "  [ ] Enable Direct My Call"
-        if $VKSEL; then
-            DIALER_FEATURES="$DIALER_FEATURES direct_my_call"
-            print "  [X] Enable Direct My Call"
-        fi
+        # Patch the selected file in dialer
+        sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
+        P1="$(echo $carr_coun_small | xxd -p)"
+        P1=${P1/0a/}
+        P2=""
+        case "$SM" in
+        "1")
+            P2="en"
+            ISENG=1
+            ;;
+        "2")
+            P2="hi-IN"
+            lang="hi"
+            ;;
+        "3")
+            P2="ja-JP"
+            lang="ja"
+            ;;
+        "4")
+            P2="fr-FR"
+            lang="fr"
+            ;;
+        "5")
+            P2="de-DE"
+            lang="de"
+            ;;
+        "6")
+            P2="it-IT"
+            lang="it"
+            ;;
+        "7")
+            P2="es-ES"
+            lang="es"
+            ;;
+        esac
 
-        if [ ! -z "$DIALER_FEATURES" ]; then
-            if [[ "$DIALER_FEATURES" == *"call_screening"* ]]; then
-                sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
-                print "- Enabling Call Screening & Hold for me & Direct My Call"
-                print " "
+        ui_print ""
+        ui_print " - Selected: $P2"
+        ui_print ""
 
-                ui_print ""
-                ui_print " Please Select Desired Call Screening language"
-                ui_print "    Vol Up += Switch Language (change cursor position)"
-                ui_print "    Vol Down +=  Select Language"
-                ui_print ""
+        # Options for english language
+        if [ $ISENG -eq 1 ]; then
+            ui_print ""
+            ui_print " Please Select English Accent"
+            ui_print "    Vol Up += Switch Language (change cursor position)"
+            ui_print "    Vol Down +=  Select Language"
+            ui_print ""
 
-                # Give options for Call Screening language
-                sleep 0.5
-                lang=""
-                ui_print "--------------------------------"
-                ui_print " [1] English      [en]"
-                ui_print " [2] Hindi        [hi-in] [BETA]"
-                ui_print " [3] Japanese     [ja-JP]"
-                ui_print " [4] French       [fr-FR]"
-                ui_print " [5] German       [de-DE]"
-                ui_print " [6] Italian      [it-IT]"
-                ui_print " [7] Spanish      [es-ES]"
-                ui_print " [8] Portuguese   [pt-BR] [BETA]"
-                ui_print "--------------------------------"
+            sleep 0.5
 
-                ui_print ""
-                ui_print "- Select your Desired langauge"
-                ui_print ""
+            ui_print "--------------------------------"
+            ui_print " [1] American     [en-US] "
+            ui_print " [2] Indian       [en-IN] [BETA]"
+            ui_print " [3] Australian   [en-AU]"
+            ui_print " [4] Britain      [en-GB]"
+            ui_print "--------------------------------"
 
+            ui_print ""
+            ui_print "- Select your Desired langauge:"
+
+            if [ $VOL_KEYS -eq 1 ]; then
                 SM=1
-                if [ $VOL_KEYS -eq 1 ]; then
-                    SM=1
-                    TURN_OFF_SEL_VOL_PROMPT=1
-                    while true; do
-                        ui_print " Current cursor:  $SM"
-                        "$VKSEL" && SM="$((SM + 1))" || break
-                        [[ "$SM" -gt "8" ]] && SM=1
-                    done
-                else
-                    SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
-                    #print "$SM"
-                fi
-
-                # Detect country code from gsm.sim.operator.iso-country
-                ISENG=0
-                ISEN_US=0
-                carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
-                if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
-                    # if it is in format in,in then fetch first one
-                    carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
-                    if [ -z $carr_coun_small ]; then
-                        # if it is in format ,in then fetch first second one
-                        carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
-                    fi
-                fi
-                # if empty then then set to 'in'
-                if [ -z $carr_coun_small ]; then
-                    echo " - Unable to detect Country using 'in' as default" >>$logfile
-                    carr_coun_small="in"
-                fi
-                echo " - Country code detected '$carr_coun_small'" >>$logfile
-
-                # Patch the selected file in dialer
-                sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
-                P1="$(echo $carr_coun_small | xxd -p)"
-                P1=${P1/0a/}
-                P2=""
-                case "$SM" in
-                "1")
-                    P2="en"
-                    ISENG=1
-                    ;;
-                "2")
-                    P2="hi-IN"
-                    lang="hi"
-                    ;;
-                "3")
-                    P2="ja-JP"
-                    lang="ja"
-                    ;;
-                "4")
-                    P2="fr-FR"
-                    lang="fr"
-                    ;;
-                "5")
-                    P2="de-DE"
-                    lang="de"
-                    ;;
-                "6")
-                    P2="it-IT"
-                    lang="it"
-                    ;;
-                "7")
-                    P2="es-ES"
-                    lang="es"
-                    ;;
-                "8")
-                    P2="pt-BR"
-                    lang="pt"
-                    ;;
-                esac
-
-                ui_print ""
-                ui_print " - Selected: $P2"
-                ui_print ""
-
-                # Options for english language
-                if [ $ISENG -eq 1 ]; then
-                    ui_print ""
-                    ui_print " Please Select English Accent"
-                    ui_print "    Vol Up += Switch Language (change cursor position)"
-                    ui_print "    Vol Down +=  Select Language"
-                    ui_print ""
-
-                    sleep 0.5
-
-                    ui_print "--------------------------------"
-                    ui_print " [1] American     [en-US] "
-                    ui_print " [2] Indian       [en-IN] [BETA]"
-                    ui_print " [3] Australian   [en-AU]"
-                    ui_print " [4] Britain      [en-GB]"
-                    ui_print "--------------------------------"
-
-                    ui_print ""
-                    ui_print "- Select your Desired langauge:"
-
-                    if [ $VOL_KEYS -eq 1 ]; then
-                        SM=1
-                        TURN_OFF_SEL_VOL_PROMPT=1
-                        while true; do
-                            ui_print " Current cursor:  $SM"
-                            "$VKSEL" && SM="$((SM + 1))" || break
-                            [[ "$SM" -gt "4" ]] && SM=1
-                        done
-                    else
-                        SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
-                        #print "$SM"
-                    fi
-
-                    case "$SM" in
-                    "1")
-                        P2="en-US"
-                        ISEN_US=1
-                        ;;
-                    "2")
-                        P2="en-IN"
-                        lang="in"
-                        ;;
-                    "3")
-                        P2="en-AU"
-                        lang="au"
-                        ;;
-                    "4")
-                        P2="en-GB"
-                        lang="gb"
-                        ;;
-                    esac
-                    ui_print " - Selected: $P2 OPTION"
-                    ui_print ""
-                fi
-
-                # Patching starts
-                TURN_OFF_SEL_VOL_PROMPT=0
-                TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
-                echo " - Selected $P2 callscreening language" >>$logfile
-                sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
-                P2="$(echo $P2 | xxd -p)"
-                P2=${P2/0a/}
-                CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
-                #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer'"
-                if [ $ISEN_US -eq 1 ]; then
-                    print "  Do you want to enable automatic Call Screening"
-                    print "   Vol Up += Yes"
-                    print "   Vol Down += No"
-                    no_vk "AUTO_CALL_SCREENING"
-                    if $VKSEL; then
-                        db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
-                        db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
-                        db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
-                        db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
-                        #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
-                        #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
-                        db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
-                        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
-                        db_edit com.google.android.dialer boolVal 1 $CS_LANG
-                    else
-                        $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
-                    fi
-                    db_edit com.google.android.dialer boolVal 1 $CS_REV
-                else
-                    db_edit com.google.android.dialer boolVal 1 $CS_LANG
-                fi
-                db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
-                db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
-                db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
-                db_edit com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
+                TURN_OFF_SEL_VOL_PROMPT=1
+                while true; do
+                    ui_print " Current cursor:  $SM"
+                    "$VKSEL" && SM="$((SM + 1))" || break
+                    [[ "$SM" -gt "4" ]] && SM=1
+                done
+            else
+                SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
+                #print "$SM"
             fi
 
-            if [[ "$DIALER_FEATURES" == *"call_recording"* ]]; then
-                print "- Enabling Call Recording (Working is device dependent)"
-                print ""
-                print "  Do you want to enable call recording for all countries?"
-                print "  Note: This may not work on all devices."
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
-                no_vk "ENABLE_CALL_RECORDING_FOR_ALL_COUNTRIES"
-                if $VKSEL; then
-                    db_edit com.google.android.dialer boolVal 1 "G__force_within_call_recording_geofence_value"
-                fi
-                db_edit com.google.android.dialer boolVal 1 $DIALERFLAGS
-            fi
-
-            if [[ "$DIALER_FEATURES" == *"hold_for_me"* ]]; then
-                db_edit com.google.android.dialer boolVal 1 "G__enable_atlas"
-            fi
-
-            if [[ "$DIALER_FEATURES" == *"direct_my_call"* ]]; then
-                db_edit com.google.android.dialer boolVal 1 "G__enable_xatu"
-            fi
+            case "$SM" in
+            "1")
+                P2="en-US"
+                ISEN_US=1
+                ;;
+            "2")
+                P2="en-IN"
+                lang="in"
+                ;;
+            "3")
+                P2="en-AU"
+                lang="au"
+                ;;
+            "4")
+                P2="en-GB"
+                lang="gb"
+                ;;
+            esac
+            ui_print " - Selected: $P2 OPTION"
+            ui_print ""
         fi
 
-        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
-        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0, '', '', '', '', 0, '', '')"
-        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='Xatu__lp_preferences'"
-        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'Xatu__lp_preferences', 0, x'$XATUBIN', 0, '', '', '', '', 0, '', '')"
-        # $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.dialer' AND name='atlas_enabled_business_number_country_codes'"
-        # $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.dialer', '', 'atlas_enabled_business_number_country_codes', 0, x'$ATSBIN', 0, '', '', '', '', 0, '', '')"
+        # Patching starts
+        TURN_OFF_SEL_VOL_PROMPT=0
+        TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
+        echo " - Selected $P2 callscreening language" >>$logfile
+        sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
+        P2="$(echo $P2 | xxd -p)"
+        P2=${P2/0a/}
+        CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
+        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer'"
+        if [ $ISEN_US -eq 1 ]; then
+            print "  Do you want to enable automatic Call Screening"
+            print "   Vol Up += Yes"
+            print "   Vol Down += No"
+            no_vk "AUTO_CALL_SCREENING"
+            if $VKSEL; then
+                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
+                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
+                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
+                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
+                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
+                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
+                db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
+                db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
+                db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
+            else
+                $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
+            fi
+            db_edit_decoded com.google.android.dialer boolVal 1 $CS_REV
+        else
+            db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
+        fi
+        db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
+        db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
+        db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
+        db_edit_decoded com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
+        db_edit_decoded com.google.android.dialer boolVal 1 $DIALER_FLAGS
+
+        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
+        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0)"
+        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='Xatu__lp_preferences'"
+        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'Xatu__lp_preferences', 0, x'$XATUBIN', 0)"
+        # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='atlas_enabled_business_number_country_codes'"
+        # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'atlas_enabled_business_number_country_codes', 0, x'$ATSBIN', 0)"
         # db_edit_bin com.google.android.dialer G__atlas_mdd_ph_config $ATLASBIN
         # db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45413189 $ATLASBIN
         # db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45402582 $TKBIN
@@ -1181,6 +1188,190 @@ else
     rm -rf $MODPATH/system$product/overlay/PixelifyGD.apk
 fi
 
+# Next Generation assistant installation
+if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
+    print "  Google is installed."
+    print "  Do you want to installed Next generation assistant?"
+    print "   Vol Up += Yes"
+    print "   Vol Down += No"
+    no_vk "ENABLE_NGA"
+    if $VKSEL; then
+        echo " - Installing Next generation assistant" >>$logfile
+        # Check backup is present ot not, older Pixelify uses NgaResources.apk and new ones nga.tar.xz
+        if [ -f /sdcard/Pixelify/backup/nga.tar.xz ] || [ -f /sdcard/Pixelify/backup/NgaResources.apk ]; then
+
+            # Check backup is upto date
+            if [ "$(cat /sdcard/Pixelify/version/nga.txt)" != "$NGAVERSION" ]; then
+                echo " - New Version Detected for NGA Resources" >>$logfile
+                echo " - Installed version: $(cat /sdcard/Pixelify/version/nga.txt) , New Version: $NGAVERSION " >>$logfile
+                print "  (Network Connection Needed)"
+                print "  New version Detected."
+                print "  Do you Want to update or use Old Backup?"
+                print "  Version: $NGAVERSION"
+                print "  Size: $NGASIZE"
+                print "   Vol Up += Update"
+                print "   Vol Down += Use old backup"
+                no_vk "UPDATE_NGA_RES"
+                if $VKSEL; then
+                    # check internet is avail or not
+                    online
+                    if [ $internet -eq 1 ]; then
+                        echo " - Downloading, Installing and creating backup NGA Resources" >>$logfile
+                        rm -rf /sdcard/Pixelify/backup/NgaResources.apk
+                        rm -rf /sdcard/Pixelify/backup/nga.tar.xz
+                        rm -rf /sdcard/Pixelify/version/nga.txt
+                        cd $MODPATH/files
+                        # Download version according to variables
+                        # OSR with Offline Speech Recogonition 50xx
+                        # DOES_NOT_REQ_SPEECH_PACK to forcelly disable with speechpack one only NGA Resources
+                        if [ $ENABLE_OSR -eq 1 ] || [ $DOES_NOT_REQ_SPEECH_PACK -eq 1 ]; then
+                            if [ $API -eq 30 ] || [ $API -eq 33 ]; then
+                                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new-$API.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
+                            else
+                                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new-31.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
+                            fi
+                        else
+                            $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga.tar.xz -o nga.tar.xz &>/proc/self/fd/$OUTFD
+                        fi
+                        cd /
+                        # Create backup
+                        print ""
+                        print "- Creating Backup"
+                        print ""
+                        cp -Tf $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
+                        echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
+                    else
+                        # No internet dected
+                        print " ! No internet detected"
+                        print ""
+                        print " ! Using Old backup for now."
+                        print ""
+                        echo " ! using old backup for NGA Resources due to no internet" >>$logfile
+                    fi
+                else
+                    echo " - using old backup for NGA Resources" >>$logfile
+                fi
+            fi
+            print "- Installing NgaResources from backups"
+            print ""
+            # Extract nga.tar.xz
+            tar -xf /sdcard/Pixelify/backup/nga.tar.xz -C $MODPATH/system/product
+        else
+            print "  (Network Connection Needed)"
+            print "  Do you want to install and Download NGA Resources"
+            print "  Size: $NGASIZE"
+            print "   Vol Up += Yes"
+            print "   Vol Down += No"
+            no_vk "DOWNLOAD_NGA_RES"
+            if $VKSEL; then
+                online
+                if [ $internet -eq 1 ]; then
+                    echo " - Downloading and Installing NGA Resources" >>$logfile
+                    print " - Downloading NGA Resources"
+                    cd $MODPATH/files
+                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new.tar.xz -o nga.tar.xz -O &>/proc/self/fd/$OUTFD
+                    cd /
+                    tar -xf $MODPATH/files/nga.tar.xz -C $MODPATH/system/product
+                    print ""
+                    print "  Do you want to create backup of NGA Resources"
+                    print "  so that you don't need redownload it every time."
+                    print "   Vol Up += Yes"
+                    print "   Vol Down += No"
+                    no_vk "BACKUP_NGA"
+                    if $VKSEL; then
+                        echo " - Creating backup for NGA Resources" >>$logfile
+                        print "- Creating Backup"
+                        mkdir -p /sdcard/Pixelify/backup
+                        rm -rf /sdcard/Pixelify/backup/NgaResources.apk
+                        rm -rf /sdcard/Pixelify/backup/nga.tar.xz
+                        cp -f $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
+                        mkdir -p /sdcard/Pixelify/version
+                        echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
+                        print ""
+                        print "- NGA Resources installation complete"
+                        print ""
+                    fi
+                else
+                    print " ! No internet detected"
+                    print ""
+                    print "- Skipping NGA Resources."
+                    print ""
+                    echo " - skipping NGA Resources due to no internet" >>$logfile
+                fi
+            else
+                echo " - skipping NGA Resources" >>$logfile
+            fi
+        fi
+
+        # Patching starts
+        db_edit com.google.android.googlequicksearchbox stringVal "Cheetah" "13477"
+        #db_edit com.google.android.googlequicksearchbox boolVal 1  10579 11627 14759 15114 16197 16347 16464 45351462 45352335 45353388 45353425 45354090 45355242 45355425 45357281 45357460 45357462 45357463 45357466 45357467 45357468 45357469 45357470 45357471 45357508 45358425 45368123 45368150 45368483 45374247 45375269 45386105 8674 9449 10596 3174 45357539 45358426 45360742 45372547 45372935 45373820 45374858 45376106 45380073 45380867 45385075 45385287 45386702 7882 8932 9418
+        [ $TENSOR -eq 0 ] && db_edit_bin com.google.android.googlequicksearchbox 5470 $GOOGLEBIN
+        db_edit com.google.android.libraries.search.googleapp.device#com.google.android.googlequicksearchbox boolVal 1 45410632 45410315 45369077
+        db_edit com.google.android.apps.search.assistant.device#com.google.android.googlequicksearchbox extensionVal 45377874 $GSPOOF
+        #sed -i -e 's/com.google.android.feature.PIXEL_2021_EXPERIENCE/com.google.android.feature.PIXEL_2019_EXPERIENCE/g' $VELVET_APK
+        #am force-stop com.google.android.googlequicksearchbox
+        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.g10040oogle.android.googlequicksearchbox' AND name='5470'"
+        #$sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.googlequicksearchbox', '', '5470', 0, x'$GOOGLEBIN', 0)"
+        # Patching ends
+
+        # copy NGA files
+        cp -f $MODPATH/files/nga.xml $MODPATH/system$product/etc/sysconfig/nga.xml
+        cp -f $MODPATH/files/PixelifyGA.apk $MODPATH/system/product/overlay/PixelifyGA.apk
+        # ok_google_hotword
+        if [ $ENABLE_OSR -eq 1 ]; then
+            osr_ins
+        fi
+
+        # Option to make Google app as system app or not forcely
+        # in /sdcard/Pixelify/apps.txt add velet=1
+        if [ -f $FORCE_FILE ]; then
+            is_velvet="$(grep velvet= $FORCE_FILE | cut -d= -f2)"
+            if [ $is_velvet -eq 1 ]; then
+                FORCE_VELVET=1
+            elif [ $is_velvet -eq 0 ]; then
+                FORCE_VELVET=0
+            else
+                FORCE_VELVET=2
+            fi
+        else
+            FORCE_VELVET=2
+        fi
+
+        # Make Google app as system app
+        if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
+            print "- Google is not installed as a system app !!"
+            print "- Making Google a system app"
+            echo " - Making Google a system app" >>$logfile
+            print ""
+            if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
+                cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
+                mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
+            else
+                cp -r /data/adb/modules/Pixelify/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
+            fi
+            rm -rf $MODPATH/system/product/priv-app/Velvet/oat
+            #mv $MODPATH/files/privapp-permissions-com.google.android.googlequicksearchbox.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.googlequicksearchbox.xml
+
+        # If Pixelify made system app then remake it
+        elif [ -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ]; then
+            if [ $FORCE_VELVET -eq 2 ]; then
+                print "- Google is not installed as a system app !!"
+                print "- Making Google a system app"
+                echo " - Making Google a system app" >>$logfile
+                print ""
+                if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
+                    cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
+                    mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
+                else
+                    cp -r data/adb/modules/Pixelify/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
+                fi
+                rm -rf $MODPATH/system/product/priv-app/Velvet/oat
+            fi
+            #mv $MODPATH/files/privapp-permissions-com.google.android.googlequicksearchbox.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.googlequicksearchbox.xml
+        fi
+    fi
+fi
 
 # Pixel Wallpapers
 if [ $API -ge 28 ]; then
@@ -1394,22 +1585,142 @@ else
     rm -rf $MODPATH/system$product/media/boot*.zip
 fi
 
+# Pixel Launcher
+if [ $API -ge 29 ]; then
+    PL=$(find /system -name *Launcher* | grep -v overlay | grep -v Nexus | grep -v bin | grep -v "\.")
+    TR=$(find /system -name *Trebuchet* | grep -v overlay | grep -v "\.")
+    QS=$(find /system -name *QuickStep* | grep -v overlay | grep -v "\.")
+    LW=$(find /system -name *MiuiHome* | grep -v overlay | grep -v "\.")
+    TW=$(find /system -name *TouchWizHome* | grep -v overlay | grep -v "\.")
+    KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
+
+    if [ -f /sdcard/Pixelify/backup/PLauncher.apk ]; then
+        echo " - Backup Detected for Pixel Launcher" >>$logfile
+        print "  Do you want to install Pixel Launcher?"
+        print "  (Backup detected)"
+        print "   Vol Up += Yes"
+        print "   Vol Down += No"
+        no_vk "ENABLE_PIXEL_LAUNCHER"
+        if $VKSEL; then
+            REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
+            cp -f $MODPATH/files/PixelifyPixelLauncherCustomOverlay.apk $MODPATH/system/product/overlay/PixelifyPixelLauncherCustomOverlay.apk
+            if [ "$(cat /sdcard/Pixelify/version/pl-$API.txt)" != "$PLVERSION" ]; then
+                echo " - New Version Backup Detected for Pixel Launcher" >>$logfile
+                echo " - Old version:$(cat /sdcard/Pixelify/version/pl-$API.txt), New Version:  $PLVERSION " >>$logfile
+                print "  (Network Connection Needed)"
+                print "  New version Detected "
+                print "  Do you Want to update or use Old Backup?"
+                print "  Version: $PLVERSION"
+                print "  Size: $PLSIZE"
+                print "   Vol Up += Update"
+                print "   Vol Down += Use old backup"
+                no_vk "UPDATE_PIXEL_LAUNCHER"
+                if $VKSEL; then
+                	pm install 
+                        cd /
+                        print "- Creating Backup"
+                        print ""
+                        cp -f $MODPATH/files/PLauncher.apk /sdcard/Pixelify/backup/PLauncher.apk
+                        echo " - Creating Backup for Pixel Launcher" >>$logfile
+                        echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
+                    else
+                        print " ! No internet detected"
+                        print ""
+                        print " ! Using Old backup for now."
+                        print ""
+                        echo " ! Using old Backup for Pixel Launcher due to no internet" >>$logfile
+                    fi
+                fi
+            fi
+            print "- Installing Pixel Launcher"
+            print ""
+            pl_fix
+
+            if [ $API -ge 31 ]; then
+                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product
+            else
+                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product/priv-app
+            fi
+
+            if [ $WALL_DID -eq 0 ]; then
+                install_wallpaper_with_backup
+            fi
+        else
+            echo " - Skipping Pixel Launcher" >>$logfile
+            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+        fi
+    else
+        print "  Do you want to install Pixel Launcher?"
+        print "   Vol Up += Yes"
+        print "   Vol Down += No"
+        no_vk "ENABLE_PIXEL_LAUNCHER"
+        if $VKSEL; then
+            if [ $PLAUNCHER = 1 ]; then
+	if [ -f $MODPATH/files/PLauncher.apk ]; then
+		pm install $MODPATH/files/PLauncher.apk
+	else
+		echo "Pixel Launcher not found, skipping" >>$logfile
+		print "Pixel Launcher not found, skipping"
+	fi
+fi
+                REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
+                print ""
+                print "  Do you want to create backup of Pixel Launcher?"
+                print "  so that you don't need redownload it every time."
+                print "   Vol Up += Yes"
+                print "   Vol Down += No"
+                no_vk "BACKUP_PIXEL_LAUNCHER"
+                if $VKSEL; then
+                    print "- Creating Backup"
+                    mkdir -p /sdcard/Pixelify/backup
+                    rm -rf /sdcard/Pixelify/backup/PLauncher.apk
+                    cp -f $MODPATH/files/PLauncher.apk /sdcard/Pixelify/backup/PLauncher.apk
+                    print ""
+                    mkdir -p /sdcard/Pixelify/version
+                    echo " - Creating Backup for Pixel Launcher" >>$logfile
+                    echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
+                    print " - Done"
+                    print ""
+                fi
+
+                if [ $WALL_DID -eq 0 ]; then
+                    install_wallpaper_with_backup
+                fi
+            else
+                print " ! No internet detected"
+                print ""
+                print " ! Skipping Pixel launcher"
+                print ""
+                echo " ! Skipping Pixel Launcher due to no internet" >>$logfile
+                rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+                rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+            fi
+        else
+            echo " - Skipping Pixel Launcher" >>$logfile
+            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+        fi
+    fi
+else
+    echo " - Skipping Pixel Launcher" >>$logfile
+    rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+    rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+fi
 
 #Adding Google san font.
-#print ""
+print ""
 #print "  (NOTE: Playstore or Google or GMS crashes then dont enable it)"
- #print "  Do you want add Google San Fonts?"
-# print "    Vol Up += Yes"
-# print "    Vol Down += No"
-# no_vk "GSAN_FONT"
-#if $VKSEL; then
-    #rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
-    #rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
-    ###THIS IS TEMPORARY, ONLY FOR TESTING, BC THIS IS THE CAUSE OF BOOTLOOPS##
-#else
-    #rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
-    #rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
-#fi
+print "  Do you want add Google San Fonts?"
+print "    Vol Up += Yes"
+print "    Vol Down += No"
+no_vk "GSAN_FONT"
+if $VKSEL; then
+    patch_font
+else
+    rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
+    rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
+fi
 # rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
 # rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
 # rm -rf $MODPATH/system/fonts
@@ -1423,7 +1734,7 @@ if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     no_vk "ENABLE_GSI"
     if $VKSEL; then
         SI=$(find /system -name *SettingsIntelligence* | grep -v overlay | grep -v "\.")
-        db_edit com.google.android.settings.intelligence boolVal 1 $GSS_FLAGS
+        db_edit_decoded com.google.android.settings.intelligence boolVal 1 $GSS_FLAGS
         tar -xf $MODPATH/files/sig.tar.xz -C $MODPATH/system$product/priv-app
         # cp -f $MODPATH/files/PixelifySettingsIntelligenceGoogleOverlay.apk $MODPATH/system/product/overlay/PixelifySettingsIntelligenceGoogleOverlay.apk
         # REMOVE="$REMOVE $SI"
@@ -1431,6 +1742,8 @@ if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
         echo " - Skipping Google settings intelligence" >>$logfile
     fi
 fi
+
+# Flipendo is temporarily disabled as it was causing issues with some devices (fastboot crash)
 
 # Rboard app fixes
 if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
@@ -1446,17 +1759,6 @@ if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
         DISABLE_GBOARD_GMS=1
     fi
 fi
-#Pixel Launcher
-if [ $API -ge 33 ]; then
-print ""
-    print "  Do you want install Pixel launcher? (thx to Enzo Ariel)"
-    print "  Note: It may crash on some pixel function "
-    print "    Vol Up += Yes"
-    print "    Vol Down += No"
-    if $VKSEL; then
-        PLAUNCHER=1
-    fi
-fi
 
 # Google keyboard
 if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; then
@@ -1469,10 +1771,10 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
     echo " - Patching Google Keyboard's bools" >>$logfile
     patch_gboard
 
-    #$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
+    #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
     if [ $DISABLE_GBOARD_GMS -eq 0 ]; then
         db_edit com.google.android.gms.learning#com.google.android.inputmethod.latin boolVal 1 "PredictorFeature__is_predict_enabled"
-        db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin boolVal 1 $GBOARD_FLAGS
+        db_edit_decoded com.google.android.inputmethod.latin#com.google.android.inputmethod.latin boolVal 1 $GBOARD_FLAGS
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin boolVal $TENSOR "enable_edge_tpu" "lm_personalization_enabled"
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin intVal 2000 "inline_suggestion_dismiss_tooltip_delay_time_millis"
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin intVal 4 "inline_suggestion_experiment_version"
@@ -1540,15 +1842,15 @@ ui_print " - Patching GMS flags to enable features"
 ui_print " - This may take a minute or two"
 
 # Android System Intelligence
-$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.device_personalization_services' AND name LIKE 'Echo__search_%'"
-db_edit com.google.android.platform.device_personalization_services boolVal 1 $ASI_FLAGS
+$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.device_personalization_services' AND name LIKE 'Echo__search_%'"
+db_edit_decoded com.google.android.platform.device_personalization_services boolVal 1 $ASI_FLAGS
 db_edit com.google.android.platform.launcher boolVal 1 "enable_quick_launch_v2" "ENABLE_QUICK_LAUNCH_V2" "GBOARD_UPDATE_ENTER_KEY" "ENABLE_SMARTSPACE_ENHANCED"
 #db_edit com.google.android.platform.device_personalization_services boolVal $TENSOR "Translate__enable_opmv4_service" "VisualCortex__enable_control_system"
 if [ $TENSOR -eq 0 ]; then
     db_edit com.google.android.platform.device_personalization_services extensionVal SpeechPack__downloadable_language_packs_raw $ASIBIN
 
-# $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.device_personalization_services' AND name='SpeechPack__downloadable_language_packs_raw'"
-# $sqlite $gms "INSERT INTO Flags(packageName, user, name, flagType, extensionVal, committed, syncTo, syncStatus, syncId, syncToken, syncTime, syncSource, syncMetadata) VALUES('com.google.android.platform.device_personalization_services', '', 'SpeechPack__downloadable_language_packs_raw', 0, x'$ASIBIN', 0, '', '', '', '', 0, '', '')"
+# $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.device_personalization_services' AND name='SpeechPack__downloadable_language_packs_raw'"
+# $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.platform.device_personalization_services', '', 'SpeechPack__downloadable_language_packs_raw', 0, x'$ASIBIN', 0)"
 fi
 #db_edit_bin com.google.android.platform.device_personalization_services WallpaperEffects__cinematic_models_mdd_manifest_config $WLPEFFECTCONFIG
 db_edit com.google.android.platform.device_personalization_services extensionVal WallpaperEffects__cinematic_models_mdd_manifest_config $WLPEFFECTCONFIG
@@ -1620,7 +1922,7 @@ db_edit com.google.android.apps.photos extensionVal "3015" "$GPHOTOS"
 db_edit com.google.android.apps.photos extensionVal "45378073" "$ERASER"
 
 # Digital Wellbeing
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing'"
 db_edit com.google.android.apps.wellbeing.device#com.google.android.apps.wellbeing boolVal 1 "ScreenTimeWidget__enable_pin_screen_time_widget_intent" "ScreenTimeWidget__enable_screen_time_widget" "HatsSurveys__enable_testing_mode" "WindDown__enable_wallpaper_dimming" "WalkingDetection__enable_outdoor_detection_v2" "Clockshine__enable_sleep_detection" "Clockshine__show_sleep_insights_screen" "Clockshine__show_manage_data_screen" "WebsiteUsage__display_website_usage"
 
 # Google messages
@@ -1633,41 +1935,41 @@ db_edit com.google.android.contacts#com.google.android.contacts boolVal 1 "45402
 db_edit com.google.android.deskclock#com.google.android.deskclock boolVal 1 "45408428" "45410158"
 
 # Google translate
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.translate'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.translate'"
 db_edit com.google.android.apps.translate boolVal 1 "Widgets__enable_quick_actions_widget" "Widgets__enable_saved_history_widget"
 
 # Google settings Services
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.settings.intelligence'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.settings.intelligence'"
 db_edit com.google.android.settings.intelligence boolVal 1 "RoutinesPrototype__is_activities_enabled" "RoutinesPrototype__is_module_enabled" "RoutinesPrototype__is_manual_location_rule_adding_enabled" "RoutinesPrototype__is_routine_inference_enabled" "BatteryWidget__is_widget_enabled" "BatteryWidget__is_enabled"
 
 # Fix Precise Location
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.privacy'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.privacy'"
 db_edit com.google.android.platform.privacy boolVal 1 "location_accuracy_enabled" "permissions_hub_enabled" "privacy_dashboard_7_day_toggle" "safety_protection_enabled"
 
 # Live Wallpapers
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.pixel.livewallpaper'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.pixel.livewallpaper'"
 db_edit com.google.pixel.livewallpaper stringVal "" DownloadableWallpaper__blocking_module_list
 
 #turbo
-#db_edit com.google.android.apps.turbo boolVal 1 $TURBO_FLAGS
+#db_edit_decoded com.google.android.apps.turbo boolVal 1 $TURBO_FLAGS
 
 # Google Recorder
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.recorder#com.google.android.apps.recorder'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.recorder#com.google.android.apps.recorder'"
 
 # Calendar New widget Theme
 db_edit com.google.android.calendar boolVal 1 "Gm3Widget_Enabled"
 
 # Google cast
-db_edit com.google.android.gms.cast boolVal 1 $CAST_FLAGS
+db_edit_decoded com.google.android.gms.cast boolVal 1 $CAST_FLAGS
 
 # Qr Code
-db_edit com.google.android.gms.vision boolVal 1 $QR_SCANNER_FLAGS
+db_edit_decoded com.google.android.gms.vision boolVal 1 $QR_SCANNER_FLAGS
 
 # Fitness
-db_edit com.google.android.gms.fitness boolVal 1 $FITNESS_FLAGS
+db_edit_decoded com.google.android.gms.fitness boolVal 1 $FITNESS_FLAGS
 
 # Google Keep
-db_edit com.google.android.keep#com.google.android.keep boolVal 1 45372155 45357152
+db_edit_decoded com.google.android.keep#com.google.android.keep boolVal 1 45372155 45357152
 
 # Google Play Store
 db_edit com.google.android.finsky.regular boolVal 1 RetailMode__is_force_enabled
@@ -1683,7 +1985,7 @@ db_edit com.google.android.gms.phenotype boolVal 1 PhenotypeFeature__allow_gmsco
 db_edit com.google.android.gms.multideice#com.google.android.gms boolVal 1 MultideviceSettingsConfig__enable_link_your_devices
 
 # System
-#$sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.platform.systemui'"
+#$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.systemui'"
 db_edit com.google.android.platform.systemui boolVal 1 "clipboard_overlay_show_actions"
 
 #Google TTS
@@ -1704,17 +2006,6 @@ done
 if [ $API -ge 32 ]; then
     rm -rf $MODPATH/system/product/overlay/PixelifyPixel12.apk
 fi
-#Install Pixel Launcher
-if [ $PLAUNCHER = 1 ]; then
-	if [ -f $MODPATH/files/PLauncher.apk ]; then
-		pm install $MODPATH/files/PLauncher.apk
-	else
-		echo "Pixel Launcher not found, skipping" >>$logfile
-		print "Pixel Launcher not found, skipping"
-	fi
-fi
-
-
 
 if [ $API -ge 31 ]; then
     rm -rf $MODPATH/system/product/overlay/PixelifyPixel.apk
