@@ -42,7 +42,6 @@ else
             ui_print ""
             ui_print "- Installation Type: Zygisk"
         fi
-    else
         
         # Check if Magisk is at least version 24000.
         if [ "$MAGISK_VER_CODE" -ge 24000 ]; then
@@ -60,7 +59,6 @@ else
             MODULE_TYPE=1
             ui_print "- Installation Type: normal installation"
         fi
-    fi
 fi
 
 # Update Library according to installation type
@@ -500,7 +498,7 @@ FIRST_ONLINE_TIME=1
 echo "$var_menu" >>$logfile
 
 # Internal Spoofing
-if [ ! -z $exact_prop ] && [ $API -ge 31 ] && [ $BETA_BUILD -eq 1 ]; then
+if [ ! -z $exact_prop ] && [ $API -ge 31 ]; then
     print "  Disclaimer: This Feature is in BETA"
     print "  This features is only intended to Quick Phrase."
     #print "  Disabling Internal Spoofing can break OTA Update (rom dependent)"
