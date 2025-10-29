@@ -175,4 +175,5 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ### Version 4.0
 -INIT PIxelify Next
 ### Version 4.1
--Fix bugs, added pixel laucnher back
+-Fix bugs
+
