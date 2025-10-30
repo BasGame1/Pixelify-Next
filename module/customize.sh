@@ -1592,7 +1592,7 @@ else
 fi
 
 # Pixel Launcher
-if [ $API -ge 29 ]; then
+if [ $API -ge 36 ]; then
     PL=$(find /system -name *Launcher* | grep -v overlay | grep -v Nexus | grep -v bin | grep -v "\.")
     TR=$(find /system -name *Trebuchet* | grep -v overlay | grep -v "\.")
     QS=$(find /system -name *QuickStep* | grep -v overlay | grep -v "\.")
@@ -1600,136 +1600,25 @@ if [ $API -ge 29 ]; then
     TW=$(find /system -name *TouchWizHome* | grep -v overlay | grep -v "\.")
     KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
 
-    if [ -f /sdcard/Pixelify/backup/pl-$API.tar.xz ]; then
-        echo " - Backup Detected for Pixel Launcher" >>$logfile
-        print "  Do you want to install Pixel Launcher?"
-        print "  (Backup detected, no internet needed)"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
-        no_vk "ENABLE_PIXEL_LAUNCHER"
-        if $VKSEL; then
             REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-            cp -f $MODPATH/files/PixelifyPixelLauncherCustomOverlay.apk $MODPATH/system/product/overlay/PixelifyPixelLauncherCustomOverlay.apk
-            if [ "$(cat /sdcard/Pixelify/version/pl-$API.txt)" != "$PLVERSION" ]; then
-                echo " - New Version Backup Detected for Pixel Launcher" >>$logfile
-                echo " - Old version:$(cat /sdcard/Pixelify/version/pl-$API.txt), New Version:  $PLVERSION " >>$logfile
-                print "  (Network Connection Needed)"
-                print "  New version Detected "
-                print "  Do you Want to update or use Old Backup?"
-                print "  Version: $PLVERSION"
-                print "  Size: $PLSIZE"
-                print "   Vol Up += Update"
-                print "   Vol Down += Use old backup"
-                no_vk "UPDATE_PIXEL_LAUNCHER"
-                if $VKSEL; then
-                    online
-                    if [ $internet -eq 1 ]; then
-                        echo " - Downloading and Installing New Backup for Pixel Launcher" >>$logfile
-                        rm -rf /sdcard/Pixelify/backup/pl-$API.tar.xz
-                        rm -rf /sdcard/Pixelify/version/pl-$API.txt
-                        cd $MODPATH/files
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/PixelLauncher/$API/$PL_VERSION.tar.xz -O &>/proc/self/fd/$OUTFD
-                        mv $PL_VERSION.tar.xz pl-$API.tar.xz
-                        cd /
-                        print "- Creating Backup"
-                        print ""
-                        cp -f $MODPATH/files/pl-$API.tar.xz /sdcard/Pixelify/backup/pl-$API.tar.xz
-                        echo " - Creating Backup for Pixel Launcher" >>$logfile
-                        echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
-                    else
-                        print " ! No internet detected"
-                        print ""
-                        print " ! Using Old backup for now."
-                        print ""
-                        echo " ! Using old Backup for Pixel Launcher due to no internet" >>$logfile
-                    fi
-                fi
-            fi
-            print "- Installing Pixel Launcher"
-            print ""
-            pl_fix
-
-            if [ $API -ge 31 ]; then
-                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product
-            else
-                tar -xf /sdcard/Pixelify/backup/pl-$API.tar.xz -C $MODPATH/system$product/priv-app
-            fi
-
-            if [ $WALL_DID -eq 0 ]; then
-                install_wallpaper_with_backup
-            fi
-        else
-            echo " - Skipping Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-        fi
-    else
-        print "  (Network Connection Needed)"
-        print "  Do you want to install and Download Pixel Launcher?"
-        print "  Size: $PLSIZE"
+        print "  Do you want to install Pixel Launcher? (Android 16 only)"
+        print "  Thanks to Meowna and Tristan for the apks"
         print "   Vol Up += Yes"
         print "   Vol Down += No"
         no_vk "ENABLE_PIXEL_LAUNCHER"
         if $VKSEL; then
-            online
-            if [ $internet -eq 1 ]; then
-                print "- Downloading Pixel Launcher"
-                echo " - Downloading and Installing Pixel Launcher" >>$logfile
-                print ""
-                cd $MODPATH/files
-                $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/PixelLauncher/$API/$PL_VERSION.tar.xz -O &>/proc/self/fd/$OUTFD
-                mv $PL_VERSION.tar.xz pl-$API.tar.xz
-                cd /
-                print ""
                 print "- Installing Pixel Launcher"
-                if [ $API -ge 31 ]; then
-                    tar -xf $MODPATH/files/pl-$API.tar.xz -C $MODPATH/system$product
-                else
-                    tar -xf $MODPATH/files/pl-$API.tar.xz -C $MODPATH/system$product/priv-app
-                fi
-                pl_fix
+                echo " - Installing Pixel Launcher" >>$logfile
+                print ""
+                . $MODPATH/PLauncher.sh
                 REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-                print ""
-                print "  Do you want to create backup of Pixel Launcher?"
-                print "  so that you don't need redownload it every time."
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
-                no_vk "BACKUP_PIXEL_LAUNCHER"
-                if $VKSEL; then
-                    print "- Creating Backup"
-                    mkdir -p /sdcard/Pixelify/backup
-                    rm -rf /sdcard/Pixelify/backup/pl-$API.tar.xz
-                    cp -f $MODPATH/files/pl-$API.tar.xz /sdcard/Pixelify/backup/pl-$API.tar.xz
-                    print ""
-                    mkdir -p /sdcard/Pixelify/version
-                    echo " - Creating Backup for Pixel Launcher" >>$logfile
-                    echo "$PLVERSION" >>/sdcard/Pixelify/version/pl-$API.txt
-                    print " - Done"
-                    print ""
-                fi
-
-                if [ $WALL_DID -eq 0 ]; then
-                    install_wallpaper_with_backup
-                fi
-            else
-                print " ! No internet detected"
-                print ""
-                print " ! Skipping Pixel launcher"
-                print ""
-                echo " ! Skipping Pixel Launcher due to no internet" >>$logfile
-                rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-                rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
-            fi
         else
             echo " - Skipping Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+            rm -rf $MODPATH/system
         fi
-    fi
 else
-    echo " - Skipping Pixel Launcher" >>$logfile
-    rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-    rm -rf $MODPATH/system/product/overlay/Pixelifyroundshape.apk
+    echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
+    rm -rf $MODPATH/system
 fi
 
 #Adding Google san font.
