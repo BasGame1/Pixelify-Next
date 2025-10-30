@@ -171,8 +171,12 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Enzo Ariel] (https://github.com/enzosanchezariel) for pixel launcher fix 
 - [Saitama](https://github.com/saitamasahil) Fixing Pixel Launcher crashes
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
+- [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
+- [Tristan] (https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files
 - Pixelify Support Group Members for testing beta versions :)
 ### Version 4.0
--INIT PIxelify Next
+-Init PIxelify Next
 ### Version 4.1
--Fix bugs, added pixel laucnher back
+-Fix bugs
+### Version 4.4
+-Add Pixelify Launcher
