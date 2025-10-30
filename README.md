@@ -29,6 +29,11 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
 - On installation, If see error when installing Google Photos, then uninstalling updates of google apps
 
+### Installation instructions for Pixel Launcher
+- Your launcher app will crash, so go to settings
+- Search for deafult apps
+- And select Pixel Launcher as your default home laucnher
+- 
 ### After Installations (For First Time Pixelify Next Installation):-
 1) Playstore
 - Clear Playstore data
@@ -180,3 +185,4 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -Fix bugs
 ### Version 4.4
 -Add Pixelify Launcher
+
