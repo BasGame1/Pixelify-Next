@@ -92,3 +92,27 @@ if [ $PIDS -eq 0 ]; then
         bootlooped
     fi
 fi
+while [ ! -d /data/data ]; do
+  sleep 1
+done
+
+PKG_NAME="com.google.android.dialer"
+DATA_PATH_USER="/data/user/0/$PKG_NAME"
+DATA_PATH_DATA="/data/data/$PKG_NAME"
+DIR_TO_CREATE="$DATA_PATH_USER/files/photos/raw"
+
+mkdir -p "$DIR_TO_CREATE"
+if [ -d "$DATA_PATH_USER" ]; then
+  # Get the App's User ID (UID)
+  APP_UID=$(stat -c %u "$DATA_PATH_USER")
+  
+  if [ "$APP_UID" -gt 10000 ]; then
+    chown -R $APP_UID:$APP_UID "$DATA_PATH_USER"
+    chmod -R 0700 "$DATA_PATH_USER" # 0700 = drwx------
+    
+    if [ -L "$DATA_PATH_DATA" ]; then
+      chown -R $APP_UID:$APP_UID "$DATA_PATH_DATA"
+      chmod -R 0700 "$DATA_PATH_DATA"
+    fi
+  fi
+fi
