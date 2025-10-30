@@ -180,9 +180,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Tristan] (https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files
 - Pixelify Support Group Members for testing beta versions :)
 ### Version 4.0
--Init PIxelify Next
+-INIT PIxelify Next
 ### Version 4.1
 -Fix bugs
 ### Version 4.4
 -Add Pixelify Launcher
-
