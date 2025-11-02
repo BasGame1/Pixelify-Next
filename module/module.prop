@@ -1,7 +1,7 @@
-id=PixelifyNextBeta
+id=PixelifyNext
 name=Pixelify Next Beta
-version=v4.4-beta
-versionCode=20231106
+version=v4.5-beta
+versionCode=20231107
 author=BasGame1
 description=Enables pixel exclusive features
 # 0 -  Disable, 1 - Enable
