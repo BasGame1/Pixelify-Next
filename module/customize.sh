@@ -51,13 +51,13 @@ fi
 # Set Installation type: Normal, Zygsik, Riru
 if [ "$KSU" == true ]; then
     ui_print "- Root App: KSU"
-    if [ -d '/data/adb/modules/zygisksu' ]; then
-        # ZygiskSU is installed.
-        # Set the module type to ZygsikSU
+    if [ -d '/data/adb/modules/rezygisk' ]; then
+        # Rezygisk is installed.
+        # Set the module type to Rezygisk
         MODULE_TYPE=2
-        ui_print "- Installation Type: Zygisk"
+        ui_print "- Installation Type: Rezygisk"
     else
-        # ZygiskSU is not installed.
+        # Rezygisk is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
         ui_print "- Installation Type: normal installation"
@@ -1156,7 +1156,7 @@ if [ -d /data/data/$DIALER ]; then
         # am force-stop $DIALER
 
         # make Google dialer as system app
-        if [ -z $(pm list packages -s $DIALER) ] && [ ! -f /data/adb/modules/Pixelify/system/product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
+        if [ -z $(pm list packages -s $DIALER) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
             print ""
             print "- Google Dialer is not installed as a system app !!"
             print "- Making Google Dialer a system app"
@@ -1166,7 +1166,7 @@ if [ -d /data/data/$DIALER ]; then
             mv $MODPATH/system$product/priv-app/GoogleDialer/base.apk $MODPATH/system$product/priv-app/GoogleDialer/GoogleDialer.apk
             rm -rf $MODPATH/system$product/priv-app/GoogleDialer/oat
         # Remake google dialer as system app if Pixelify made it system app
-        elif [ -f /data/adb/modules/Pixelify/system$product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
+        elif [ -f /data/adb/modules/PixelifyNext/system$product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
             print ""
             print "- Google Dialer is not installed as a system app !!"
             print "- Making Google Dialer a system app"
@@ -1345,7 +1345,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
         fi
 
         # Make Google app as system app
-        if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
+        if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
             print "- Google is not installed as a system app !!"
             print "- Making Google a system app"
             echo " - Making Google a system app" >>$logfile
@@ -1354,13 +1354,13 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                 cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
                 mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
             else
-                cp -r /data/adb/modules/Pixelify/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
+                cp -r /data/adb/modules/PixelifyNext/system$product/priv-app/Velvet/. $MODPATH/system$product/priv-app/Velvet
             fi
             rm -rf $MODPATH/system/product/priv-app/Velvet/oat
             #mv $MODPATH/files/privapp-permissions-com.google.android.googlequicksearchbox.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.googlequicksearchbox.xml
 
         # If Pixelify made system app then remake it
-        elif [ -f /data/adb/modules/Pixelify/system/product/priv-app/Velvet/Velvet.apk ]; then
+        elif [ -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ]; then
             if [ $FORCE_VELVET -eq 2 ]; then
                 print "- Google is not installed as a system app !!"
                 print "- Making Google a system app"
@@ -1379,6 +1379,35 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
     fi
 fi
 
+# Google Journal
+if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
+    print "  Google is installed."
+    print "  Do you want to installed Next generation assistant?"
+    print "   Vol Up += Yes"
+    print "   Vol Down += No"
+    no_vk "INSTALL_JOURNAL"
+    if $VKSEL; then
+        echo " - Installing Google Journal" >>$logfile
+        print "- Installing Google Journal"
+        print ""
+        . $MODPATH/installAPK.sh Journal.apk
+     fi
+fi
+
+# Pixel Studio
+if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
+    print "  Google is installed."
+    print "  Do you want to installed Next generation assistant?"
+    print "   Vol Up += Yes"
+    print "   Vol Down += No"
+    no_vk "INSTALL_STUDIO"
+    if $VKSEL; then
+        echo " - Installing Google Studio" >>$logfile
+        print "- Installing Google Studio"
+        print ""
+        . $MODPATH/installAPK.sh Studio.apkm
+     fi
+fi
 # Pixel Wallpapers
 if [ $API -ge 28 ]; then
     PLW=$(find /system -name *PixelWallpapers2021* | grep -v overlay | grep -v "\.")
@@ -1602,7 +1631,7 @@ if [ $API -ge 36 ]; then
 
             REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
         print "  Do you want to install Pixel Launcher? (Android 16 only)"
-        print "  Thanks to Meowna and Tristan for the apks"
+        print "  Thax to @TempMeow and @Tristan_xxxxx for the apks"
         print "   Vol Up += Yes"
         print "   Vol Down += No"
         no_vk "ENABLE_PIXEL_LAUNCHER"
@@ -1612,6 +1641,15 @@ if [ $API -ge 36 ]; then
                 print ""
                 . $MODPATH/PLauncher.sh
                 REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
+                    # CTS removed bc the apk had 2/65 on virustotal
+                    #print "  Do you want to install Circle 2 search? (Stock rom only)"
+                    #print "  APk shared by"
+                    #print "   Vol Up += Yes"
+                    #print "   Vol Down += No"
+                    #no_vk "ENABLE_CTS"
+                    #if $VKSEL; then
+                    #    pm install $MODPATH/files/CTS.apk
+                    #fi
         else
             echo " - Skipping Pixel Launcher" >>$logfile
             rm -rf $MODPATH/system
@@ -1736,9 +1774,9 @@ fi
 
 # Speech Services by Google
 if [ ! -z $(pm list packages com.google.android.tts) ]; then
-    if [ -z $(pm list packages -s com.google.android.tts) ] && [ ! -f /data/adb/modules/Pixelify/system/product/app/GoogleTTS/GoogleTTS.apk ]; then
+    if [ -z $(pm list packages -s com.google.android.tts) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/app/GoogleTTS/GoogleTTS.apk ]; then
         install_tts
-    elif [ -f /data/adb/modules/Pixelify/system$product/app/GoogleTTS/GoogleTTS.apk ]; then
+    elif [ -f /data/adb/modules/PixelifyNext/system$product/app/GoogleTTS/GoogleTTS.apk ]; then
         install_tts
     fi
 else
