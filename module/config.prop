@@ -154,3 +154,9 @@ OK_GOOGLE_HOTWORD=0
 
 # Enable Google Now playing
 ENABLE_NOW_PLAYING=0
+
+# Pixel Studio
+INSTALL_STUDIO=0
+
+# Pixel Journal
+INSTALL_JORUNAL=0
