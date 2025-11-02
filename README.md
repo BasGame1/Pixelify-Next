@@ -109,7 +109,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 
 ## ⭐ Pixel Features
 (They may not work depending on the device, bc some are server side, but report them if they dont work, u are adviced)
-### Pixel 7 & 8 Features Enables
+### Pixel 7 & 8 Features Enabled
 -   Pixel 6 & Pixel 7 Live Wallpapers*
 -   Magic Eraser
 -   Magic Editor
@@ -120,38 +120,37 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -   Google Quick Phrase*
 -   Google Next Generation Assistant Typing (Next Generation Assistant Required)*
 -   Personalized Speech Recognition
--   Call Caption Typing (12+)
+-   Call Caption Typing (12+)**
 -   Live Captions different language
+
+### Pixel 9 & 10 Features Enabled
+- Pixel Studio**
+- Pixel journal
 
 ### Other Features
 -   Adaptive Charging (Google SystemUI)
 -   Adaptive Connectivity (11+)
 -   Adaptive Sound (11+)*
--   Battery Widget (Working depends on rom)
 -   Call Captions (11+)(Depends on Rom)
 -   Enables Nexus, Pixel, and Android One app support
 -   Google Dialer Call Screening
 -   Google Dialer Hold for me
 -   Google Dialer Call Recording (Device depended for working)
--   Google Dialer Automatic Call Screening
--   Google Digital Wellbeing Heads up
+-   Google Dialer Automatic Call Screening **
 -   Google Duo features
--   Google Fit Heart rate
--   Google Fit Respiratory rate
 -   Live captions (10+)
 -   Next Generation Assistant* (10+)(Optional)
 -   Now Playing Export* (Works only on Pixel Phone)
 -   Pixel Device spoofing (Optional)
+-   Pixel Launcher (Android 16)
 -   Pixel Blue theme accent
 -   Pixel bootanimation (Optional)
 -   Pixel Live Wallpapers (Optional)
--   Screen Attention Service
--   Smart Compose
 -   Unlimited Photos backup (Storage saver)
--   Unlimited Photos backup (original) (needs Zygisk)
+-   Unlimited Photos backup (original) (needs Zygisk and KSU/apach) **
 <br>
 * - Requires Spoofing to Pixel device
-
+** - Crash/ not work on some devices
 ### Call Screening Supported languages other than English US <br>
 - Italian (IT)
 - Japanese (JP)
@@ -165,8 +164,14 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Supporting other persons on issues or telegram (t.me/@basgame1)
 - Creating pull request to enable new feature or code improvements
 
+## Other projects
+- Circle to search (github link)(Lsposed neccesary) <a href=https://github.com/parallelcc/MiCTS/tree/v2.3>MyCTS by parallelcc<a>
+- Call recording (github link)<a href=https://github.com/chenxiaolong/BCR>Call recording by chenxiaolong<a>
+- Pixel studio enabler (TG link) (if pixel studio crashes) <a href=https://t.me/GappsLeaks/933>Pixel Studio Enabler by GappsLeaks (TG)<a>
+
 ## ⭐ Credits
 - Google for creating these awesome features
+- [Tristan] (https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files and Journal app
 - [topjohnwu](https://github.com/topjohnwu) for Magisk
 - [#TeamFiles](https://t.me/modulesrepo) for so many themed icons for Pixel Launcher android 12
 - [Kdrag0n](https://github.com/kdrag0n) for SimpleDeviceConfig
@@ -177,7 +182,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Saitama](https://github.com/saitamasahil) Fixing Pixel Launcher crashes
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
 - [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
-- [Tristan] (https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files
 - Pixelify Support Group Members for testing beta versions :)
 ### Version 4.0
 -INIT PIxelify Next
@@ -185,3 +189,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -Fix bugs
 ### Version 4.4
 -Add Pixelify Launcher
+### Version 4.4.1
+-Fix bugs
+### Version 4.5
+-Added Pixel Journal app and Pixel Studio app (they crash on some devices)
