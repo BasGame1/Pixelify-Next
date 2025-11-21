@@ -1382,7 +1382,7 @@ fi
 # Google Journal
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
     print "  Google is installed."
-    print "  Do you want to installed Next generation assistant?"
+    print "  Do you want to installed Journal app?"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
     no_vk "INSTALL_JOURNAL"
@@ -1394,20 +1394,36 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
      fi
 fi
 
-# Pixel Studio
-if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
-    print "  Google is installed."
-    print "  Do you want to installed Next generation assistant?"
+if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
+print "  Google is installed."
+    print "  Do you want to installed AirDrop Quick Share?"
+    print "  (you will need to have quick share installed and pixel 10 spoof)"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
-    no_vk "INSTALL_STUDIO"
+    no_vk "QUICK_SHARE"
     if $VKSEL; then
-        echo " - Installing Google Studio" >>$logfile
-        print "- Installing Google Studio"
+        echo " - Installing Quick share extension" >>$logfile
+        print "- Installing Quick share extension"
         print ""
-        . $MODPATH/installAPK.sh Studio.apkm
+        . $MODPATH/installAPK.sh com.google.android.mosey.apkm
      fi
 fi
+
+# Pixel Studio
+#if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
+#    print "  Google is installed."
+#   print "  Do you want to installed Next generation assistant?"
+#    print "   Vol Up += Yes"
+#    print "   Vol Down += No"
+#    no_vk "INSTALL_STUDIO"
+#    if $VKSEL; then
+#        echo " - Installing Google Studio" >>$logfile
+#        print "- Installing Google Studio"
+#        print ""
+#        . $MODPATH/installAPK.sh Studio.apkm
+#     fi
+#fi
+
 # Pixel Wallpapers
 if [ $API -ge 28 ]; then
     PLW=$(find /system -name *PixelWallpapers2021* | grep -v overlay | grep -v "\.")
@@ -1559,6 +1575,22 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     print "   Vol Down += No"
     no_vk "ENABLE_BOOTANIMATION"
     if $VKSEL; then
+    	print " Do you want to install Gemini Bootanimation? (only AOSP)"
+    	print "   Vol Up += Yes"
+    	print "   Vol Down += No"
+    	no_vk "GEMINI_BOOTANIMATION"
+	if $VKSEL; then
+	   echo " - Installing Pixel Bootanimation" >>$logfile
+	   if [ -f "/system/media/bootanimation.zip" ]; then
+	   	mkdir -p $MODPATH/system/media
+	   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/media/bootanimation.zip
+	   else
+		   if [ -f "/product/media/bootanimation.zip" ]; then
+		   	mkdir -p $MODPATH/product/media
+		   	mv $MODPATH/files/bootanimation.zip $MODPATH/product/media/bootanimation.zip
+		   else
+		   print " Failed to find bootanimation"
+       else
         echo " - Installing Pixel Bootanimation" >>$logfile
         if [ -f /system/media/bootanimation.zip ]; then
             MEDIA_PATH=system/media
@@ -1618,6 +1650,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     fi
 else
     rm -rf $MODPATH/system$product/media/boot*.zip
+fi
 fi
 
 # Pixel Launcher
