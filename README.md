@@ -100,6 +100,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Provides most of the Pixel exclusive features
 - Installation of features is optional
 - Supports (720p,1080p,1440p) Google bootanimation
+- Gemini bootanimation
+- Quick Share Air drop support [NEW, UNTESTED]
 - Allows creation of backup of online Pixelify packages
 - Also provides some unreleased Pixel Features
 - Creates Google keyboard, Google app, Google Text to speech, Google Dialer as system app if not installed
@@ -182,6 +184,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Saitama](https://github.com/saitamasahil) Fixing Pixel Launcher crashes
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
 - [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
+- [Kevin] for gemini bootanimation
 - Pixelify Support Group Members for testing beta versions :)
 ### Version 4.0
 -INIT PIxelify Next
@@ -193,3 +196,5 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -Fix bugs
 ### Version 4.5
 -Added Pixel Journal app and Pixel Studio app (they crash on some devices)
+### Version 4.6
+-Removed Pixel Studio, added gemini bootaniamtion and introduce Air Drop Quick Share (Quick share extension)
