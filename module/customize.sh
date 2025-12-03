@@ -2908,206 +2908,205 @@ gphotos8
 if [ -d /data/data/$DIALER ]; then
     print "  Do you want to install Google Dialer features?"
     print "   - Includes Call Screening, Call Recording, Hold for Me, Direct My Call"
-    print "   (For all Countries)"
+    print "   (For all Countries, need spoofing)"
     print "    Vol Up += Yes"
     print "    Vol Down += No"
     no_vk "ENABLE_DIALER_FEATURES"
     if $VKSEL; then
         echo " - Installing Google Dialer features" >>$logfile
-
+	chmod +x $MODPATH/boot-completed.sh
+	print "Needs pixel spoofing, it will be activated if dialer its a system app at a reboot"
         # Enable it to let service.sh to know callscreening enabled
-        sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
-        print "- Enabling Call Screening & Hold for me & Direct My Call"
-        print " "
-        print "- Enabling Call Recording (Working is device dependent)"
-
-        ui_print ""
-        ui_print " Please Select Desired Call Screening language"
-        ui_print "    Vol Up += Switch Language (change cursor position)"
-        ui_print "    Vol Down +=  Select Language"
-        ui_print ""
-
+        #sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
+        #print "- Enabling Call Screening & Hold for me & Direct My Call"
+        #print " "
+        #print "- Enabling Call Recording (Working is device dependent)"
+	#
+        #ui_print ""
+        #ui_print " Please Select Desired Call Screening language"
+        #ui_print "    Vol Up += Switch Language (change cursor position)"
+        #ui_print "    Vol Down +=  Select Language"
+        #ui_print ""
+	#
         # Give options for Call Screening language
-        sleep 0.5
-        lang=""
-        ui_print "--------------------------------"
-        ui_print " [1] English      [en]"
-        ui_print " [2] Hindi        [hi-in] [BETA]"
-        ui_print " [3] Japanese     [ja-JP]"
-        ui_print " [4] French       [fr-FR]"
-        ui_print " [5] German       [de-DE]"
-        ui_print " [6] Italian      [it-IT]"
-        ui_print " [7] Spanish      [es-ES]"
-        ui_print "--------------------------------"
-
-        ui_print ""
-        ui_print "- Select your Desired langauge"
-        ui_print ""
-
-        SM=1
-        if [ $VOL_KEYS -eq 1 ]; then
-            SM=1
-            TURN_OFF_SEL_VOL_PROMPT=1
-            while true; do
-                ui_print " Current cursor:  $SM"
-                "$VKSEL" && SM="$((SM + 1))" || break
-                [[ "$SM" -gt "7" ]] && SM=1
-            done
-        else
-            SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
+        #sleep 0.5
+        #lang=""
+        #ui_print "--------------------------------"
+        #ui_print " [1] English      [en]"
+        #ui_print " [2] Hindi        [hi-in] [BETA]"
+        #ui_print " [3] Japanese     [ja-JP]"
+        #ui_print " [4] French       [fr-FR]"
+        #ui_print " [5] German       [de-DE]"
+        #ui_print " [6] Italian      [it-IT]"
+        #ui_print " [7] Spanish      [es-ES]"
+        #ui_print "--------------------------------"
+	#
+        #ui_print ""
+        #ui_print "- Select your Desired langauge"
+        #ui_print ""
+	#
+        #SM=1
+        #if [ $VOL_KEYS -eq 1 ]; then
+        #    SM=1
+        #    TURN_OFF_SEL_VOL_PROMPT=1
+        #    while true; do
+        #        ui_print " Current cursor:  $SM"
+        #        "$VKSEL" && SM="$((SM + 1))" || break
+        #        [[ "$SM" -gt "7" ]] && SM=1
+        #    done
+        #else
+        #    SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
             #print "$SM"
-        fi
+        #fi
 
         # Detect country code from gsm.sim.operator.iso-country
-        ISENG=0
-        ISEN_US=0
-        carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
-        if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
+        #ISENG=0
+        #ISEN_US=0
+        #carr_coun_small="$(getprop gsm.sim.operator.iso-country)"
+        #if [ ! -z $(echo $carr_coun_small | grep ',') ]; then
             # if it is in format in,in then fetch first one
-            carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
-            if [ -z $carr_coun_small ]; then
-                # if it is in format ,in then fetch first second one
-                carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
-            fi
-        fi
+        #    carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f1)"
+        #    if [ -z $carr_coun_small ]; then
+        #        # if it is in format ,in then fetch first second one
+        #        carr_coun_small="$(getprop gsm.sim.operator.iso-country | cut -d, -f2)"
+        #    fi
+        #fi
         # if empty then then set to 'in'
-        if [ -z $carr_coun_small ]; then
-            echo " - Unable to detect Country using 'in' as default" >>$logfile
-            carr_coun_small="in"
-        fi
-        echo " - Country code detected '$carr_coun_small'" >>$logfile
+        #if [ -z $carr_coun_small ]; then
+        #    echo " - Unable to detect Country using 'in' as default" >>$logfile
+        #    carr_coun_small="in"
+        #fi
+        #echo " - Country code detected '$carr_coun_small'" >>$logfile
 
         # Patch the selected file in dialer
-        sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
-        P1="$(echo $carr_coun_small | xxd -p)"
-        P1=${P1/0a/}
-        P2=""
-        case "$SM" in
-        "1")
-            P2="en"
-            ISENG=1
-            ;;
-        "2")
-            P2="hi-IN"
-            lang="hi"
-            ;;
-        "3")
-            P2="ja-JP"
-            lang="ja"
-            ;;
-        "4")
-            P2="fr-FR"
-            lang="fr"
-            ;;
-        "5")
-            P2="de-DE"
-            lang="de"
-            ;;
-        "6")
-            P2="it-IT"
-            lang="it"
-            ;;
-        "7")
-            P2="es-ES"
-            lang="es"
-            ;;
-        esac
-
-        ui_print ""
-        ui_print " - Selected: $P2"
-        ui_print ""
+        #sed -i -e "s/YY/${carr_coun_small}/g" $MODPATH/files/com.google.android.dialer
+        #P1="$(echo $carr_coun_small | xxd -p)"
+        #P1=${P1/0a/}
+        #P2=""
+        #case "$SM" in
+        #"1")
+        #    P2="en"
+        #    ISENG=1
+        #    ;;
+        #"2")
+        #    P2="hi-IN"
+        #    lang="hi"
+        #    ;;
+        #"3")
+        #    P2="ja-JP"
+        #    lang="ja"
+        #    ;;
+        #"4")
+        #    P2="fr-FR"
+        #    lang="fr"
+        #    ;;
+        #"5")
+        #    P2="de-DE"
+        #    lang="de"
+        #    ;;
+        #"6")
+        #    P2="it-IT"
+        #    lang="it"
+        #    ;;
+        # "7")
+        #    P2="es-ES"
+        #    lang="es"
+        #    ;;
+        #esac
+        #ui_print ""
+        #ui_print " - Selected: $P2"
+        #ui_print ""
 
         # Options for english language
-        if [ $ISENG -eq 1 ]; then
-            ui_print ""
-            ui_print " Please Select English Accent"
-            ui_print "    Vol Up += Switch Language (change cursor position)"
-            ui_print "    Vol Down +=  Select Language"
-            ui_print ""
+        #if [ $ISENG -eq 1 ]; then
+        #    ui_print ""
+        #    ui_print " Please Select English Accent"
+        #    ui_print "    Vol Up += Switch Language (change cursor position)"
+        #    ui_print "    Vol Down +=  Select Language"
+        #    ui_print ""
 
-            sleep 0.5
+         #   sleep 0.5
 
-            ui_print "--------------------------------"
-            ui_print " [1] American     [en-US] "
-            ui_print " [2] Indian       [en-IN] [BETA]"
-            ui_print " [3] Australian   [en-AU]"
-            ui_print " [4] Britain      [en-GB]"
-            ui_print "--------------------------------"
+         #   ui_print "--------------------------------"
+        #    ui_print " [1] American     [en-US] "
+         #   ui_print " [2] Indian       [en-IN] [BETA]"
+         #   ui_print " [3] Australian   [en-AU]"
+         #   ui_print " [4] Britain      [en-GB]"
+         #   ui_print "--------------------------------"
 
-            ui_print ""
-            ui_print "- Select your Desired langauge:"
+         #   ui_print ""
+         #   ui_print "- Select your Desired langauge:"
 
-            if [ $VOL_KEYS -eq 1 ]; then
-                SM=1
-                TURN_OFF_SEL_VOL_PROMPT=1
-                while true; do
-                    ui_print " Current cursor:  $SM"
-                    "$VKSEL" && SM="$((SM + 1))" || break
-                    [[ "$SM" -gt "4" ]] && SM=1
-                done
-            else
-                SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
-                #print "$SM"
-            fi
-
-            case "$SM" in
-            "1")
-                P2="en-US"
-                ISEN_US=1
-                ;;
-            "2")
-                P2="en-IN"
-                lang="in"
-                ;;
-            "3")
-                P2="en-AU"
-                lang="au"
-                ;;
-            "4")
-                P2="en-GB"
-                lang="gb"
-                ;;
-            esac
-            ui_print " - Selected: $P2 OPTION"
-            ui_print ""
-        fi
+         #  if [ $VOL_KEYS -eq 1 ]; then
+         #       SM=1
+         #       TURN_OFF_SEL_VOL_PROMPT=1
+         #      while true; do
+         #           ui_print " Current cursor:  $SM"
+         #           "$VKSEL" && SM="$((SM + 1))" || break
+         #           [[ "$SM" -gt "4" ]] && SM=1
+         #       done
+         #   else
+         #       SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
+         #       #print "$SM"
+         #   fi
+         #   case "$SM" in
+         #   "1")
+         #       P2="en-US"
+         #       ISEN_US=1
+         #      ;;
+         #   "2")
+         #       P2="en-IN"
+         #       lang="in"
+         #       ;;
+         #   "3")
+         #       P2="en-AU"
+         #       lang="au"
+         #      ;;
+         #   "4")
+         #       P2="en-GB"
+         #       lang="gb"
+         #       ;;
+         #   esac
+         #   ui_print " - Selected: $P2 OPTION"
+         # ui_print ""
+        #fi
 
         # Patching starts
-        TURN_OFF_SEL_VOL_PROMPT=0
-        TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
-        echo " - Selected $P2 callscreening language" >>$logfile
-        sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
-        P2="$(echo $P2 | xxd -p)"
-        P2=${P2/0a/}
-        CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
+        #TURN_OFF_SEL_VOL_PROMPT=0
+        #TT_LANG="$(echo $P2 | tr '[:upper:]' '[:lower:]')"
+        #echo " - Selected $P2 callscreening language" >>$logfile
+        #sed -i -e "s/UU-FF/${P2}/g" $MODPATH/files/com.google.android.dialer
+        #P2="$(echo $P2 | xxd -p)"
+        #P2=${P2/0a/}
+        #CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
         #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer'"
-        if [ $ISEN_US -eq 1 ]; then
-            print "  Do you want to enable automatic Call Screening"
-            print "   Vol Up += Yes"
-            print "   Vol Down += No"
-            no_vk "AUTO_CALL_SCREENING"
-            if $VKSEL; then
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
-                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
-                #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
-                db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
-                db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
-                db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
-            else
-                $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
-            fi
-            db_edit_decoded com.google.android.dialer boolVal 1 $CS_REV
-        else
-            db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
-        fi
-        db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
-        db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
-        db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
-        db_edit_decoded com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
-        db_edit_decoded com.google.android.dialer boolVal 1 $DIALER_FLAGS
+        #if [ $ISEN_US -eq 1 ]; then
+         #   print "  Do you want to enable automatic Call Screening"
+         #   print "   Vol Up += Yes"
+        #    print "   Vol Down += No"
+         #   no_vk "AUTO_CALL_SCREENING"
+         #   if $VKSEL; then
+         #       db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
+         #       db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
+         #       db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 1 "45409315"
+         #       db_edit com.google.android.dialer.directboot#com.google.android.dialer intVal 2 "45414559"
+         #       #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_DISCLOSURE_17" 45399401
+         #       #db_edit com.google.android.dialer.directboot#com.google.android.dialer stringVal "SPAM_FILTER_LEAVE_MESSAGE_DEFAULT_VARIANT" 45415110
+         #       db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45381883 $DOBBYCONFIG
+         #       db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal $DOBBYCONFIG 45381883 
+         #       db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
+         #   else
+         #       $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
+         #   fi
+         #   db_edit_decoded com.google.android.dialer boolVal 1 $CS_REV
+        #else
+         #   db_edit_decoded com.google.android.dialer boolVal 1 $CS_LANG
+        #fi
+        #db_edit com.google.android.dialer floatVal "1.0" "G__call_screen_audio_stitching_downlink_volume_multiplier"
+        #db_edit com.google.android.dialer floatVal "0.6" "G__call_screen_audio_stitching_uplink_volume_multiplier"
+        #db_edit com.google.android.dialer intVal "1000" "G__embedding_generation_step_size"
+        #db_edit_decoded com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
+        #db_edit_decoded com.google.android.dialer boolVal 1 $DIALER_FLAGS
 
         # $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer' AND name='G__atlas_mdd_ph_config'"
         # $sqlite $gms "INSERT INTO FlagOverrides(packageName, user, name, flagType, extensionVal, committed) VALUES('com.google.android.dialer', '', 'G__atlas_mdd_ph_config', 0, x'$ATLASBIN', 0)"
@@ -3126,119 +3125,119 @@ if [ -d /data/data/$DIALER ]; then
         # db_edit_bin com.google.android.dialer G__tk_mdd_ph_config $TKBIN
         # db_edit_bin com.google.android.dialer model_download_group_config $XATUCONFIGBIN
         # db_edit_bin com.google.android.dialer.directboot#com.google.android.dialer 45417183 $XATUCONFIGBIN
-        db_edit com.google.android.dialer extensionVal G__atlas_mdd_ph_config $ATLASBIN
-        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45413189 $ATLASBIN
-        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45402582 $TKBIN
-        db_edit com.google.android.dialer extensionVal Xatu__lp_preferences $XATUBIN
-        db_edit com.google.android.dialer extensionVal atlas_enabled_business_number_country_codes $ATSBIN
-        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45413213 $ATSBIN
-        db_edit com.google.android.dialer extensionVal Revelio__supported_voices $REVBIN
-        [ $ISEN_US -eq 0 ] && db_edit com.google.android.dialer extensionVal CallScreenI18n__call_screen_i18n_config $CSBIN
-        db_edit com.google.android.dialer extensionVal G__tk_mdd_ph_config $TKBIN
-        db_edit com.google.android.dialer extensionVal model_download_group_config $XATUCONFIGBIN
-        db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45417183 $XATUCONFIGBIN
-        # Patching Ends
+        #db_edit com.google.android.dialer extensionVal G__atlas_mdd_ph_config $ATLASBIN
+        #db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45413189 $ATLASBIN
+        #db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45402582 $TKBIN
+        #db_edit com.google.android.dialer extensionVal Xatu__lp_preferences $XATUBIN
+        #db_edit com.google.android.dialer extensionVal atlas_enabled_business_number_country_codes $ATSBIN
+        #db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45413213 $ATSBIN
+        #db_edit com.google.android.dialer extensionVal Revelio__supported_voices $REVBIN
+        #[ $ISEN_US -eq 0 ] && db_edit com.google.android.dialer extensionVal CallScreenI18n__call_screen_i18n_config $CSBIN
+        #db_edit com.google.android.dialer extensionVal G__tk_mdd_ph_config $TKBIN
+        #db_edit com.google.android.dialer extensionVal model_download_group_config $XATUCONFIGBIN
+        #db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45417183 $XATUCONFIGBIN
+        ## Patching Ends
 
         # Install language pack
-        if [ ! -z $lang ]; then
-            if [ -f /sdcard/Pixelify/backup/callscreen-$lang.tar.xz ]; then
-                print "- Installing CallScreening $lang from backups"
-                print ""
-                mkdir -p $MODPATH/system/product/tts/google
-                tar -xf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
-                #install TTS Pack
-                if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
-                    TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
-                    [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
-                    PACK_NAME="1#"
-                    if [ -z "$(ls $TTS_LOC)" ]; then
-                        cd $MODPATH/system/product/tts/google/$TT_LANG
-                        for i in $(ls); do
-                            j=${i/.zvoice/}
-                            r="$(echo $j | tr -dc '0-9')"
-                            PACK_NAME="$PACK_NAME$TT_LANG:$j;$r,"
-                            mkdir -p $TTS_LOC/$j
-                            unzip -q $i -d $TTS_LOC/$j
-                        done
-                        cd /
-                        PACK_NAME=${PACK_NAME::-1}
-                        SS="$("$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "SELECT superpack_name FROM selected_packs")"
-                        if [ -z $(echo "$SS" | grep $TT_LANG) ]; then
-                            "$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "INSERT INTO selected_packs(superpack_name, superpack_version, pack_list) VALUES('$TT_LANG', '$r', '$PACK_NAME')"
-                        fi
-                    fi
-                fi
-            else
-                CRSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
-                print "  (Network Connection Needed)"
-                print "  Do you want to Download Call Screening files for '$lang' language"
-                print "  Size: $CRSIZE"
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
-                no_vk "ADD_CALL_SCREENING_FILES"
-                if $VKSEL; then
-                    online
-                    if [ $internet -eq 1 ]; then
-                        echo " - Downloading CallScreening files for '$lang'" >>$logfile
-                        print "  Downloading CallScreening files for '$lang'"
-                        mkdir -p $MODPATH/system/product/tts/google
-                        cd $MODPATH/files
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz -O &>/proc/self/fd/$OUTFD
-                        cd /
-                        tar -xf $MODPATH/files/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
-                        #install TTS Pack
-                        if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
-                            TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
-                            [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
-                            PACK_NAME="1#"
-                            if [ -z "$(ls $TTS_LOC)" ]; then
-                                cd $MODPATH/system/product/tts/google/$TT_LANG
-                                for i in $(ls); do
-                                    j=${i/.zvoice/}
-                                    r="$(echo $j | tr -dc '0-9')"
-                                    PACK_NAME="$PACK_NAME$TT_LANG:$j;$r,"
-                                    mkdir -p $TTS_LOC/$j
-                                    unzip -q $i -d $TTS_LOC/$j
-                                done
-                                cd /
-                                PACK_NAME=${PACK_NAME::-1}
-                                SS="$("$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "SELECT superpack_name FROM selected_packs")"
-                                if [ -z $(echo "$SS" | grep $TT_LANG) ]; then
-                                    "$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "INSERT INTO selected_packs(superpack_name, superpack_version, pack_list) VALUES('$TT_LANG', '$r', '$PACK_NAME')"
-                                fi
-                            fi
-                        fi
-                        print ""
-                        print "  Do you want to create backup of CallScreening files for '$lang'"
-                        print "  so that you don't need redownload it every time."
-                        print "   Vol Up += Yes"
-                        print "   Vol Down += No"
-                        no_vk "BACKUP_CALL_SCREENING_FILES"
-                        if $VKSEL; then
-                            echo " - Creating backup for CallScreening files for '$lang'" >>$logfile
-                            print "- Creating Backup"
-                            mkdir -p /sdcard/Pixelify/backup
-                            rm -rf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
-                            cp -f $MODPATH/files/callscreen-$lang.tar.xz /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
-                            print ""
-                        fi
-                    else
-                        print " ! No internet detected"
-                        print ""
-                        print "- Skipping CallScreening Resources."
-                        print ""
-                        echo " - skipping CallScreening Resources due to no internet" >>$logfile
-                    fi
-                else
-                    echo " - skipping CallScreening Resources" >>$logfile
-                fi
-            fi
-        fi
+        #if [ ! -z $lang ]; then
+        #    if [ -f /sdcard/Pixelify/backup/callscreen-$lang.tar.xz ]; then
+        #        print "- Installing CallScreening $lang from backups"
+        #        print ""
+        #        mkdir -p $MODPATH/system/product/tts/google
+        #        tar -xf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
+        #        #install TTS Pack
+        #        if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+        #            TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
+        #            [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
+        #            PACK_NAME="1#"
+        #            if [ -z "$(ls $TTS_LOC)" ]; then
+        #                cd $MODPATH/system/product/tts/google/$TT_LANG
+        #                for i in $(ls); do
+        #                    j=${i/.zvoice/}
+        #                    r="$(echo $j | tr -dc '0-9')"
+        #                    PACK_NAME="$PACK_NAME$TT_LANG:$j;$r,"
+        #                    mkdir -p $TTS_LOC/$j
+        #                    unzip -q $i -d $TTS_LOC/$j
+        #                done
+        #                cd /
+        #                PACK_NAME=${PACK_NAME::-1}
+        #                SS="$("$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "SELECT superpack_name FROM selected_packs")"
+        #                if [ -z $(echo "$SS" | grep $TT_LANG) ]; then
+        #                    "$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "INSERT INTO selected_packs(superpack_name, superpack_version, pack_list) VALUES('$TT_LANG', '$r', '$PACK_NAME')"
+        #                fi
+        #            fi
+        #        fi
+        #    else
+        #        CRSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
+        #        print "  (Network Connection Needed)"
+        #        print "  Do you want to Download Call Screening files for '$lang' language"
+        #        print "  Size: $CRSIZE"
+        #        print "   Vol Up += Yes"
+        #        print "   Vol Down += No"
+        #        no_vk "ADD_CALL_SCREENING_FILES"
+        #        if $VKSEL; then
+        #            online
+        #            if [ $internet -eq 1 ]; then
+        #                echo " - Downloading CallScreening files for '$lang'" >>$logfile
+        #                print "  Downloading CallScreening files for '$lang'"
+        #                mkdir -p $MODPATH/system/product/tts/google
+        #                cd $MODPATH/files
+        #               $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz -O &>/proc/self/fd/$OUTFD
+        #                cd /
+        #                tar -xf $MODPATH/files/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
+        #                #install TTS Pack
+        #                if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+        #                    TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
+        #                    [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
+        #                    PACK_NAME="1#"
+        #                    if [ -z "$(ls $TTS_LOC)" ]; then
+        #                        cd $MODPATH/system/product/tts/google/$TT_LANG
+        #                        for i in $(ls); do
+        #                            j=${i/.zvoice/}
+        #                            r="$(echo $j | tr -dc '0-9')"
+        #                            PACK_NAME="$PACK_NAME$TT_LANG:$j;$r,"
+        #                            mkdir -p $TTS_LOC/$j
+        #                            unzip -q $i -d $TTS_LOC/$j
+        #                        done
+        #                        cd /
+        #                        PACK_NAME=${PACK_NAME::-1}
+        #                        SS="$("$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "SELECT superpack_name FROM selected_packs")"
+        #                        if [ -z $(echo "$SS" | grep $TT_LANG) ]; then
+        #                            "$sqlite" "/data/user_de/0/com.google.android.tts/databases/superpacks.db" "INSERT INTO selected_packs(superpack_name, superpack_version, pack_list) VALUES('$TT_LANG', '$r', '$PACK_NAME')"
+        #                        fi
+        #                    fi
+        #                fi
+        #                print ""
+        #                print "  Do you want to create backup of CallScreening files for '$lang'"
+        #               print "  so that you don't need redownload it every time."
+        #                print "   Vol Up += Yes"
+        #                print "   Vol Down += No"
+        #                no_vk "BACKUP_CALL_SCREENING_FILES"
+        #                if $VKSEL; then
+        #                    echo " - Creating backup for CallScreening files for '$lang'" >>$logfile
+        #                   print "- Creating Backup"
+        #                    mkdir -p /sdcard/Pixelify/backup
+        #                   rm -rf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
+        #                    cp -f $MODPATH/files/callscreen-$lang.tar.xz /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
+        #                    print ""
+        #                fi
+        #            else
+        #                print " ! No internet detected"
+        #                print ""
+        #                print "- Skipping CallScreening Resources."
+        #                print ""
+        #                echo " - skipping CallScreening Resources due to no internet" >>$logfile
+        #            fi
+        #        else
+        #            echo " - skipping CallScreening Resources" >>$logfile
+        #        fi
+        #    fi
+        #fi
 
         # Remove old prompt to replace to use within overlay
-        rm -rf /data/data/com.google.android.dialer/files/callrecordingprompt/*
-        mkdir -p /data/data/com.google.android.dialer/files/callrecordingprompt
-        cp -r $MODPATH/files/callrec/* /data/data/com.google.android.dialer/files/callrecordingprompt
+        #rm -rf /data/data/com.google.android.dialer/files/callrecordingprompt/*
+        #mkdir -p /data/data/com.google.android.dialer/files/callrecordingprompt
+        #cp -r $MODPATH/files/callrec/* /data/data/com.google.android.dialer/files/callrecordingprompt
 
         # Updated patched com.google.android.dialer
         # mkdir -p /data/data/com.google.android.dialer/files/phenotype
