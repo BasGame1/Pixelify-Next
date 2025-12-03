@@ -2914,7 +2914,16 @@ if [ -d /data/data/$DIALER ]; then
     no_vk "ENABLE_DIALER_FEATURES"
     if $VKSEL; then
         echo " - Installing Google Dialer features" >>$logfile
-	chmod +x $MODPATH/boot-completed.sh
+        if [ $KSU = true ]; then
+        	print "KSU/KSUN detected"
+        	print ""
+        	chmod +x $MODPATH/boot-completed.sh
+        	
+        else
+        	print "KSU/KSUN not detected, falling back to magisk"
+        	print ""
+        	rm -rf $MODPATH/boot-completed.sh
+        fi
 	print "Needs pixel spoofing, it will be activated if dialer its a system app at a reboot"
         # Enable it to let service.sh to know callscreening enabled
         #sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
@@ -3245,7 +3254,10 @@ if [ -d /data/data/$DIALER ]; then
         # cp -Tf $MODPATH/files/$DIALER $MODPATH/$DIALER
         # chmod 0660 /data/data/com.google.android.dialer/files/phenotype/com.google.android.dialer
         # am force-stop $DIALER
-
+	else
+	rm -rf $MODPATH/boot-completed.sh
+	fi
+fi
         # make Google dialer as system app
         if [ -z $(pm list packages -s $DIALER) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
             print ""
