@@ -115,4 +115,8 @@ if [ -d "$DATA_PATH_USER" ]; then
       chmod -R 0700 "$DATA_PATH_DATA"
     fi
   fi
+  
+# Enable iso spoofing
+resetprop -n gsm.operator.iso-country us,
+resetprop -n gsm.sim.operator.iso-country us,
 fi
