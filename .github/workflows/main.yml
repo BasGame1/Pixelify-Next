@@ -1,4 +1,4 @@
-name: Pixelify Next BETA
+ame: Pixelify Next STABLE/BETA
 on: 
   workflow_dispatch:
     inputs:
@@ -6,6 +6,14 @@ on:
         description: 'Build untested module versions'
         required: true
         type: string
+      target_branch:
+        description: 'Select the version to build'
+        required: true
+        type: choice
+        options:
+          - STABLE
+          - BETA
+        default: 'BETA'
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -29,14 +37,16 @@ jobs:
       
     - name: Build
       run: ./gradlew build
-        
+    - name: Verify Artifact Files Exist
+      run: |
+          echo "Listing contents of the 'out/' directory:"
+          ls -R out/   
     - name: Find and Upload Artifacts
       uses: actions/upload-artifact@v4
       with: 
           name: Build Objects
           path: |
-            out/Pixelify-v4.6-BETA.zip
-            out/Pixelify-v4.6-BETA-NO-VK.zip
+            out/Pixelify*.zip
             out/config.prop
             
          
