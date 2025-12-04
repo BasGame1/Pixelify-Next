@@ -1,4 +1,4 @@
-name: Pixelify Next STABLE/BETA
+name: Pixelify Next BETA
 on: 
   workflow_dispatch:
     inputs:
