@@ -1,0 +1,13 @@
+name: Pixelify Next BETA     
+  jobs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Setup Java JDK
+      uses: actions/setup-java@v5.1.0
+      
+    - name: Build Gradle
+      uses: Raul6469/android-gradle-action@2.0.0
+      with: 
+        scripts: build
