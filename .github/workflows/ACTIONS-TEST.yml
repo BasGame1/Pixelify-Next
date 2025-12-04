@@ -1,13 +1,42 @@
-name: Pixelify Next BETA     
-  jobs:
+name: Pixelify Next BETA
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Build untested module versions'
+        required: true
+        type: string
+jobs:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.branch }}
+        
     - name: Setup Java JDK
       uses: actions/setup-java@v5.1.0
+      with:
+          distribution: 'temurin'
+          java-version: '17'
+
+    - name: Make Gradlew executable
+      run: chmod +x gradlew
       
-    - name: Build Gradle
-      uses: Raul6469/android-gradle-action@2.0.0
+    - name: Build
+      run: ./gradlew build
+        
+    - name: Find and Upload Artifacts
+      uses: actions/upload-artifact@v4
       with: 
-        scripts: build
+          name: Build Objects
+          path: |
+            out/Pixelify-v4.6-BETA.zip
+            out/Pixelify-v4.6-BETA-NO-VK.zip
+            out/config.prop
+            
+         
