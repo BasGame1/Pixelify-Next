@@ -6,11 +6,11 @@ else ()
     project(${MODULE_NAME})
 endif ()
 
-
 message("Build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Compilation Flags
 set(LINKER_FLAGS "-ffixed-x18 -Wl,--hash-style=both")
 set(C_FLAGS "-Werror=format -fdata-sections -ffunction-sections")
 set(CXX_FLAGS "${CXX_FLAGS} -fno-exceptions -fno-rtti")
@@ -27,20 +27,23 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_FLAGS} ${CXX_FLAGS}")
 
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LINKER_FLAGS}")
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LINKER_FLAGS}")
-
-# find_package(REQUIRED CONFIG)
-
 add_library(${MODULE_NAME} SHARED 
             pixelify.cpp
             module.h)
 target_link_libraries(${MODULE_NAME} log)
-
 add_library(${MODULE_NAME}-tensor SHARED
             tensor.cpp
             module.h)
 target_link_libraries(${MODULE_NAME}-tensor log)
-
+add_library(${MODULE_NAME}-camera SHARED
+            camera.cpp
+            module.h)
+target_link_libraries(${MODULE_NAME}-camera log)
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
             COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}.so")
+    add_custom_command(TARGET ${MODULE_NAME}-tensor POST_BUILD
+            COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}-tensor.so")
+    add_custom_command(TARGET ${MODULE_NAME}-camera POST_BUILD
+            COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}-camera.so")
 endif ()
