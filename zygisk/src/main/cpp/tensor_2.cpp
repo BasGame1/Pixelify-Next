@@ -4,193 +4,128 @@
 #include <string>
 #include <vector>
 #include <android/log.h>
+#include <cstring>
 
 #include "module.h"
 #include "zygisk.hpp"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
-using zygisk::ServerSpecializeArgs;
 
-// Spoofing apps
-static std::vector<std::string> P1 = {"com.google.android.apps.photos"};
-static std::vector<std::string> P5 = {"com.google.android.gms"};
-static std::vector<std::string> keep = {"com.google.android.gms.chimera", "com.google.android.gms.update","com.google.android.gms.unstable"};
+#define LOG_TAG "PixelifyPhotos"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 
-// Fingerprint
-const char P1_FP[256] = "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys";
-const char P5_FP[256] = "google/redfin/redfin:13/TQ2A.230305.008.C1/9619669:user/release-keys";
+// Config Definitions
+struct TargetDevice {
+    const char* model;
+    const char* product;
+    const char* fingerprint;
+};
 
-bool DEBUG = true;
-char package_name[256];
-static int spoof_type;
+const TargetDevice DEV_P1 = {"Pixel XL", "marlin", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys"};
+const TargetDevice DEV_P5 = {"Pixel 5", "redfin", "google/redfin/redfin:13/TQ2A.230305.008.C1/9619669:user/release-keys"};
 
-class pixelify_photos : public zygisk::ModuleBase
-{
+class pixelify_photos : public zygisk::ModuleBase {
 public:
-    void onLoad(Api *api, JNIEnv *env) override
-    {
+    void onLoad(Api *api, JNIEnv *env) override {
         this->api = api;
         this->env = env;
     }
-    void preAppSpecialize(AppSpecializeArgs *args) override
-    {
+
+    void preAppSpecialize(AppSpecializeArgs *args) override {
+        if (!args || !args->nice_name) return;
+
         const char *process = env->GetStringUTFChars(args->nice_name, nullptr);
-        spoof_type = getSpoof(process);
-        strcpy(package_name, process);
-        env->ReleaseStringUTFChars(args->nice_name, process);
+        if (process) {
+            std::string package(process);
+            target_config = getSpoofConfig(package);
+            
+            if (target_config) {
+                 LOGI("Target detected: %s -> Spoofing %s", process, target_config->model);
+            }
+
+            env->ReleaseStringUTFChars(args->nice_name, process);
+        }
     }
-    void postAppSpecialize(const AppSpecializeArgs *) override
-    {
-        switch (spoof_type)
-        {
-        case 1:
-            injectBuild("Pixel XL", "marlin", P1_FP);
-            injectversion(34);
-            break;
-        case 2:
-            injectBuild("Pixel 5", "redfin", P5_FP);
-            break;
-        default:
-            break;
+
+    void postAppSpecialize(const AppSpecializeArgs *) override {
+        if (target_config) {
+            injectBuild(*target_config);
+            
+            // Version spoofing specific to P1
+            // Check if model is Pixel XL (P1)
+            if (strcmp(target_config->model, "Pixel XL") == 0) {
+                 injectVersion(34);
+            } 
+            // Older logic injected 27 (8.1.0) for some, update here if needed.
         }
     }
 
 private:
     Api *api;
     JNIEnv *env;
+    const TargetDevice* target_config = nullptr;
 
-    void injectBuild(const char *model1, const char *product1, const char *finger1)
-    {
-        if (env == nullptr)
-        {
-            LOGW("failed to inject android.os.Build for %s due to env is null", package_name);
-            return;
-        }
-
-        jclass build_class = env->FindClass("android/os/Build");
-        if (build_class == nullptr)
-        {
-            LOGW("failed to inject android.os.Build for %s due to build is null", package_name);
-            return;
-        }
-        else if (DEBUG)
-        {
-            LOGI("inject android.os.Build for %s with \nPRODUCT:%s \nMODEL:%s \nFINGERPRINT:%s", package_name, product1, model1, finger1);
+    const TargetDevice* getSpoofConfig(const std::string& package) {
+        // Exclusions
+        static const std::vector<std::string> keep = {
+            "com.google.android.gms.chimera", 
+            "com.google.android.gms.update",
+            "com.google.android.gms.unstable"
+        };
+        for (const auto& s : keep) {
+            if (package.find(s) != std::string::npos) return nullptr;
         }
 
-        jstring product = env->NewStringUTF(product1);
-        jstring model = env->NewStringUTF(model1);
-        jstring brand = env->NewStringUTF("google");
-        jstring manufacturer = env->NewStringUTF("Google");
-        jstring finger = env->NewStringUTF(finger1);
-        jstring tag = env->NewStringUTF("release-keys");
-        jstring type = env->NewStringUTF("user");
-
-        jfieldID brand_id = env->GetStaticFieldID(build_class, "BRAND", "Ljava/lang/String;");
-        if (brand_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, brand_id, brand);
-        }
-        jfieldID manufacturer_id = env->GetStaticFieldID(build_class, "MANUFACTURER", "Ljava/lang/String;");
-        if (manufacturer_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, manufacturer_id, manufacturer);
-        }
-        jfieldID product_id = env->GetStaticFieldID(build_class, "PRODUCT", "Ljava/lang/String;");
-        if (product_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, product_id, product);
-        }
-        jfieldID device_id = env->GetStaticFieldID(build_class, "DEVICE", "Ljava/lang/String;");
-        if (device_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, device_id, product);
-        }
-        jfieldID model_id = env->GetStaticFieldID(build_class, "MODEL", "Ljava/lang/String;");
-        if (model_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, model_id, model);
-        }
-        jfieldID tag_id = env->GetStaticFieldID(build_class, "TAGS", "Ljava/lang/String;");
-        if (tag_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, tag_id, tag);
-        }
-        jfieldID type_id = env->GetStaticFieldID(build_class, "TYPE", "Ljava/lang/String;");
-        if (type_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, type_id, type);
-        }
-        jfieldID finger_id = env->GetStaticFieldID(build_class, "FINGERPRINT", "Ljava/lang/String;");
-        if (finger_id != nullptr)
-        {
-            env->SetStaticObjectField(build_class, finger_id, finger);
+        // P1 List
+        if (package.find("com.google.android.apps.photos") != std::string::npos) {
+            return &DEV_P1;
         }
 
-        if (env->ExceptionCheck())
-        {
-            env->ExceptionClear();
+        // P5 List
+        if (package.find("com.google.android.gms") != std::string::npos) {
+            return &DEV_P5;
         }
 
-        env->DeleteLocalRef(brand);
-        env->DeleteLocalRef(manufacturer);
-        env->DeleteLocalRef(product);
-        env->DeleteLocalRef(model);
-        env->DeleteLocalRef(type);
-        env->DeleteLocalRef(tag);
-        env->DeleteLocalRef(finger);
+        return nullptr;
     }
-    void injectversion(const int inc_c)
-    {
-        if (env == nullptr)
-        {
-            LOGW("failed to inject android.os.Build for %s due to env is null", package_name);
-            return;
-        }
 
-        jclass build_class = env->FindClass("android/os/Build$VERSION");
-        if (build_class == nullptr)
-        {
-            LOGW("failed to inject android.os.Build.VERSION for %s due to build is null", package_name);
-            return;
-        }
+    void injectBuild(const TargetDevice& dev) {
+        if (!env) return;
+        jclass build_class = env->FindClass("android/os/Build");
+        if (!build_class) { if(env->ExceptionCheck()) env->ExceptionClear(); return; }
 
-        jint inc = (jint)inc_c;
+        setStaticString(build_class, "BRAND", "google");
+        setStaticString(build_class, "MANUFACTURER", "Google");
+        setStaticString(build_class, "PRODUCT", dev.product);
+        setStaticString(build_class, "DEVICE", dev.product);
+        setStaticString(build_class, "MODEL", dev.model);
+        setStaticString(build_class, "TAGS", "release-keys");
+        setStaticString(build_class, "TYPE", "user");
+        setStaticString(build_class, "FINGERPRINT", dev.fingerprint);
+    }
 
-        jfieldID inc_id = env->GetStaticFieldID(build_class, "DEVICE_INITIAL_SDK_INT", "I");
-        if (inc_id != nullptr)
-        {
-            env->SetStaticIntField(build_class, inc_id, inc);
-        }
+    void injectVersion(int sdkVer) {
+        jclass version_class = env->FindClass("android/os/Build$VERSION");
+        if (!version_class) { if(env->ExceptionCheck()) env->ExceptionClear(); return; }
 
-        if (env->ExceptionCheck())
-        {
-            env->ExceptionClear();
+        jfieldID sdk_id = env->GetStaticFieldID(version_class, "DEVICE_INITIAL_SDK_INT", "I");
+        if (env->ExceptionCheck()) env->ExceptionClear(); // Clear if field doesn't exist
+        
+        if (sdk_id != nullptr) {
+            env->SetStaticIntField(version_class, sdk_id, (jint)sdkVer);
         }
-    }    
-    int getSpoof(const char *process)
-    {
-        std::string package = process;
-        if (strcmp(process, "com.google.android.gms.unstable") == 0)
-            return 0;
+    }
 
-        for (auto &s : keep)
-        {
-            if (package.find(s) != std::string::npos)
-                return 0;
+    void setStaticString(jclass clazz, const char* fieldName, const char* value) {
+        jfieldID fieldId = env->GetStaticFieldID(clazz, fieldName, "Ljava/lang/String;");
+        if (env->ExceptionCheck()) { env->ExceptionClear(); return; }
+        if (fieldId) {
+            jstring jValue = env->NewStringUTF(value);
+            env->SetStaticObjectField(clazz, fieldId, jValue);
+            env->DeleteLocalRef(jValue);
         }
-        for (auto &s : P1)
-        {
-            if (package.find(s) != std::string::npos)
-                return 1;
-        }
-        for (auto &s : P5)
-        {
-            if (package.find(s) != std::string::npos)
-                return 2;
-        }
-        return 0;
     }
 };
 
