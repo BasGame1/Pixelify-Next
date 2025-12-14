@@ -38,6 +38,10 @@ target_link_libraries(${MODULE_NAME}-tensor log)
 add_library(${MODULE_NAME}-camera SHARED
             camera.cpp
             module.h)
+add_library(${MODULE_NAME}-photos SHARED 
+	    photos.cpp 
+	    module.h)
+target_link_libraries(${MODULE_NAME}-photos log)
 target_link_libraries(${MODULE_NAME}-camera log)
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
@@ -46,4 +50,6 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
             COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}-tensor.so")
     add_custom_command(TARGET ${MODULE_NAME}-camera POST_BUILD
             COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}-camera.so")
+    add_custom_command(TARGET ${MODULE_NAME}-photos POST_BUILD
+            COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}-photos.so")
 endif ()
