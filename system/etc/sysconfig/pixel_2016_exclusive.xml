@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <feature name="com.google.android.apps.photos.NEXUS_PRELOAD" />
+    <feature name="com.google.android.apps.photos.nexus_preload" />
+</config>
