@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixelify Monitor</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1E1E1E;
+            --text: #E0E0E0;
+            --text-dim: #A0A0A0;
+            --accent: #8AB4F8; /* Google Blue */
+            --success: #81C995;
+            --error: #F28B82;
+            --warning: #FDD663;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Google Sans', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BANNER AREA */
+        .banner-container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+        .banner-container img {
+            width: 100%;
+            height: auto;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .header-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* DASHBOARD GRID */
+        .container {
+            width: 90%;
+            max-width: 550px;
+            margin-top: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .card {
+            background-color: var(--card);
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label { font-size: 14px; color: var(--text-dim); }
+        .value { font-size: 16px; font-weight: 500; margin-top: 4px; }
+        
+        .status-dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background-color: var(--text-dim);
+            box-shadow: 0 0 8px rgba(255,255,255,0.1);
+        }
+        .status-active { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-error { background-color: var(--error); box-shadow: 0 0 8px var(--error); }
+        .status-warn { background-color: var(--warning); box-shadow: 0 0 8px var(--warning); }
+
+        /* LOG CONSOLE */
+        .console {
+            background-color: #000;
+            width: 90%;
+            max-width: 550px;
+            height: 200px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #0f0;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #333;
+        }
+
+        .btn-refresh {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding: 10px 24px;
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner-container">
+        <img src="banner.png" alt="Pixelify Banner">
+        <div class="header-title">Pixelify Next</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-col">
+                <span class="label">Zygisk Module</span>
+                <span class="value" id="zygisk-status">Checking...</span>
+            </div>
+            <div class="status-dot" id="dot-zygisk"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-col">
+                <span class="label">Google Photos</span>
+                <span class="value" id="photos-version">Scanning...</span>
+            </div>
+            <div class="status-dot" id="dot-photos"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-col">
+                <span class="label">Spoofing Status</span>
+                <span class="value" id="spoof-status">Analyzing Logs...</span>
+            </div>
+            <div class="status-dot" id="dot-spoof"></div>
+        </div>
+    </div>
+
+    <div class="console" id="log-console"> Waiting for logs... </div>
+
+    <button class="btn-refresh" onclick="refreshDashboard()">REFRESH STATUS</button>
+
+    <script>
+        // Define our log tags to search for (Matches your C++ LOG_TAG)
+        const LOG_TAGS = "PixelifyNext:I PixelifyPhotos:I PixelifyCameraFix:I";
+
+        async function refreshDashboard() {
+            if (typeof ksu === 'undefined') {
+                document.getElementById('log-console').innerText = "Error: KernelSU API not found. Open this in KSU Manager.";
+                return;
+            }
+
+            // 1. CHECK ZYGISK/MODULE STATUS
+            // We check if our library is mounted in the Zygisk folder
+            let cmdZygisk = `[ -f "/data/adb/modules/pixelify-next/zygisk/arm64-v8a.so" ] && echo "Installed" || echo "Missing"`;
+            let resZygisk = await ksu.exec(cmdZygisk);
+            updateStatus('zygisk-status', 'dot-zygisk', resZygisk.trim() === 'Installed', resZygisk.trim());
+
+            // 2. CHECK GOOGLE PHOTOS VERSION
+            let cmdPhotos = `dumpsys package com.google.android.apps.photos | grep versionName | head -n 1 | cut -d'=' -f2`;
+            let resPhotos = await ksu.exec(cmdPhotos);
+            let version = resPhotos.trim();
+            
+            if (version.length > 0) {
+                updateStatus('photos-version', 'dot-photos', true, version);
+            } else {
+                updateStatus('photos-version', 'dot-photos', false, "Not Installed");
+            }
+
+            // 3. CHECK INJECTION LOGS (Real verification)
+            // We look at the last 50 lines of logcat for our specific tags
+            let cmdLogs = `logcat -d -v time -t 50 -s ${LOG_TAGS}`;
+            let resLogs = await ksu.exec(cmdLogs);
+            let logs = resLogs.trim();
+
+            let consoleDiv = document.getElementById('log-console');
+            
+            if (logs.length > 10) {
+                consoleDiv.innerText = logs;
+                // If logs contain "Injecting", we know it's working
+                let isWorking = logs.includes("Injecting") || logs.includes("Detected");
+                
+                if (isWorking) {
+                    updateStatus('spoof-status', 'dot-spoof', true, "Active & Injecting");
+                } else {
+                    updateStatus('spoof-status', 'dot-spoof', false, "Idle / No Recent App Launch");
+                }
+            } else {
+                consoleDiv.innerText = "No recent logs found. \nOpen Google Photos or Camera to trigger the module.";
+                updateStatus('spoof-status', 'dot-spoof', 'warn', "Waiting for App Start...");
+            }
+        }
+
+        function updateStatus(textId, dotId, state, text) {
+            document.getElementById(textId).innerText = text;
+            let dot = document.getElementById(dotId);
+            
+            dot.className = "status-dot"; // reset
+            if (state === true) {
+                dot.classList.add("status-active");
+            } else if (state === 'warn') {
+                dot.classList.add("status-warn");
+            } else {
+                dot.classList.add("status-error");
+            }
+        }
+
+        // Auto-refresh on load
+        refreshDashboard();
+
+    </script>
+</body>
+</html>
