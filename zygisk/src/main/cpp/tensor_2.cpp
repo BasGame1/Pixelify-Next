@@ -12,10 +12,6 @@
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
 
-#define LOG_TAG "PixelifyPhotos"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
-
 // Config Definitions
 struct TargetDevice {
     const char* model;
