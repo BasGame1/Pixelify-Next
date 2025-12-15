@@ -15,11 +15,15 @@
 // This is the public API for Zygisk modules.
 // DO NOT MODIFY ANY CODE IN THIS HEADER.
 
+// WARNING: this file may contain changes that are not finalized.
+// Always use the following published header for development:
+// https://github.com/topjohnwu/zygisk-module-sample/blob/master/module/jni/zygisk.hpp
+
 #pragma once
 
 #include <jni.h>
 
-#define ZYGISK_API_VERSION 4
+#define ZYGISK_API_VERSION 5
 
 /*
 
@@ -157,6 +161,7 @@ struct AppSpecializeArgs {
     jobjectArray *const whitelisted_data_info_list;
     jboolean *const mount_data_dirs;
     jboolean *const mount_storage_dirs;
+    jboolean *const mount_sysprop_overrides;
 
     AppSpecializeArgs() = delete;
 };
