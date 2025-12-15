@@ -1,6 +1,5 @@
-install_app() {
-  local APP_FILENAME="$1"
-  local APP_PATH="$MODPATH/files/$APP_FILENAME"
+APP_FILENAME="$1"
+APP_PATH="$MODPATH/files/$APP_FILENAME"
 
   ui_print " "
   ui_print "***********************************"
@@ -89,4 +88,3 @@ install_app() {
     ui_print "  Only .apk and .apks files are supported."
     return 1
   fi
-}
