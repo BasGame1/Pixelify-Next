@@ -24,6 +24,9 @@ android {
                 arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
             }
         }
+        ndk {
+          abiFilters "arm64-v8a", "armeabi-v7a"
+        }
     }
     buildFeatures {
         prefab false
@@ -48,7 +51,7 @@ afterEvaluate {
 
         task("prepareMagiskFiles${variantCapped}", type: Sync) {
             duplicatesStrategy = DuplicatesStrategy.WARN
-        
+            
             dependsOn("assemble$variantCapped")
             def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
 
@@ -59,11 +62,11 @@ afterEvaluate {
             from(templatePath) {
                 include 'module.prop'
                 expand([
-                        id         : magiskModuleId,
-                        name       : moduleName,
-                        version    : moduleVersion,
+                        id          : magiskModuleId,
+                        name        : moduleName,
+                        version     : moduleVersion,
                         versionCode: moduleVersionCode.toString(),
-                        author     : moduleAuthor,
+                        author      : moduleAuthor,
                         description: moduleDescription,
                         volType: "1",
                 ])
@@ -71,34 +74,46 @@ afterEvaluate {
                         eol: FixCrLfFilter.CrLf.newInstance("lf"))
             }
             types.each { instance, resourceDir ->
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
+                def libSourceDir = "$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir"
+                def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
+                from(libSourceDir) {
                     into 'lib/zygisk'
-                    exclude "**/libpixelify-tensor.so"
-                    rename 'libpixelify.so', "${resourceDir}.so"
+                    include "**/libpixelify-next.so" 
+                    rename 'libpixelify-next.so', "${resourceDir}.so"
                 }
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
+                from(libSourceDir) {
+                    into 'lib/zygisk'
+                    include "**/libpixelify-next-camera.so"
+                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
+                }
+                from(libSourceDir) {
+                    into 'lib/zygisk'
+                    include "**/libpixelify-next-photos.so"
+                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
+                }
+                from(libSourceDir) {
                     into 'lib/zygisk_tensor'
-                    exclude "**/libpixelify.so"
-                    rename 'libpixelify-tensor.so', "${resourceDir}.so"
+                    include "**/libpixelify-next-tensor.so"
+                    rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
                 }
             }
+
             doLast {
                 copy {
                     from "$nativeOutDir"
                     into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-tensor.so"
+                    exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
                 }
                 copy {
                     from "$nativeOutDir"
                     into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify.so"
-                    rename "libpixelify-tensor.so" , "$variant.name"
+                    exclude "**/*.txt" , "**/libpixelify-next.so"
+                    rename "libpixelify-next-tensor.so" , "$variant.name"
                 }
             }
-
         }
 
-        task("novk${variantCapped}", type: Sync) {
+    task("novk${variantCapped}", type: Sync) {
             duplicatesStrategy = DuplicatesStrategy.WARN
             
             dependsOn("assemble$variantCapped")
@@ -111,11 +126,11 @@ afterEvaluate {
             from(templatePath) {
                 include 'module.prop'
                 expand([
-                        id         : magiskModuleId,
-                        name       : moduleName,
-                        version    : moduleVersion,
+                        id          : magiskModuleId,
+                        name        : moduleName,
+                        version     : moduleVersion,
                         versionCode: moduleVersionCode.toString(),
-                        author     : moduleAuthor,
+                        author      : moduleAuthor,
                         description: moduleDescription,
                         volType: "0",
                 ])
@@ -123,28 +138,36 @@ afterEvaluate {
                         eol: FixCrLfFilter.CrLf.newInstance("lf"))
             }
             types.each { instance, resourceDir ->
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
+                def libSourceDir = "$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir"
+                def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
+                from(libSourceDir) {
                     into 'lib/zygisk'
-                    exclude "**/libpixelify-tensor.so"
-                    rename 'libpixelify.so', "${resourceDir}.so"
+                    include "**/libpixelify-next.so"
+                    rename 'libpixelify-next.so', "${resourceDir}.so"
                 }
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
+                from(libSourceDir) {
+                    into 'lib/zygisk'
+                    include "**/*camera.so", "**/*photos.so"
+                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
+                }
+                from(libSourceDir) {
                     into 'lib/zygisk_tensor'
-                    exclude "**/libpixelify.so"
-                    rename 'libpixelify-tensor.so', "${resourceDir}.so"
+                    include "**/libpixelify-next-tensor.so"
+                    rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
                 }
             }
+
             doLast {
                 copy {
                     from "$nativeOutDir"
                     into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-tensor.so"
+                    exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
                 }
                 copy {
                     from "$nativeOutDir"
                     into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify.so"
-                    rename "libpixelify-tensor.so" , "libpixelify.so"
+                    exclude "**/*.txt" , "**/libpixelify-next.so"
+                    rename "libpixelify-next-tensor.so" , "libpixelify.so"
                 }
             }
         }
