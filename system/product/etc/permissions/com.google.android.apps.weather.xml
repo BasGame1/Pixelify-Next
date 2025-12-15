@@ -1,0 +1,19 @@
+<permissions>
+	<privapp-permissions package="com.google.android.apps.weather">
+		<permission name="android.permission.ACCESS_NETWORK_STATE"/>
+		<permission name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+		<permission name="com.google.android.gms.permission.AD_ID"/>
+		<permission name="android.permission.ACCESS_WIFI_STATE"/>
+		<permission name="android.permission.POST_NOTIFICATIONS"/>
+		<permission name="android.permission.ACCESS_COARSE_LOCATION"/>
+		<permission name="com.google.android.c2dm.permission.RECEIVE"/>
+		<permission name="android.permission.GET_PACKAGE_SIZE"/>
+		<permission name="android.permission.WAKE_LOCK"/>
+		<permission name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+		<permission name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+		<permission name="android.permission.INTERNET"/>
+		<permission name="com.google.android.apps.weather.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"/>
+		<permission name="android.permission.FOREGROUND_SERVICE"/>
+		<permission name="android.permission.ACCESS_FINE_LOCATION"/>
+	</privapp-permissions>
+</permissions>
