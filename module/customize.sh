@@ -41,13 +41,6 @@ elif [ -f /data/adb/riru/util_functions.sh ]; then
 else
     riru_path=""
 fi
-if [ -f $MODPATH/files/system.tar.xz ]; then
-	ui_print "Unpacking system.tar.xz"
-	tar xf $MODPATH/files/system.tar.xz
-else
-	ui_print "system.tar.xz not found on the module files, pls reinstall or some functions may not work"
-	exit 0
-fi
 # Set Installation type: Normal, Zygsik, Riru
 if [ "$KSU" == true ]; then
     ui_print "- Root App: KSU"
@@ -109,6 +102,23 @@ if [ $MODULE_TYPE -eq 2 ]; then
     # The module is using Zygisk.
     # Move the Zygisk libraries to the `zygisk` directory in the module path.
     mv "$ZYGISK_LIB_PATH" "$MODPATH/zygisk"
+ # Delete other arch libraries
+    if [ $ARCH = "arm64"]; then
+        rm -rf $MODPATH/zygisk/armeabi-v7a.so
+        rm -rf $MODPATH/zygisk/libpixelify-next-camera-32.so
+        rm -rf $MODPATH/zygisk/libpixelify-next-photos-32.so
+        rm -rf $MODPATH/zygisk-tensor/armeabi-v7a.so
+    else if [ $ARCH == "arm"]; then
+        rm -rf $MODPATH/zygisk/arm64-v8a.so
+        rm -rf $MODPATH/zygisk/libpixelify-next-camera-64.so
+        rm -rf $MODPATH/zygisk/libpixelify-next-photos-64.so
+        rm -rf $MODPATH/zygisk-tensor/arm64-v8a.so
+    else
+        ui_print " x Unsupported zygisk platform: $ARCH." 
+        ui_print " x Spoofing and other features wont work."
+    fi
+fi
+
 elif [ $MODULE_TYPE -eq 3 ]; then
     # The module is using Riru.
     # Enforce installation from the Magisk app.
@@ -147,9 +157,6 @@ if [ $API -le 23 ]; then
     ui_print " x Android version: 7.0+"
     exit 1
 fi
-
-# Remove Extra Library
-rm -rf $MODPATH/lib
 
 #sql file
 touch $MODPATH/flags.txt
@@ -237,9 +244,6 @@ echo "=============
 =============
 ---- Installation Logs Started ----
 " >>$logfile
-
-# extract system
-tar -xf $MODPATH/files/system.tar.xz -C $MODPATH
 
 # set permissions to executables
 chmod 0755 $MODPATH/addon/*
@@ -1674,7 +1678,7 @@ if [ $API -ge 36 ]; then
                 print "- Installing Pixel Launcher"
                 echo " - Installing Pixel Launcher" >>$logfile
                 print ""
-                . $MODPATH/PLauncher.sh
+                unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024.zip -d $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
                 REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
                     # CTS removed bc the apk had 2/65 on virustotal
                     #print "  Do you want to install Circle 2 search? (Stock rom only)"
@@ -1686,8 +1690,29 @@ if [ $API -ge 36 ]; then
                     #    pm install $MODPATH/files/CTS.apk
                     #fi
         else
-            echo " - Skipping Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system
+            echo " - Deleting Pixel Launcher" >>$logfile
+            rm -rf $MODPATH/system/product/app/WallpaperEmojiPrebuilt/
+            rm -rf $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.weather.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.oss.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.xml
+            rm -rf $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/product/media/bootanimation.zip
+            rm -rf $MODPATH/system/product/overlay/DevicePersonalizationServicesOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/GoogleWallpaperOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/PixelThemedIcons/
+            rm -rf $MODPATH/system/product/priv-app/DeviceIntelligenceNetworkPrebuilt/
+            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
+            rm -rf $MODPATH/system/product/priv-app/NexusLauncherRelease/
+            rm -rf $MODPATH/system/product/priv-app/QuickAccessWallet
+            rm -rf $MODPATH/system/product/priv-app/WallpaperPickerGoogleRelease/
+            rm -rf $MODPATH/system/product/priv-app/WeatherPixelPrebuilt/
+            rm -rf $MODPATH/system/etc/sysconfig/hiddenapi-whitelist-com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/etc/sysconfig/preinstalled-packages-platform-overlays.xml
+
         fi
 else
     echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
@@ -3682,19 +3707,19 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     	print "   Vol Up += Yes"
     	print "   Vol Down += No"
     	no_vk "GEMINI_BOOTANIMATION"
-	if $VKSEL; then
-	   echo " - Installing Pixel Bootanimation" >>$logfile
-	   if [ -f "/system/media/bootanimation.zip" ]; then
-	   	mkdir -p $MODPATH/system/media
-	   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/media/bootanimation.zip
-	   else
-		   if [ -f "/product/media/bootanimation.zip" ]; then
-		   	mkdir -p $MODPATH/product/media
-		   	mv $MODPATH/files/bootanimation.zip $MODPATH/product/media/bootanimation.zip
-		   else
-		   print " Failed to find bootanimation"
-	  fi
-	  fi
+        if $VKSEL; then
+        echo " - Installing Pixel Bootanimation" >>$logfile
+        if [ -f "/system/media/bootanimation.zip" ]; then
+            mkdir -p $MODPATH/system/media
+            mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/media/bootanimation.zip
+        else
+            if [ -f "/product/media/bootanimation.zip" ]; then
+                mkdir -p $MODPATH/product/media
+                mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/product/media/bootanimation.zip
+            else
+            print " Failed to find bootanimation"
+        fi
+        fi
        else
         echo " - Installing Pixel Bootanimation" >>$logfile
         if [ -f /system/media/bootanimation.zip ]; then
