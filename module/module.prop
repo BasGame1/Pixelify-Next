@@ -6,3 +6,4 @@ author=BasGame1
 description=Enables pixel exclusive features
 # 0 -  Disable, 1 - Enable
 DEVICE_USES_VOLUME_KEY=1
+zygisk=true
