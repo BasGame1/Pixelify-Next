@@ -6,7 +6,7 @@
 namespace pixelifytag {
 
 #ifndef TAG
-#define TAG    "Pixelify"
+#define TAG    "PixelifyNext"
 #endif
 
 #ifdef NDEBUG
