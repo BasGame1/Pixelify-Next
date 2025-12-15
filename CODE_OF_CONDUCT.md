@@ -1,4 +1,4 @@
-# Code of Conduct - PIXELIFY MAGISK MODULE
+# Code of Conduct - PIXELIFY NEXT MAGISK MODULE
 
 ## Our Pledge
 
