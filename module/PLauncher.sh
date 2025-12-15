@@ -3,7 +3,7 @@ ui_print "Installing Pixelify Next Luancher"
 ui_print "*********************************"
 ui_print ""
 ui_print "Unzipping"
-unzip $MODPATH/PLauncher.zip
+unzip -o $MODPATH/PLauncher.zip
 
 ui_print "- Setting permissions"
 
