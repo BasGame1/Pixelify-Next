@@ -160,3 +160,9 @@ INSTALL_STUDIO=0
 
 # Pixel Journal
 INSTALL_JOURNAL=0
+
+# Gemini bootanimation
+GEMINI_BOOTANIMATION=0
+
+#Quick share extension
+QUICK_SHARE=0
