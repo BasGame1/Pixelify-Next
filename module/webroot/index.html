@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixelify Monitor</title>
+    <title>Pixelify Next Monitor</title>
     <style>
         :root {
             --bg: #121212;
             --card: #1E1E1E;
             --text: #E0E0E0;
             --text-dim: #A0A0A0;
-            --accent: #8AB4F8; /* Google Blue */
+            --accent: #8AB4F8;
             --success: #81C995;
             --error: #F28B82;
             --warning: #FDD663;
         }
 
         body {
-            background-color: var(--bg);
+            background-image: url('banner.png');
             color: var(--text);
             font-family: 'Google Sans', Roboto, sans-serif;
             margin: 0;
@@ -27,19 +27,6 @@
             align-items: center;
         }
 
-        /* BANNER AREA */
-        .banner-container {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-        }
-        .banner-container img {
-            width: 100%;
-            height: auto;
-            border-bottom-left-radius: 16px;
-            border-bottom-right-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
         .header-title {
             position: absolute;
             bottom: 20px;
@@ -48,8 +35,6 @@
             font-weight: bold;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
-
-        /* DASHBOARD GRID */
         .container {
             width: 90%;
             max-width: 550px;
@@ -86,8 +71,6 @@
         .status-active { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
         .status-error { background-color: var(--error); box-shadow: 0 0 8px var(--error); }
         .status-warn { background-color: var(--warning); box-shadow: 0 0 8px var(--warning); }
-
-        /* LOG CONSOLE */
         .console {
             background-color: #000;
             width: 90%;
@@ -108,7 +91,7 @@
             margin-top: 20px;
             margin-bottom: 30px;
             padding: 10px 24px;
-            background-color: var(--accent);
+            background-color: black;
             color: #000;
             border: none;
             border-radius: 20px;
@@ -118,12 +101,6 @@
     </style>
 </head>
 <body>
-
-    <div class="banner-container">
-        <img src="banner.png" alt="Pixelify Banner">
-        <div class="header-title">Pixelify Next</div>
-    </div>
-
     <div class="container">
         <div class="card">
             <div class="card-col">
@@ -152,10 +129,7 @@
 
     <div class="console" id="log-console"> Waiting for logs... </div>
 
-    <button class="btn-refresh" onclick="refreshDashboard()">REFRESH STATUS</button>
-
     <script>
-        // Define our log tags to search for (Matches your C++ LOG_TAG)
         const LOG_TAGS = "PixelifyNext:I PixelifyPhotos:I PixelifyCameraFix:I";
 
         async function refreshDashboard() {
@@ -163,14 +137,9 @@
                 document.getElementById('log-console').innerText = "Error: KernelSU API not found. Open this in KSU Manager.";
                 return;
             }
-
-            // 1. CHECK ZYGISK/MODULE STATUS
-            // We check if our library is mounted in the Zygisk folder
             let cmdZygisk = `[ -f "/data/adb/modules/pixelify-next/zygisk/arm64-v8a.so" ] && echo "Installed" || echo "Missing"`;
             let resZygisk = await ksu.exec(cmdZygisk);
             updateStatus('zygisk-status', 'dot-zygisk', resZygisk.trim() === 'Installed', resZygisk.trim());
-
-            // 2. CHECK GOOGLE PHOTOS VERSION
             let cmdPhotos = `dumpsys package com.google.android.apps.photos | grep versionName | head -n 1 | cut -d'=' -f2`;
             let resPhotos = await ksu.exec(cmdPhotos);
             let version = resPhotos.trim();
@@ -180,9 +149,6 @@
             } else {
                 updateStatus('photos-version', 'dot-photos', false, "Not Installed");
             }
-
-            // 3. CHECK INJECTION LOGS (Real verification)
-            // We look at the last 50 lines of logcat for our specific tags
             let cmdLogs = `logcat -d -v time -t 50 -s ${LOG_TAGS}`;
             let resLogs = await ksu.exec(cmdLogs);
             let logs = resLogs.trim();
