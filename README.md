@@ -185,6 +185,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
 - [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
 - [Kevin] for gemini bootanimation
+- [SQlite Organization] (https://www.sqlite.org/) for SQlite3 uncompiled files
 - Pixelify Support Group Members for testing beta versions :)
 ### Version 4.0
 -INIT PIxelify Next
@@ -198,3 +199,19 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 -Added Pixel Journal app and Pixel Studio app (they crash on some devices)
 ### Version 4.6
 -Removed Pixel Studio, added gemini bootaniamtion and introduce Air Drop Quick Share (Quick share extension)
+### Version 5.0
+-Add webui to control the module
+-Add KSUn Next banner
+-Update the zygisk code
+-Add update json
+-Update zygisk code
+-Add global spoofing
+-Add sim card us spoofing
+-Fix bugs
+    - Pixel launcher pausing the installation
+    - Pixel launcher asking a y or n question
+    - Bootanimation not appearing
+    - Journal not installing
+    - System files not unpacking
+    - Zygisk code not being compatible
+
