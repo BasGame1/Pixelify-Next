@@ -8,17 +8,6 @@ alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
 VOL_KEYS="$(grep 'DEVICE_USES_VOLUME_KEY=' $MODPATH/module.prop | cut -d= -f2)"
 
-db_edit_decoded() {
-    package_name=$1
-    flag_type=$2
-    flag_value=$3
-    shift 3
-    for flag in "$@"; do
-        decoded_flag=$(python3 "$MODPATH/gms_flag_decoder.py" "$flag" "$package_name")
-        db_edit "$package_name" "$flag_type" "$flag_value" "$decoded_flag"
-    done
-}
-
 chmod 0755 $sqlite
 
 [ -z "$MAGISKTMP" ] && MAGISKTMP=/sbin
@@ -609,6 +598,7 @@ if [ $TENSOR -eq 1 ]; then
         rm -rf $MODPATH/zygisk $MODPATH/zygisk_1
     fi
 ###################################################################################################################################################################################################################
+if [ $API -ge 31 ]; then
 print ""
 print "Do you want to activate global spoofing?"
 print "It may break roms OTAs, but its neccesary for some features (call screen, mosey etc..)"
@@ -775,40 +765,6 @@ no_vk "GLOBAL_SPOOFING"
     else
         GLOBAL_SPOOF=0
         echo "- Global Spoofing Disabled" >>$logfile
-    fi
-
-# If Installation mode is Zygisk or Riru, Drop PIXEL_EXPERIENCES to support unlimited storage
-elif [ $MODULE_TYPE -eq 2 ] || [ $MODULE_TYPE -eq 3 ]; then
-    echo "- Enabling Unlimited storage" >>$logfile
-    drop_sys
-else
-    # As there is No option for Particular apps spooifng with zygsik or Riru, go with legacy one
-    print "  Do you want to Spoof your device to Pixel 5/Pixel 6 Pro?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
-    no_vk "ENABLE_PIXEL_SPOOFING"
-    if $VKSEL; then
-        PIXEL_SPOOF=1
-        print " ---------"
-        print "  Note: If your device has any problems with downloading in the Play Store, "
-        print "  Please Select Pixel 6 Pro"
-        print "---------"
-        print ""
-        print "  Select Spoof to Pixel 5 (recommended) or Pixel 9 Pro XL?"
-        print "   Vol Up += Pixel 5"
-        print "   Vol Down += Pixel 9 Pro XL(Google Photos Unlimited backup may not work properly)"
-        no_vk "TARGET_USES_PIXEL5_SPOOF"
-        if $VKSEL; then
-            sed -i -e "s/Pixel 9 Pro XL/Pixel 5/g" $MODPATH/spoof.prop
-        fi
-        # Remove Pixel Experience 2021 to 2023
-        KEEP_PIXEL_2021=0
-        KEEP_PIXEL_2020=1
-        drop_sys
-        echo " - Spoofing device to $(grep ro.product.model $MODPATH/spoof.prop | cut -d'=' -f2) ( $(grep ro.product.device $MODPATH/spoof.prop | cut -d'=' -f2) )" >>$logfile
-        cat $MODPATH/spoof.prop >>$MODPATH/system.prop
-    else
-        echo " - Ignoring spoofing device" >>$logfile
     fi
 fi
 
@@ -1217,6 +1173,24 @@ if [ -d /data/data/$DIALER ]; then
         db_edit com.google.android.dialer extensionVal G__tk_mdd_ph_config $TKBIN
         db_edit com.google.android.dialer extensionVal model_download_group_config $XATUCONFIGBIN
         db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45417183 $XATUCONFIGBIN
+	db_editbugle_phenotype__use_legacy_normalized_destination_in_participant_creation 1
+	db_edit bugle_phenotype__use_main_activity_everywhere_v2 1
+	db_edit bugle_phenotype__use_messaging_identity_list_in_insert_protocol_tombstone 1
+	db_edit bugle_phenotype__verify_participant_in_conversation 1
+	db_edit bugle_phenotype__verify_thread_ids_cache 1
+	db_edit bugle_phenotype__verify_unique_session_ids 1
+	db_edit enable_lighter_clean_up_handler 1
+	db_edit bugle_phenotype__bug_169439511_change_default_filter 1
+	db_edit bugle_phenotype__conversation_labels_enabled 1
+	db_edit bugle_phenotype__enable_additional_annotation_logging 1
+	db_edit bugle_phenotype__enable_home_screen_banner 1
+	db_edit bugle_phenotype__enable_maestro_demo 1
+	db_edit bugle_phenotype__enable_otp_auto_deletion 1
+	db_edit bugle_phenotype__enable_supersort_annotators 1
+	db_edit bugle_phenotype__supersort_badge_all_filter 1
+	db_edit bugle_phenotype__supersort_enable_otp_banner_in_business_updates 1
+	db_edit bugle_phenotype__supersort_enable_qpbc 1
+	db_edit bugle_phenotype__supersort_enable_update_donation_banner 1
         # Patching Ends
 
         # Install language pack
