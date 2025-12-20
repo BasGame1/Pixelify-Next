@@ -38,8 +38,13 @@ if [ "$KSU" == true ]; then
         # Set the module type to Rezygisk
         MODULE_TYPE=2
         ui_print "- Installation Type: Rezygisk"
+    elif [ -d '/data/adb/modules/zygisksu' ]; then
+    	# ZygsikNext is installed.
+        # Set the module type to ZygiskNext
+        MODULE_TYPE=2
+        ui_print "- Installation Type: ZygiskNext"
     else
-        # Rezygisk is not installed.
+        # Rezygisk or zygisk next is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
         ui_print "- Installation Type: normal installation"
