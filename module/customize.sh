@@ -1719,6 +1719,78 @@ fi
 # checking Monet is supported or not
 is_monet
 
+# Pixel Launcher
+if [ $API -ge 36 ]; then
+    PL=$(find /system -name *Launcher* | grep -v overlay | grep -v Nexus | grep -v bin | grep -v "\.")
+    TR=$(find /system -name *Trebuchet* | grep -v overlay | grep -v "\.")
+    QS=$(find /system -name *QuickStep* | grep -v overlay | grep -v "\.")
+    LW=$(find /system -name *MiuiHome* | grep -v overlay | grep -v "\.")
+    TW=$(find /system -name *TouchWizHome* | grep -v overlay | grep -v "\.")
+    KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
+
+            REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
+        print "  Do you want to install Pixel Launcher? (Android 16 only)"
+        print "  Thax to @TempMeow and @Tristan_xxxxx for the apks"
+        print "   Vol Up += Yes"
+        print "   Vol Down += No"
+        no_vk "ENABLE_PIXEL_LAUNCHER"
+        if $VKSEL; then
+                print "- Installing Pixel Launcher"
+                echo " - Installing Pixel Launcher" >>$logfile
+                print ""
+                unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/DevicePersonalizationPrebuiltPixel2024.zip -d $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
+                set_perm_recursive $MODPATH/system/etc 0 0 0755 0644
+		set_perm_recursive $MODPATH/system/product/app 0 0 0755 0644
+		set_perm_recursive $MODPATH/system/product/etc 0 0 0755 0644
+		set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
+		set_perm_recursive $MODPATH/system/product/overlay 0 0 0755 0644
+		set_perm_recursive $MODPATH/system/product/priv-app 0 0 0755 0644
+		set_contexts $MODPATH/system/etc/sysconfig u:object_r:system_sysconfig_file:s0
+		set_contexts $MODPATH/system/product/app u:object_r:product_app_file:s0
+		set_contexts $MODPATH/system/product/etc/permissions u:object_r:product_etc_file:s0
+		set_contexts $MODPATH/system/product/media u:object_r:product_media_file:s0
+		set_contexts $MODPATH/system/product/overlay u:object_r:product_overlay_file:s0
+		set_contexts $MODPATH/system/product/priv-app u:object_r:product_priv_app_file:s0
+                REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
+                    # CTS removed bc the apk had 2/65 on virustotal
+                    #print "  Do you want to install Circle 2 search? (Stock rom only)"
+                    #print "  APk shared by"
+                    #print "   Vol Up += Yes"
+                    #print "   Vol Down += No"
+                    #no_vk "ENABLE_CTS"
+                    #if $VKSEL; then
+                    #    pm install $MODPATH/files/CTS.apk
+                    #fi
+        else
+            echo " - Deleting Pixel Launcher" >>$logfile
+            rm -rf $MODPATH/system/product/app/WallpaperEmojiPrebuilt/
+            rm -rf $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.weather.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.oss.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.xml
+            rm -rf $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/product/media/bootanimation.zip
+            rm -rf $MODPATH/system/product/overlay/DevicePersonalizationServicesOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/GoogleWallpaperOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
+            rm -rf $MODPATH/system/product/overlay/PixelThemedIcons/
+            rm -rf $MODPATH/system/product/priv-app/DeviceIntelligenceNetworkPrebuilt/
+            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
+            rm -rf $MODPATH/system/product/priv-app/NexusLauncherRelease/
+            rm -rf $MODPATH/system/product/priv-app/QuickAccessWallet
+            rm -rf $MODPATH/system/product/priv-app/WallpaperPickerGoogleRelease/
+            rm -rf $MODPATH/system/product/priv-app/WeatherPixelPrebuilt/
+            rm -rf $MODPATH/system/etc/sysconfig/hiddenapi-whitelist-com.google.android.apps.nexuslauncher.xml
+            rm -rf $MODPATH/system/etc/sysconfig/preinstalled-packages-platform-overlays.xml
+
+        fi
+else
+    echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
+    rm -rf $MODPATH/system/product
+fi
+
 # Pixel bootanimation
 if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     print "  Do you want to install Pixel Bootanimation?"
@@ -1735,10 +1807,12 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
 	   if [ -f "/system/media/bootanimation.zip" ]; then
 	   	mkdir -p $MODPATH/system/media
 	   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/media/bootanimation.zip
+	   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 	   else
 		   if [ -f "/product/media/bootanimation.zip" ]; then
 		   	mkdir -p $MODPATH/product/media
-		   	mv $MODPATH/files/bootanimation.zip $MODPATH/product/media/bootanimation.zip
+		   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/product/media/bootanimation.zip
+		   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 		   else
 		   print " Failed to find bootanimation"
 	  fi
@@ -1804,66 +1878,6 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     fi
 else
     rm -rf $MODPATH/system$product/media/boot*.zip
-fi
-
-# Pixel Launcher
-if [ $API -ge 36 ]; then
-    PL=$(find /system -name *Launcher* | grep -v overlay | grep -v Nexus | grep -v bin | grep -v "\.")
-    TR=$(find /system -name *Trebuchet* | grep -v overlay | grep -v "\.")
-    QS=$(find /system -name *QuickStep* | grep -v overlay | grep -v "\.")
-    LW=$(find /system -name *MiuiHome* | grep -v overlay | grep -v "\.")
-    TW=$(find /system -name *TouchWizHome* | grep -v overlay | grep -v "\.")
-    KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
-
-            REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-        print "  Do you want to install Pixel Launcher? (Android 16 only)"
-        print "  Thax to @TempMeow and @Tristan_xxxxx for the apks"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
-        no_vk "ENABLE_PIXEL_LAUNCHER"
-        if $VKSEL; then
-                print "- Installing Pixel Launcher"
-                echo " - Installing Pixel Launcher" >>$logfile
-                print ""
-                unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024.zip -d $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
-                REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-                    # CTS removed bc the apk had 2/65 on virustotal
-                    #print "  Do you want to install Circle 2 search? (Stock rom only)"
-                    #print "  APk shared by"
-                    #print "   Vol Up += Yes"
-                    #print "   Vol Down += No"
-                    #no_vk "ENABLE_CTS"
-                    #if $VKSEL; then
-                    #    pm install $MODPATH/files/CTS.apk
-                    #fi
-        else
-            echo " - Deleting Pixel Launcher" >>$logfile
-            rm -rf $MODPATH/system/product/app/WallpaperEmojiPrebuilt/
-            rm -rf $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.weather.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.oss.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.xml
-            rm -rf $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/product/media/bootanimation.zip
-            rm -rf $MODPATH/system/product/overlay/DevicePersonalizationServicesOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/GoogleWallpaperOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/PixelThemedIcons/
-            rm -rf $MODPATH/system/product/priv-app/DeviceIntelligenceNetworkPrebuilt/
-            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
-            rm -rf $MODPATH/system/product/priv-app/NexusLauncherRelease/
-            rm -rf $MODPATH/system/product/priv-app/QuickAccessWallet
-            rm -rf $MODPATH/system/product/priv-app/WallpaperPickerGoogleRelease/
-            rm -rf $MODPATH/system/product/priv-app/WeatherPixelPrebuilt/
-            rm -rf $MODPATH/system/etc/sysconfig/hiddenapi-whitelist-com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/etc/sysconfig/preinstalled-packages-platform-overlays.xml
-
-        fi
-else
-    echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
-    rm -rf $MODPATH/system
 fi
 
 #Adding Google san font.
