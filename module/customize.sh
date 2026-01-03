@@ -1348,7 +1348,7 @@ fi
 # Next Generation assistant installation
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
     print "  Google is installed."
-    print "  Do you want to installed Next generation assistant?"
+    print "  Do you want to install Next generation assistant?"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
     no_vk "ENABLE_NGA"
