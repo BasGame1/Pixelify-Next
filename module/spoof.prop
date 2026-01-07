@@ -1,5 +1,7 @@
 ro.product.brand=google
-ro.product.device=komodo
+ro.product.device=blazer
 ro.product.manufacturer=Google
-ro.product.model=Pixel 9 Pro XL
-ro.product.name=komodo
+ro.product.model=Pixel 10 Pro
+ro.product.name=blazer
+ro.system.build.fingerprint=google/blazer/blazer:15/BP1A.250405.005.B1/13151136:user/release-keys
+ro.build.display.id=BP1A.250405.005.B1 (akita spoofed by PixelifyNext)
