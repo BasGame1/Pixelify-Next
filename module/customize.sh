@@ -279,7 +279,7 @@ fi
 if [ -f $pix/app.txt ]; then
     rm -rf $pix/apps_temp.txt
     cp -f $pix/app.txt $pix/apps_temp.txt
-else
+0;276;0c0;276;0c0;276;0celse
     touch $pix/apps_temp.txt
 fi
 
@@ -1546,18 +1546,34 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
 fi
 
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
-print "  Google is installed."
+    print "  Google is installed."
     print "  Do you want to installed AirDrop Quick Share? [UNTESTED]"
     print "  (you will need to have quick share installed and pixel 10 spoof)"
     print "   Vol Up += Yes"
     print "   Vol Down += No"
     no_vk "QUICK_SHARE"
     if $VKSEL; then
-        echo " - Installing Quick share extension" >>$logfile
+        print " - Installing Quick share extension" >>$logfile
         print "- Installing Quick share extension"
         print ""
         . $MODPATH/installAPK.sh mosey.apkm
      fi
+fi
+if [ -d /data/data/com.google.android.googlequicksearchbox ]; then
+   print ""
+   print " Google its installed."
+   print " Do you want to install other pixel apps? (Weather, recorder, etc)"
+   print " Vol up += Yes"
+   print " Vol down += No"
+   no_vk "PIXEL_APPS"
+   if $VKSEL; then
+	print ""
+	print "Installing pixel apps"
+        print ""
+
+	#TODO update with apps names
+	. $MODPATH/installAPK.sh 
+        . $MODPATH/installAPK.sh	
 fi
 
 # Pixel Studio
