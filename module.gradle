@@ -11,9 +11,9 @@ ext {
        the older version, please pay attention.
     */
     moduleName = "PixelifyNext"
-    moduleAuthor = "Kingsman44 + BasGame1"
-    moduleDescription = "Enables pixel exclusive features :- Call Screening, Live Translate, Direct Call, Google Dialer Call Recording, Extreme Battery Saver, Hold For Me, Gboard Smart Compose, Adaptive Connectivity, Adaptive Sound, Next generation assistant, Pixel LiveWallpapers, Google Fit Heart rate and many more..."
-    moduleVersion = "v5.0-BETA"
-    moduleVersionCode = 500000000
+    moduleAuthor = "BasGame1"
+    moduleDescription = "Enables pixel exclusive features"
+    moduleVersion = "v5.1-BETA"
+    moduleVersionCode = 500010000
     magiskModuleId = "PixelifyNext"
 }
