@@ -33,8 +33,8 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 ### Installation instructions for Pixel Launcher
 - Your launcher app will crash, so go to settings
 - Search for deafult apps
-- And select Pixel Launcher as your default home laucnher
-- 
+- And select Pixel Launcher as your default home launcher
+
 ### After Installations (For First Time Pixelify Next Installation):-
 1) Playstore
 - Clear Playstore data
@@ -215,5 +215,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
     - Journal not installing
     - System files not unpacking
     - Zygisk code not being compatible
+
 
 
