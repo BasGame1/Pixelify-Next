@@ -606,7 +606,7 @@ if [ $TENSOR -eq 1 ]; then
 if [ $API -ge 31 ]; then
 print ""
 print "Do you want to activate global spoofing?"
-print "It may break roms OTAs, but its neccesary for some features (call screen, mosey etc..)"
+print "It may break roms OTAs, but its neccesary for some features (call screen etc..)"
 print "   Vol Up += Yes"
 print "   Vol Down += No"
 no_vk "GLOBAL_SPOOFING"
@@ -1545,36 +1545,35 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
      fi
 fi
 
-if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
-    print "  Google is installed."
-    print "  Do you want to installed AirDrop Quick Share? [UNTESTED]"
-    print "  (you will need to have quick share installed and pixel 10 spoof)"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
-    no_vk "QUICK_SHARE"
-    if $VKSEL; then
-        print " - Installing Quick share extension" >>$logfile
-        print "- Installing Quick share extension"
-        print ""
-        . $MODPATH/installAPK.sh mosey.apkm
-     fi
-fi
-if [ -d /data/data/com.google.android.googlequicksearchbox ]; then
-   print ""
-   print " Google its installed."
-   print " Do you want to install other pixel apps? (Weather, recorder, etc)"
-   print " Vol up += Yes"
-   print " Vol down += No"
-   no_vk "PIXEL_APPS"
-   if $VKSEL; then
-	print ""
-	print "Installing pixel apps"
-        print ""
-
-	#TODO update with apps names
-	. $MODPATH/installAPK.sh 
-        . $MODPATH/installAPK.sh	
-fi
+#if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
+#    print "  Google is installed."
+#    print "  Do you want to installed AirDrop Quick Share? [UNTESTED]"
+#    print "  (you will need to have quick share installed and pixel 10 spoof)"
+#    print "   Vol Up += Yes"
+#    print "   Vol Down += No"
+#    no_vk "QUICK_SHARE"
+#    if $VKSEL; then
+#        print " - Installing Quick share extension" >>$logfile
+#        print "- Installing Quick share extension"
+#        print ""
+#        . $MODPATH/installAPK.sh mosey.apkm
+#     fi
+#fi
+#if [ -d /data/data/com.google.android.googlequicksearchbox ]; then
+#   print ""
+#   print " Google its installed."
+#   print " Do you want to install other pixel apps? (Weather, recorder, etc)"
+#   print " Vol up += Yes"
+#   print " Vol down += No"
+#   no_vk "PIXEL_APPS"
+#   if $VKSEL; then
+#       print ""
+#       print "Installing pixel apps"
+#       print ""
+#       TODO update with apps names
+#       . $MODPATH/installAPK.sh 
+#       . $MODPATH/installAPK.sh	
+#fi
 
 # Pixel Studio
 #if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
@@ -2287,7 +2286,7 @@ $REMOVE
 " >>$logfile
 
 echo " ---- Installation Finished ----" >>$logfile
-
+fi
 print ""
 print "- Done"
 print ""
