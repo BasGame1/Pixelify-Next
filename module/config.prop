@@ -166,3 +166,6 @@ GEMINI_BOOTANIMATION=0
 
 #Quick share extension
 QUICK_SHARE=0
+
+#Pixel apps
+PIXEL_APPS=0
