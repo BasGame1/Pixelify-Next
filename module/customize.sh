@@ -1541,7 +1541,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
         echo " - Installing Google Journal" >>$logfile
         print "- Installing Google Journal"
         print ""
-        . $MODPATH/installAPK.sh Journal.apk
+        . $MODPATH/installAPK.sh Journal.apk $MODPATH/files/Journal.apk
      fi
 fi
 
@@ -2286,7 +2286,7 @@ $REMOVE
 " >>$logfile
 
 echo " ---- Installation Finished ----" >>$logfile
-fi
+
 print ""
 print "- Done"
 print ""
