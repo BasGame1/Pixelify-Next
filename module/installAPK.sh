@@ -30,7 +30,7 @@ elif [ $APK_CUT == apks ] || [ $APK_CUT == apkm ]; then
    APK_SIZE=$( $APKSIZE + $SIZE )
  done
 
- SESSION=$(pm install-create -S $SIZE | grep -Eo '[0-9]'+]
+ SESSION=$(pm install-create -S $SIZE | grep -Eo '[0-9]'+])
  echo "Session created with ID $SESSION and size $SIZE"
 
  I=0
