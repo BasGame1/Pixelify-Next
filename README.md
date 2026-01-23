@@ -78,9 +78,6 @@ If Some features not working,
 - Check file /sdcard/Pixelify/flaglog.txt
 if you find Status: Error xxxxx on some flags, then you may need to reinstall pixelify.
 
-## Stargazers over time
-[![Stargazers over time](https://starchart.cc/BasGame1/Pixelify-Next.svg?variant=adaptive)](https://starchart.cc/BasGame1/Pixelify-Next)
-
 ### Installation without Volume Keys
 - Use packages with Pixelify-${version}-no_VK.zip
 - Place config.prop in your internal storage>Pixelify (/sdcard/Pixelify/config.prop)
@@ -215,6 +212,16 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
     - Journal not installing
     - System files not unpacking
     - Zygisk code not being compatible
+
+### Version 5.1
+ - Recode apk installer script
+ - Fix bugs
+   - Mosey not installing
+### Version 5.2
+ - Drop mosey support (it was not working correctly)
+ - Fix bugs
+   - Syntax errors causing the installation to fail
+
 
 
 
