@@ -4,7 +4,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
  
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
-- **ARM64 device**
+- **ARM64 or ARM32 device**
 - **Volume Keys (optional)**
 - **Internet for downloading NGA Resources, Pixel Livewallpaper, Device Personalization Services & Pixel Launcher**
 - **Magisk v24 or above from Pixelify v2+**
@@ -221,6 +221,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop mosey support (it was not working correctly)
  - Fix bugs
    - Syntax errors causing the installation to fail
+
 
 
 
