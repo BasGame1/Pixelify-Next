@@ -1,7 +1,11 @@
 # PIXELIFY NEXT MAGISK MODULE
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
- 
+
+## 🐛 Bugs
+- **Pixel Launcher on android 16 qpr1 and qpr2**
+- **Flag system (ex. dialer features) due to server side changed**
+- 
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 or ARM32 device**
@@ -11,17 +15,17 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 - **Zygisk (Recommended but not mandatory, needed for spoofing functions)**
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
 
-## Contact (for errors or suggestions)
+## 📞 Contact (for errors or suggestions)
 - Telegram (https://t.me/basgame1)
 - Group Chat (https://t.me/PixelifyNext)
 - Group Channel (https:/t.me/Pixelifychannel)
 - Xda (https://xdaforums.com/m/basgame1.13021465/)
 - Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
-### Unsupported Roms
+### ❌ Unsupported Roms
 - Realme Ui (Android 14), Oxygen Os (Android 14), axion Os (Android 16) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. 
 #Don't Flash Pixelify Next on it
 
-### Supported Roms
+### 📱 Supported Roms
 - Tested on LineageOS (Android 15 and 16)
 
 ### Installation instructions for v4
@@ -221,6 +225,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop mosey support (it was not working correctly)
  - Fix bugs
    - Syntax errors causing the installation to fail
+
 
 
 
