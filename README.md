@@ -4,7 +4,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 
 ## 🐛 Bugs
 - **Pixel Launcher on android 16 qpr1 and qpr2**
-- **Flag system (ex. dialer features) due to server side changed**
+- **Flag system (ex. dialer features or editor features) due to server side changed**
 - 
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
@@ -225,6 +225,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop mosey support (it was not working correctly)
  - Fix bugs
    - Syntax errors causing the installation to fail
+
 
 
 
