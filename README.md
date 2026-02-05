@@ -1,6 +1,7 @@
 # PIXELIFY NEXT MAGISK MODULE
 ![Platform](https://img.shields.io/badge/Platform-Android-green?style=flat-square&logo=android)
 ![Static Badge](https://img.shields.io/badge/Language-Bash-blue?logo=GNU%20Bash)
+
 A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
 
@@ -226,6 +227,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop mosey support (it was not working correctly)
  - Fix bugs
    - Syntax errors causing the installation to fail
+
 
 
 
