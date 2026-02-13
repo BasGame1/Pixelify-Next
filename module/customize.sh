@@ -1,5 +1,18 @@
 #!/system/bin/sh
-
+ui_print " ____  _ ___  _ _____ _     _  ________  _";
+ui_print "/  __\\/ \\\\  \\///  __// \\   / \\/    /\\  \\//";
+ui_print "|  \\/|| | \\  / |  \\  | |   | ||  __\\ \\  / ";
+ui_print "|  __/| | /  \\ |  /_ | |_/\\| || |    / /  ";
+ui_print "\\_/   \\_//__/\\\\\\____\\\\____/\\_/\\_/   /_/   ";
+ui_print "                                          ";
+ui_print " _      ________  _ _____                 ";
+ui_print "/ \\  /|/  __/\\  \\///__ __\\                ";
+ui_print "| |\\ |||  \\   \\  /   / \\                  ";
+ui_print "| | \\|||  /_  /  \\   | |                  ";
+ui_print "\\_/  \\|\\____\\/__/\\\\  \\_/                  ";
+ui_print "                                          ";
+ui_print "                                          ";
+ui_print "                                          ";
 # run Pixelify Functions and Variables
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
