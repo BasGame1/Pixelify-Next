@@ -20,7 +20,7 @@ ui_print "                                          ";
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
 VOL_KEYS="$(grep 'DEVICE_USES_VOLUME_KEY=' $MODPATH/module.prop | cut -d= -f2)"
-
+MAGISK_CLI="$(which magisk)"
 chmod 0755 $sqlite
 
 [ -z "$MAGISKTMP" ] && MAGISKTMP=/sbin
@@ -62,7 +62,7 @@ if [ "$KSU" == true ]; then
         MODULE_TYPE=1
         ui_print "- Installation Type: normal installation"
     fi
-else
+elif [ ! -z  "$MAGISK_CLI" ]; then 
     ui_print "- Root App: Magisk"
     if [ ! -z $riru_path ]; then
         # Riru is installed.
@@ -101,6 +101,26 @@ else
             MODULE_TYPE=1
             ui_print "- Installation Type: normal installation"
         fi
+    fi
+else 
+    # Apatch or an unkown root app is installed.
+    # Set the module type to normal installation
+    ui_print "- Root App: Apatch or unknown"
+    if [ -d '/data/adb/modules/rezygisk' ]; then
+        # Rezygisk is installed.
+        # Set the module type to Rezygisk
+        MODULE_TYPE=2
+        ui_print "- Installation Type: Rezygisk"
+    elif [ -d '/data/adb/modules/zygisksu' ]; then
+    	# ZygsikNext is installed.
+        # Set the module type to ZygiskNext
+        MODULE_TYPE=2
+        ui_print "- Installation Type: ZygiskNext"
+    else
+        # Rezygisk or zygisk next is not installed.
+        # Set the module type to normal installation
+        MODULE_TYPE=1
+        ui_print "- Installation Type: normal installation"
     fi
 fi
 
