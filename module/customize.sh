@@ -1811,6 +1811,7 @@ if [ $API -ge 36 ]; then
                     #fi
         else
             echo " - Deleting Pixel Launcher" >>$logfile
+            # This its not a great coding practice, but it will stay this way for now, marked as a TODO
             rm -rf $MODPATH/system/product/app/WallpaperEmojiPrebuilt/
             rm -rf $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml
             rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml
