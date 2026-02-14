@@ -1854,7 +1854,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
 	   echo " - Installing Pixel Bootanimation" >>$logfile
 	   if [ -f "/system/media/bootanimation.zip" ]; then
 	   	mkdir -p $MODPATH/system/media
-	   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/media/bootanimation.zip
+	   	mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/media/bootanimation.zip
 	   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 	   else
 		   if [ -f "/product/media/bootanimation.zip" ]; then
