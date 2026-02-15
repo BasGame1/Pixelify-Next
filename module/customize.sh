@@ -1811,33 +1811,18 @@ if [ $API -ge 36 ]; then
                     #fi
         else
             echo " - Deleting Pixel Launcher" >>$logfile
-            # This its not a great coding practice, but it will stay this way for now, marked as a TODO
-            rm -rf $MODPATH/system/product/app/WallpaperEmojiPrebuilt/
-            rm -rf $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.weather.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.oss.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.as.xml
-            rm -rf $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/product/etc/permissions/com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/product/media/bootanimation.zip
-            rm -rf $MODPATH/system/product/overlay/DevicePersonalizationServicesOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/GoogleWallpaperOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/PixelLauncherOverlay.apk
-            rm -rf $MODPATH/system/product/overlay/PixelThemedIcons/
-            rm -rf $MODPATH/system/product/priv-app/DeviceIntelligenceNetworkPrebuilt/
-            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
-            rm -rf $MODPATH/system/product/priv-app/NexusLauncherRelease/
-            rm -rf $MODPATH/system/product/priv-app/QuickAccessWallet
-            rm -rf $MODPATH/system/product/priv-app/WallpaperPickerGoogleRelease/
-            rm -rf $MODPATH/system/product/priv-app/WeatherPixelPrebuilt/
-            rm -rf $MODPATH/system/etc/sysconfig/hiddenapi-whitelist-com.google.android.apps.nexuslauncher.xml
-            rm -rf $MODPATH/system/etc/sysconfig/preinstalled-packages-platform-overlays.xml
+            for FILE in $MODPATH/system/*.apk; do
+                rm -rf $FILE 2>/dev/null
+            done
+            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024
 
         fi
 else
     echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
-    rm -rf $MODPATH/system/product
+    for FILE in $MODPATH/system/*.apk; do
+        rm -rf $FILE 2>/dev/null
+    done
+    rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024
 fi
 
 # Pixel bootanimation
