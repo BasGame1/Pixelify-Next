@@ -39,7 +39,7 @@ for apk in $MODPATH/tmp/*.apk; do
  APK_SIZE_I=$(ls -l $MODPATH/tmp $APK | tr -s ' ' | cut -d ' ' -f 5) 
  INSTALL=$(pm install-write -S $APK_SIZE_I $SESSION $I $MODPATH/tmp/$APK)
  if [ $INSTALL != 0 ]; then
-   echo "Failed to install $APK\n"
+   echo "Failed to install $APK"
    exit 1
  fi
  I=$(I + 1)
