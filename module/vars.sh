@@ -994,6 +994,18 @@ gfont9='    <family customizationType="new-named-family" name="google-sans-text-
       </font>
     </family>'
 
+# Call screening
+ISO=us,
+MCC=331
+MNC=480
+MCCMNC=331480
+OPERATOR=Verizon
+COUNTRY=US
+TZ=America/New_York
+IMEI1=$(getprop ro.boot.imei1)
+IMEI2=$(getprop ro.boot.imei2)
+SERIAL_NO=$(getprop ro.serialno)
+
 var_menu="
 =====================
 Installation Menu
