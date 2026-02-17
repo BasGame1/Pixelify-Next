@@ -1817,7 +1817,6 @@ if [ $API -ge 36 ]; then
 
             REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
         print "  Do you want to install Pixel Launcher? (Android 16 only)"
-        print "  Thax to @TempMeow and @Tristan_xxxxx for the apks"
         print "   Vol Up += Yes"
         print "   Vol Down += No"
         no_vk "ENABLE_PIXEL_LAUNCHER"
@@ -1825,7 +1824,7 @@ if [ $API -ge 36 ]; then
                 print "- Installing Pixel Launcher"
                 echo " - Installing Pixel Launcher" >>$logfile
                 print ""
-                unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/DevicePersonalizationPrebuiltPixel2024.zip -d $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024/
+                unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025/DevicePersonalizationPrebuiltPixel2025.zip $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025
                 set_perm_recursive $MODPATH/system/etc 0 0 0755 0644
 		set_perm_recursive $MODPATH/system/product/app 0 0 0755 0644
 		set_perm_recursive $MODPATH/system/product/etc 0 0 0755 0644
@@ -1853,7 +1852,7 @@ if [ $API -ge 36 ]; then
             for FILE in $MODPATH/system/*.apk; do
                 rm -rf $FILE 2>/dev/null
             done
-            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024
+            rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025
 
         fi
 else
