@@ -6,7 +6,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
 
 ## 🐛 Bugs
-- **Flag system (ex. editor features) due to server side changed**
+- **Flag system (ex. editor features) due to server side changes**
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 or ARM32 device**
@@ -234,6 +234,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop flag system for props and spoofing based system
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
+
 
 
 
