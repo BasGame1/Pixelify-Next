@@ -6,8 +6,7 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
 
 ## 🐛 Bugs
-- **Pixel Launcher on android 16 qpr1 and qpr2**
-- **Flag system (ex. dialer features or editor features) due to server side changed**
+- **Flag system (ex. editor features) due to server side changed**
 ## ⭐ Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 or ARM32 device**
@@ -189,6 +188,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
 - [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
 - [Kevin] for gemini bootanimation
+- [Android Port World & Amr Gamal Store] (Telegram) for Pixel Launcher 7.1 overlays
 - [SQlite Organization] (https://www.sqlite.org/) for SQlite3 uncompiled files
 - [UhExooHw] (https://github.com/UhExooHw) For call screening flags
 - Pixelify Support Group Members for testing beta versions :)
@@ -224,11 +224,16 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Recode apk installer script
  - Fix bugs
    - Mosey not installing
+   
 ### Version 5.2
  - Drop mosey support (it was not working correctly)
  - Fix bugs
    - Syntax errors causing the installation to fail
-
+   
+### Version 5.8
+ - Drop flag system for props and spoofing based system
+ - Fix pixel Launcher on all qpr android versions
+ - Add AiCore for dialer features
 
 
 
