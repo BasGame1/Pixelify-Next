@@ -1162,33 +1162,33 @@ gphotos8
             if $VKSEL; then
                 
                 # Flags discover by @UhExooHw (gh)
-                echo resetprop -n gsm.operator.iso-country "$ISO,$ISO" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.sim.operator.iso-country "$ISO,$ISO" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.operator.numeric "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.sim.operator.numeric "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.cdma.home.operator.numeric "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ril.mcc.mnc0 "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ril.mcc.mnc1 "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.mtk.provision.mccmnc.0 "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.mtk.provision.mccmnc.1 "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n vendor.gsm.ril.uicc.mccmnc "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n vendor.gsm.ril.uicc.mccmnc.1 "$MCCMNC,$MCCMNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n debug.tracing.mcc "$MCC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n debug.tracing.mnc "$MNC" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.operator.alpha "$OPERATOR,$OPERATOR" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.cdma.home.operator.alpha "$OPERATOR,$OPERATOR" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.sim.operator.alpha "$OPERATOR,$OPERATOR" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.carrier.name "$OPERATOR,$OPERATOR" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.sys.timezone "$TZ" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n gsm.operator.isroaming "false,false" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n sys.wifitracing.started "0" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.wifienhancelog "0" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.com.android.dataroaming "0" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.radio.imei  "$IMEI1" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.radio.imei1 "$IMEI1" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n persist.vendor.radio.imei2 "$IMEI2" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.serialno "$SERIAL_NO" >>$MODPATH/post-fs-data.sh
-                echo resetprop -n ro.boot.serialno "$SERIAL_NO" >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.operator.iso-country "'"$ISO,$ISO"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.sim.operator.iso-country "'"$ISO,$ISO"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.sim.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.cdma.home.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ril.mcc.mnc0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ril.mcc.mnc1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n debug.tracing.mcc "'"$MCC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n debug.tracing.mnc "'"$MNC"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.cdma.home.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.sim.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.carrier.name "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.sys.timezone "'"$TZ"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n gsm.operator.isroaming "false,false"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n sys.wifitracing.started "0"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.wifienhancelog "0"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.com.android.dataroaming "0"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.radio.imei  "'"$IMEI1"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.radio.imei1 "'"$IMEI1"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n persist.vendor.radio.imei2 "'"$IMEI2"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.serialno "'"$SERIAL_NO"'"' >>$MODPATH/post-fs-data.sh
+                echo 'resetprop -n ro.boot.serialno "'"$SERIAL_NO"'"' >>$MODPATH/post-fs-data.sh
                 settings put global auto_time_zone 1
                 settings put global private_dns_mode off
                 settings put global development_settings_enabled 1
@@ -1197,7 +1197,7 @@ gphotos8
                 settings put global bug_report 0
                 settings put secure tethering_allow_vpn_upstreams 1s
 
-                . $MODPATH/installAPK.sh aicore.apk $MODPATH/files/aicore.apk
+                . $MODPATH/installAPK.sh aicore.apkm $MODPATH/files/aicore.apkm
                 
                 db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
                 db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
@@ -1401,21 +1401,22 @@ gphotos8
         fi
 
         # Show option to remove Samsung dialer for OneUi users have android version greater than equal to Android S
-        [ ! -z "$(getprop ro.oneui.version)" ] && [ $API -ge 31 ] && remove_samsung_dialer
-    else
+        if [ ! -z "$(getprop ro.oneui.version)" ] && [ $API -ge 31 ]; then 
+            remove_samsung_dialer
+        else
         # Remove Google dialer files if user doesn't want to enable it
         rm -rf $MODPATH/system$product/overlay/PixelifyGD.apk
         chmod 755 /data/data/com.google.android.dialer/files/phenotype
         sed -i -e "s/cp -Tf $MODDIR\/com.google.android.dialer/#cp -Tf $MODDIR\/com.google.android.dialer/g" $MODPATH/service.sh
         sed -i -e "s/chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/#chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/g" $MODPATH/service.sh
     fi
-else
-    # Remove Google dialer files if user doesn't want to enable it
-    chmod 755 /data/data/com.google.android.dialer/files/phenotype
-    sed -i -e "s/cp -Tf $MODDIR\/com.google.android.dialer/#cp -Tf $MODDIR\/com.google.android.dialer/g" $MODPATH/service.sh
-    sed -i -e "s/chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/#chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/g" $MODPATH/service.sh
-    rm -rf $MODPATH/system$product/overlay/PixelifyGD.apk
-fi
+#else
+#    # Remove Google dialer files if user doesn't want to enable it
+#    chmod 755 /data/data/com.google.android.dialer/files/phenotype
+#    sed -i -e "s/cp -Tf $MODDIR\/com.google.android.dialer/#cp -Tf $MODDIR\/com.google.android.dialer/g" $MODPATH/service.sh
+#    sed -i -e "s/chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/#chmod 500 \/data\/data\/com.google.android.dialer\/files\/phenotype/g" $MODPATH/service.sh
+#    rm -rf $MODPATH/system$product/overlay/PixelifyGD.apk
+#fi
 
 # Next Generation assistant installation
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
