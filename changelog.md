@@ -29,3 +29,8 @@
  - Drop flag system for props and spoofing based system
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
+ 
+ ### Version 5.8.1
+  - Bug fixes
+   - Correct name for aicore
+   - Fix echo estaments
