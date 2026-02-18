@@ -15,13 +15,13 @@ if [ $DOT_COUNT -gt 2 ]; then
  exit 0
 fi
 
-if [ $APK_CUT == apk ]; then
+if [ "$APK_CUT" = "apk" ]; then
  echo "normal APK detected, installing $APK_NAME in $APK_PATH"
  pm install $APK_PATH
 
-elif [ $APK_CUT == apks ] || [ $APK_CUT == apkm ]; then
+elif [ "$APK_CUT" = "apks" ] || [ $APK_CUT = "apkm" ]; then
  echo "APK split detected, installing $APK_NAME in $APK_PATH"
- mkdir tmp
+ mkdir $MODPATH/tmp
  mv $APK_PATH $MODPATH/tmp/$APKNAME.zip
  unzip -o $MODPATH/tmp/$APKNAME.zip
 
