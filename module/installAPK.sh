@@ -7,6 +7,7 @@ APK_CUT=$(echo $APK_NAME | cut -d '.' -f 2)
 DOT_COUNT=$(echo $APK_NAME | grep -Fo "." | wc -m) 
 TMP=$MODPATH/tmp
 TOTAL_SIZE=0
+I=0
 
 if [[ "$APK_NAME" == '-h' ]] || [[ "$APK_NAME" = "help" ]]; then
  echo -e "HELP MENU \n use example: ./installAPK [APK_NAME] [APK_PATH] \n -h or help shows this menu"
@@ -41,8 +42,6 @@ elif [ "$APK_CUT" = "apks" ] || [ "$APK_CUT" = "apkm" ]; then
 
  SESSION=$(pm install-create -S $TOTAL_SIZE | grep -Eo '[0-9]+')
  echo "Session created with ID $SESSION and size $TOTAL_SIZE"
-
- I=0
 
 for APK in $MODPATH/tmp/*.apk; do
 
