@@ -30,7 +30,11 @@
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
  
- ### Version 5.8.1
+### Version 5.8.1
   - Bug fixes
    - Correct name for aicore
    - Fix echo estaments
+
+### Version 5.8.2
+  - Bug fixes
+   - Fix the install APK process

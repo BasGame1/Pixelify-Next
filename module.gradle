@@ -13,7 +13,7 @@ ext {
     moduleName = "PixelifyNext"
     moduleAuthor = "BasGame1"
     moduleDescription = "Enables pixel exclusive features"
-    moduleVersion = "v5.8.1-BETA"
-    moduleVersionCode = 500080001
+    moduleVersion = "v5.8.2-BETA"
+    moduleVersionCode = 500080002
     magiskModuleId = "PixelifyNext"
 }
