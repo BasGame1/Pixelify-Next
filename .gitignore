@@ -1,18 +1,8 @@
-*.iml
+# Ignore Gradle project-specific cache directory
 .gradle
-.idea
-local.properties
-/.idea/caches/build_file_checksums.ser
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# Ignore Gradle build output directory
 build
-/out
-/riru/build
-/zygisk/build
-/module/files/system
+
+# Ignore Kotlin plugin data
+.kotlin
