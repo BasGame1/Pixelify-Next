@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "/home/basgame1/Pixelify-Next/zygisk/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/basgame1/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/basgame1/Pixelify-Next/zygisk/.cxx/Debug/2z3y1t3x/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/basgame1/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/basgame1/Pixelify-Next/zygisk/.cxx/Debug/2z3y1t3x/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "pixelify-next-tensor::@6890427a1f51a3e7e1df": {
+      "artifactName": "pixelify-next-tensor",
+      "abi": "arm64-v8a",
+      "output": "/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/arm64-v8a/libpixelify-next-tensor.so",
+      "runtimeFiles": []
+    },
+    "pixelify-next::@6890427a1f51a3e7e1df": {
+      "artifactName": "pixelify-next",
+      "abi": "arm64-v8a",
+      "output": "/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/arm64-v8a/libpixelify-next.so",
+      "runtimeFiles": []
+    }
+  }
+}

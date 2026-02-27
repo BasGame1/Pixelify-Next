@@ -1,0 +1,6 @@
+id=.PixelifyUninstaller
+name=Pixelify uninstaller services
+version=1
+versionCode=1
+author=Kingsman44
+description=Please don't remove or disable this. It's apart of the Pixelify module and required to uninstall Pixelify properly. It will be automatically removed when Pixelify is uninstalled. To uninstall, only uninstall the Pixelify module.

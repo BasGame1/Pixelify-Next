@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/basgame1/Pixelify-Next/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+  "command": "/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=armv7-none-linux-androideabi23 --sysroot=/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dpixelify_next_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -Werror=format -fdata-sections -ffunction-sections -O2 -fvisibility=hidden -fvisibility-inlines-hidden  -fno-exceptions -fno-rtti -O2 -g -DNDEBUG -fPIC -std=gnu++17 -o CMakeFiles/pixelify-next.dir/pixelify.cpp.o -c /home/basgame1/Pixelify-Next/zygisk/src/main/cpp/pixelify.cpp",
+  "file": "/home/basgame1/Pixelify-Next/zygisk/src/main/cpp/pixelify.cpp"
+},
+{
+  "directory": "/home/basgame1/Pixelify-Next/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+  "command": "/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=armv7-none-linux-androideabi23 --sysroot=/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dpixelify_next_tensor_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -Werror=format -fdata-sections -ffunction-sections -O2 -fvisibility=hidden -fvisibility-inlines-hidden  -fno-exceptions -fno-rtti -O2 -g -DNDEBUG -fPIC -std=gnu++17 -o CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o -c /home/basgame1/Pixelify-Next/zygisk/src/main/cpp/tensor.cpp",
+  "file": "/home/basgame1/Pixelify-Next/zygisk/src/main/cpp/tensor.cpp"
+}
+]

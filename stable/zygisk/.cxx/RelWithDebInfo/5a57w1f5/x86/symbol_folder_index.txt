@@ -1,0 +1,1 @@
+/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86

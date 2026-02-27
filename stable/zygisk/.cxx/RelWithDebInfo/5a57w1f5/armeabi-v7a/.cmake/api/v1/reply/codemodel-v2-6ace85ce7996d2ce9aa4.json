@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-RelWithDebInfo-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pixelify-next",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-RelWithDebInfo-3a8ab6361dcd282a5e72.json",
+					"name" : "pixelify-next",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next-tensor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-tensor-RelWithDebInfo-f5c30974b502fe4dc190.json",
+					"name" : "pixelify-next-tensor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/basgame1/Pixelify-Next/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+		"source" : "/home/basgame1/Pixelify-Next/zygisk/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

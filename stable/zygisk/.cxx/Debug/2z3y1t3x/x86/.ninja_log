@@ -1,0 +1,16 @@
+# ninja log v5
+1	149	1760266549309762033	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	530a7cca482d9619
+0	155	1760266549314762026	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	ee57f92e2ab154d8
+149	182	1760266549341761985	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-tensor.so	f361e44d5bd38c32
+155	182	1760266549342761983	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next.so	dd37115b0b26b1c4
+0	3	0	clean	d62195feb5eab581
+1	153	1760280373980523995	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	530a7cca482d9619
+1	159	1760280373986523820	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	ee57f92e2ab154d8
+153	191	1760280374016522951	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-tensor.so	f361e44d5bd38c32
+159	194	1760280374020522836	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next.so	dd37115b0b26b1c4
+0	3	0	clean	d62195feb5eab581
+1	134	1760280425462400022	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	530a7cca482d9619
+1	146	1760280425474399826	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	ee57f92e2ab154d8
+134	161	1760280425487399613	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-tensor.so	f361e44d5bd38c32
+146	180	1760280425504399336	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next.so	dd37115b0b26b1c4
+0	3	0	clean	d62195feb5eab581

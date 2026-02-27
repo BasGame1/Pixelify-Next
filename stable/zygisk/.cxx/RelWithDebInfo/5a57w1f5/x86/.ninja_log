@@ -1,0 +1,6 @@
+# ninja log v5
+0	175	1760280438427200353	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	45b4b666ee8f4e31
+175	198	1760280438449200034	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-tensor.so	25a15d004500ff0f
+0	233	1760280438486199498	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	83f354c5f2b71d92
+233	254	1760280438509024467	/home/basgame1/Pixelify-Next/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next.so	2fce413c02867f57
+0	3	0	clean	d62195feb5eab581

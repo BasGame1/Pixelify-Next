@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pixelify-next",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-Debug-746bb65a8633d155cbb5.json",
+					"name" : "pixelify-next",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next-tensor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-tensor-Debug-751ce155c8c6888a9be6.json",
+					"name" : "pixelify-next-tensor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/basgame1/Pixelify-Next/zygisk/.cxx/Debug/2z3y1t3x/x86",
+		"source" : "/home/basgame1/Pixelify-Next/zygisk/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
