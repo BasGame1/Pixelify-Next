@@ -1,0 +1,24 @@
+# ninja log v5
+2	340	1765742958600430228	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	2c51c61faf9e90f8
+434	492	1765742958750423670	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next.so	c2d270b37ac02a78
+1	434	1765742958696426031	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	55f86e46b5a41836
+339	405	1765742958665427387	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-tensor.so	edb7e2647c18766
+0	3	0	clean	d62195feb5eab581
+2	339	1765742958600430228	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	ed722ffe3a3d1833
+340	405	1765742958664427430	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-camera.so	ad73df96bc02edf2
+1	162	1765748563509658572	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	8a39bc7e0f02053e
+162	213	1765748563555655567	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-photos.so	8aabdb5c4fd68251
+3	337	1765811955394565163	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	2c51c61faf9e90f8
+2	340	1765811955396565118	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	ed722ffe3a3d1833
+3	342	1765811955399565050	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	8a39bc7e0f02053e
+342	406	1765811955456563761	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-photos.so	8aabdb5c4fd68251
+337	409	1765811955459563693	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-camera.so	ad73df96bc02edf2
+341	412	1765811955461563648	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next-tensor.so	edb7e2647c18766
+2	418	1765811955474563354	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	55f86e46b5a41836
+418	478	1765811955530562088	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86/libpixelify-next.so	c2d270b37ac02a78
+1	6	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581

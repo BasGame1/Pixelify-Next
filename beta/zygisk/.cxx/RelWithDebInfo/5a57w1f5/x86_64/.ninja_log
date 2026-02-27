@@ -1,0 +1,24 @@
+# ninja log v5
+2	367	1765742976623639994	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	8a6ef292f28c2dc2
+367	409	1765742976669637972	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-camera.so	2c53fb4d5bfad824
+1	564	1765742976820631333	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	16c207268c0e9577
+564	606	1765742976866606744	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next.so	46e84d16e642358f
+361	409	1765742976669637972	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-tensor.so	eba3c6aa9b5c01c
+0	2	0	clean	d62195feb5eab581
+2	361	1765742976618640214	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	e74687d72af5a597
+1	185	1765748575584893686	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	8d6064cd34410b6b
+185	232	1765748575634636830	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-photos.so	d52a0582156357f4
+3	347	1765811974339136798	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	8d6064cd34410b6b
+2	357	1765811974351136526	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	e74687d72af5a597
+2	370	1765811974363136255	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	8a6ef292f28c2dc2
+347	388	1765811974384135780	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-photos.so	d52a0582156357f4
+358	409	1765811974405135305	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-tensor.so	eba3c6aa9b5c01c
+370	420	1765811974415135080	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next-camera.so	2c53fb4d5bfad824
+2	563	1765811974555131914	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	16c207268c0e9577
+563	607	1765811974602130851	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86_64/libpixelify-next.so	46e84d16e642358f
+0	6	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	6	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581

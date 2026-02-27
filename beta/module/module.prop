@@ -1,0 +1,9 @@
+id=PixelifyNext
+name=Pixelify Next Beta
+version=v5.8-2-BETA
+versionCode=500080002
+author=BasGame1
+description=Enables pixel exclusive features on android 15 and 16, enjoy it :)
+# 0 -  Disable, 1 - Enable
+DEVICE_USES_VOLUME_KEY=1
+zygisk=true

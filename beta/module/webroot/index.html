@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIXELIFY NEXT MONITOR</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url(background.png);
+            max-width: 100%;
+            height: auto;
+            color: white;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .root_container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Google Sans', Roboto, sans-serif;
+            opacity: 0.9;
+            background-color: antiquewhite;
+            padding: 50px;
+            margin: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 12px;
+        }  
+        .title {
+            text-align: center;
+            font-size: 40px;
+            background-position: center;
+            background-size: cover;
+            background-image: url(banner.png);
+            position: absolute;
+            height: 50px;
+            padding: 10px;
+            margin-bottom: auto;
+            z-index: 1;
+            height: 120px;
+            border-radius: 20px;
+        }
+        .photos {
+            margin-top: 20px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 5px
+        }
+        .spoof {
+            margin-top: 20px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 5px;
+            padding: 10px;
+        }
+        .zygisk {
+            margin-top: 20px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 5px;
+            padding: 10px;
+        }
+        .log-console {
+            background-color: black;
+            color: green;
+            border-color: grey;
+            border-radius: 12px;
+            border-width: 12px;
+            padding: 30px;
+            font-size: 9px;
+            margin-top: 10%;
+        }
+        .text-console {
+            margin-top: 20px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 5px;
+            margin-top: 70px;
+        }
+        .dot-spoof {
+            background-color: black;
+            color: white
+        }
+        footer {
+            margin-top: 99%;
+            font-size: 14px;
+            color: black;
+            background-color: white;
+            padding: 10px;
+            border-radius: 12px;
+        }
+        .zygisk:active{
+            outline: black;
+            background-image: url(banner.png);
+            background-size: cover;
+            background-position: center;
+            background-color: white;
+            animation: pulse 5s infinite;
+        }
+        .spoof:active{
+            outline: black;
+            background-image: url(banner.png);
+            background-size: cover;
+            background-position: center;
+            background-color: white;
+            animation: pulse 5s infinite;
+        }
+        .photos:active{
+            outline: black;
+            background-image: url(banner.png);
+            background-size: cover;
+            background-position: center;
+            background-color: white;
+            animation: pulse 5s infinite;
+        }
+        @keyframes pulse {
+            0% {transform: scale (1); }
+            50% {transform: scale (2);}
+            100% {transform: scale (1);}
+        }
+    </style>
+</head>
+<body>
+    <div class="title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div class="root_container">
+        <div class="text-console">
+            <span>Log console</span>
+        </div>
+        <div class="log-console" id="log-console">
+            LOADING LOGS...
+        </div>
+        <div id="status-panel" style="margin-top: 30px; width: 100%;">
+            <div class="zygisk"> 
+                <span id="zygisk-status">Zygisk Status: </span>
+                <span id="dot-zygisk" class="status-dot">Loading...</span>
+            </div>
+            <div class="spoof">
+                <span id="spoof-status">Spoof Status: </span>
+                <span id="dot-spoof" class="status-dot">Loading...</span>
+            </div>
+            <div class="photos">
+                <span id="photos-version">Google Photos Version: </span>
+                <span id="dot-photos" class="status-dot">Loading...</span>
+            </div>
+    </div>
+    
+    
+    <script>
+    const MODULE_ID = "pixelify-next"; 
+    const TARGET_PKG = "com.google.android.apps.photos";
+    const LOG_TAGS = "PixelifyNext:I PixelifyPhotos:I PixelifyCameraFix:I Magisk:I Zygisk:I";
+    async function execShell(command) {
+        try {
+            if (typeof ksu !== 'undefined' && ksu.exec) {
+                let result = await ksu.exec(command);
+                return result ? result.trim() : "";
+            } else if (typeof mmrl !== 'undefined' && mmrl.exec) {
+                let result = await mmrl.exec(command);
+                return result ? result.trim() : "";
+            } else {
+                console.error("Root Manager API not found (ksu/mmrl undefined)");
+                return "ERROR_NO_API";
+            }
+        } catch (e) {
+            console.error("Command failed:", e);
+            return "ERROR_EXEC";
+        }
+    }
+
+    async function refreshDashboard() {
+        const consoleDiv = document.getElementById('log-console');
+        
+        let testRoot = await execShell("id -u");
+        if (testRoot === "ERROR_NO_API") {
+            consoleDiv.innerText = "Error: This WebUI must be opened inside MMRL or KernelSU Manager.";
+            return;
+        }
+
+        let cmdInstall = `[ -d "/data/adb/modules/${MODULE_ID}" ] && echo "Installed" || echo "Missing"`;
+        let resInstall = await execShell(cmdInstall);
+        updateStatus('zygisk-status', 'dot-zygisk', resInstall === 'Installed', resInstall);
+        let cmdInject = `
+            pid=$(pidof ${TARGET_PKG})
+            if [ -z "$pid" ]; then 
+                echo "App Closed"
+            else 
+                # Check if the module path exists in the process memory map
+                if grep -q "${MODULE_ID}" /proc/$pid/maps; then 
+                    echo "Injected & Active" 
+                else 
+                    echo "Running but Not Injected" 
+                fi
+            fi
+        `;
+        let resInject = await execShell(cmdInject);
+        
+
+        if (resInject.includes("Injected")) {
+
+            updateStatus('spoof-status', 'dot-spoof', true, resInject);
+        } else if (resInject.includes("Closed")) {
+
+            updateStatus('spoof-status', 'dot-spoof', 'warn', "App Closed (Open Photos)");
+        } else {
+ 
+            updateStatus('spoof-status', 'dot-spoof', false, "Injection Failed");
+        }
+        let cmdPhotos = `dumpsys package ${TARGET_PKG} | grep versionName | head -n 1 | cut -d'=' -f2`;
+        let resPhotos = await execShell(cmdPhotos);
+        if (resPhotos.length > 0) {
+            updateStatus('photos-version', 'dot-photos', true, resPhotos);
+        } else {
+            updateStatus('photos-version', 'dot-photos', false, "Not Installed");
+        }
+        let cmdLogs = `logcat -d -v time -t 100 -s ${LOG_TAGS}`;
+        let resLogs = await execShell(cmdLogs);
+        
+        if (resLogs.length > 10) {
+            consoleDiv.innerText = resLogs;
+        } else {
+            consoleDiv.innerText = `No recent logs found for ${LOG_TAGS}.\n\nTry opening Google Photos to generate activity.`;
+        }
+    }
+    function updateStatus(textId, dotId, state, text) {
+        const textElem = document.getElementById(textId);
+        const dotElem = document.getElementById(dotId);
+        
+        if (textElem) textElem.innerText = text;
+        
+        if (dotElem) {
+            dotElem.className = "status-dot";
+            if (state === true) {
+                dotElem.classList.add("status-active");
+            } else if (state === 'warn') {
+                dotElem.classList.add("status-warn");
+            } else {
+                dotElem.classList.add("status-error");
+            }
+        }
+    }
+    refreshDashboard();
+</script>
+<footer>
+    By the PixelifyNEXT project 
+</footer>
+</body>
+</html>

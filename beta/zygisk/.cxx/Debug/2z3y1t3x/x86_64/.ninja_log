@@ -1,0 +1,24 @@
+# ninja log v5
+3	315	1765742959192404344	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	3c93257af54205c4
+433	489	1765742959362396909	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next.so	55b66724dbe3d26a
+2	433	1765742959310399184	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	d0a6ec3e5b323a02
+315	380	1765742959251401764	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-camera.so	8cb6c2ac2183f90b
+316	385	1765742959257401501	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-tensor.so	73b7fcbf1dc71f60
+0	3	0	clean	d62195feb5eab581
+2	316	1765742959194404257	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	6d2b8ff433076ec
+1	161	1765748563813638711	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	b2951367896f101b
+162	223	1765748563870634988	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-photos.so	7ae17c0d6daca2ec
+3	310	1765811955903519846	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	6d2b8ff433076ec
+3	311	1765811955902553677	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	3c93257af54205c4
+3	343	1765811955934552953	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	b2951367896f101b
+311	378	1765811955965552252	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-tensor.so	73b7fcbf1dc71f60
+311	382	1765811955968552185	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-camera.so	8cb6c2ac2183f90b
+343	405	1765811955990551687	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next-photos.so	7ae17c0d6daca2ec
+2	435	1765811956026550873	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	d0a6ec3e5b323a02
+435	511	1765811956095549313	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/Debug/2z3y1t3x/obj/x86_64/libpixelify-next.so	55b66724dbe3d26a
+0	6	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	7	0	clean	d62195feb5eab581
+0	6	0	clean	d62195feb5eab581

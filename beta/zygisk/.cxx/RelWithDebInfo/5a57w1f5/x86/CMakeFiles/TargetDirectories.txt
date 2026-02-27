@@ -1,0 +1,6 @@
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/pixelify-next.dir
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/pixelify-next-tensor.dir
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/pixelify-next-camera.dir
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/pixelify-next-photos.dir
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/edit_cache.dir
+/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/x86/CMakeFiles/rebuild_cache.dir

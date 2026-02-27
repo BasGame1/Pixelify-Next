@@ -1,0 +1,24 @@
+# ninja log v5
+2	375	1765742975919670942	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	9e4a79762e3ef1ce
+1	576	1765742976120662107	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	8730e6429e4500db
+363	408	1765742975956456024	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-tensor.so	2ba14b93dc902048
+576	619	1765742976167835699	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next.so	f899c0569b847651
+0	2	0	clean	d62195feb5eab581
+375	423	1765742975971376765	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-camera.so	be971392748fa1a1
+2	363	1765742975907671469	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	72d3d7a00d63d4e6
+1	186	1765748575286911986	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	1cabbba9a8697db5
+186	230	1765748575332909161	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-photos.so	87c73cc4ba63ab52
+3	364	1765811973704151156	CMakeFiles/pixelify-next-tensor.dir/tensor.cpp.o	72d3d7a00d63d4e6
+3	365	1765811973704151156	CMakeFiles/pixelify-next-photos.dir/photos.cpp.o	1cabbba9a8697db5
+3	383	1765811973724150704	CMakeFiles/pixelify-next-camera.dir/camera.cpp.o	9e4a79762e3ef1ce
+365	406	1765811973751821013	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-photos.so	87c73cc4ba63ab52
+364	410	1765811973755355232	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-tensor.so	2ba14b93dc902048
+383	430	1765811973775372751	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next-camera.so	be971392748fa1a1
+2	580	1765811973922146227	CMakeFiles/pixelify-next.dir/pixelify.cpp.o	8730e6429e4500db
+580	619	1765811973964145277	/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/x86/libpixelify-next.so	f899c0569b847651
+0	6	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	5	0	clean	d62195feb5eab581
+0	4	0	clean	d62195feb5eab581
+0	6	0	clean	d62195feb5eab581
+0	6	0	clean	d62195feb5eab581

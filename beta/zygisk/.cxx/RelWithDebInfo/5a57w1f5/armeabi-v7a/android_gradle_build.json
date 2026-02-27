@@ -1,0 +1,59 @@
+{
+  "buildFiles": [
+    "/home/basgame1/Pixelify-Next-Beta/zygisk/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/basgame1/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/basgame1/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "pixelify-next::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "pixelify-next",
+      "output": "/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/armeabi-v7a/libpixelify-next.so",
+      "runtimeFiles": []
+    },
+    "pixelify-next-camera::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "pixelify-next-camera",
+      "output": "/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/armeabi-v7a/libpixelify-next-camera.so",
+      "runtimeFiles": []
+    },
+    "pixelify-next-photos::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "pixelify-next-photos",
+      "output": "/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/armeabi-v7a/libpixelify-next-photos.so",
+      "runtimeFiles": []
+    },
+    "pixelify-next-tensor::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "pixelify-next-tensor",
+      "output": "/home/basgame1/Pixelify-Next-Beta/zygisk/build/intermediates/cxx/RelWithDebInfo/5a57w1f5/obj/armeabi-v7a/libpixelify-next-tensor.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/basgame1/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

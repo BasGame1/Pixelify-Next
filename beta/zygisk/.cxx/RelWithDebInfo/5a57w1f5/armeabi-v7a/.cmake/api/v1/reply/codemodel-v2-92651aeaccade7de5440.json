@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-RelWithDebInfo-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pixelify-next",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-RelWithDebInfo-17e602f7271dad94c8fb.json",
+					"name" : "pixelify-next",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next-camera::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-camera-RelWithDebInfo-dc4e26109ac7e3956a0e.json",
+					"name" : "pixelify-next-camera",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next-photos::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-photos-RelWithDebInfo-945b52286da3c620a2aa.json",
+					"name" : "pixelify-next-photos",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pixelify-next-tensor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pixelify-next-tensor-RelWithDebInfo-11720904ad5ae7bd3b0e.json",
+					"name" : "pixelify-next-tensor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/basgame1/Pixelify-Next-Beta/zygisk/.cxx/RelWithDebInfo/5a57w1f5/armeabi-v7a",
+		"source" : "/home/basgame1/Pixelify-Next-Beta/zygisk/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
