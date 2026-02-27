@@ -1,9 +1,0 @@
-<permissions>
-    <!-- Grants permissions for the wallet plugin in SystemUI -->
-    <privapp-permissions package="com.android.systemui.plugin.globalactions.wallet">
-        <!-- Allows secure handling of dynamically registered receivers -->
-        <permission name="com.android.systemui.plugin.globalactions.wallet.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"/>
-        <!-- Enables the plugin to integrate with SystemUI functionalities -->
-        <permission name="com.android.systemui.permission.PLUGIN"/>
-    </privapp-permissions>
-</permissions>
