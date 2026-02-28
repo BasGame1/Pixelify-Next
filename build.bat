@@ -8,10 +8,22 @@ set /p SELECTION="Enter your selection: "
 
 if "%SELECTION%"=="1" (
     echo building BETA version
-    call gradlew.bat :beta:assembleDebug --no-configuration-cache
+    echo ""
+    echo Building VK version
+    call gradlew :beta:zipRelease --no-configuration-cache
+    echo Building no VK version
+    call gradlew :beta:novkzipRelease --no-configuration-cache
+    echo Cleaning
+    call gradlew :beta:cleanDir --no-configuration-cache
 ) else if "%SELECTION%"=="2" (
     echo building STABLE version
-    call gradlew.bat :stable:assembleDebug --no-configuration-cache
+    echo ""
+    echo Building VK version
+    call gradlew :stable:zipRelease --no-configuration-cache
+    echo Building no VK version
+    call gradlew :stable:novkzipRelease --no-configuration-cache
+    echo Cleaning
+    call gradlew :stable:cleanDir --no-configuration-cache
 ) else (
     echo No option selected, aborting
     exit /b 1
