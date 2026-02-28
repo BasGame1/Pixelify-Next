@@ -6,3 +6,13 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Ignore out directory
+out
+
+# Ignore build dirs
+build
+beta/build
+stable/build
+beta/.cxx
+stable/.cxx
