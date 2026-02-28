@@ -1,7 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: 1. Check if ADB exists in PATH
 where adb >nul 2>nul
 if %errorlevel% neq 0 (
     echo ADB not found on your pc, please install it
@@ -9,8 +8,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: 2. Check if any devices are connected
-:: We check if 'adb devices' output has more than 2 lines (header + device)
 set "DEVICE_FOUND=0"
 for /f "tokens=1,2" %%a in ('adb devices') do (
     if "%%b"=="device" set "DEVICE_FOUND=1"
@@ -21,8 +18,6 @@ if %DEVICE_FOUND% equ 0 (
     exit /b 1
 )
 
-:: 3. Detect Root Type (Magisk or KSU)
-:: We use 'findstr' to check for success in the adb shell output
 set "ROOT=UNKNOWN"
 adb shell su -c "magisk -v" >nul 2>nul
 if %errorlevel% equ 0 (
@@ -40,7 +35,6 @@ if "%ROOT%"=="UNKNOWN" (
     exit /b 1
 )
 
-:: 4. User Selection
 echo Select your build version
 echo 1 for BETA
 echo 2 for STABLE
@@ -56,19 +50,26 @@ if "%SELECTION%"=="1" (
     exit /b 1
 )
 
-:: 5. Execute Build Pipeline
 echo building %VER% version
-call gradlew.bat :%VER%:build --no-configuration-cache
+ echo Building VK version
+ ./gradlew :%VER%:zipRelease --no-configuration-cache
+ echo Building no VK version
+ ./gradlew :%VER%:novkzipRelease --no-configuration-cache
+ echo Cleaning
+ ./gradlew :%VER%:cleanDir --no-configuration-cache
+ 
 if %errorlevel% neq 0 exit /b 1
 
 call gradlew.bat :%VER%:pushVK
 
 if "%ROOT%"=="magisk" (
+    echo Flashing
     call gradlew.bat :%VER%:flashMagiskVK
 ) else (
+    echo Flashing
     call gradlew.bat :%VER%:flashKsuVK
 )
-
+echo Rebooting
 call gradlew.bat :%VER%:Reboot
 
 echo Done!
