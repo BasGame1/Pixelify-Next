@@ -43,3 +43,7 @@
  - Rework all the gradle system and build system
  - Bug fixes
    - Fix WebUI script errors
+
+### Version 6.0.1
+ - Bug Fixes
+   - Add a forgotten quote :)

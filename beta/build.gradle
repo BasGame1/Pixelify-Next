@@ -13,6 +13,7 @@ apply from: file(rootProject.file('module.gradle'))
 def buildDir1 = "$rootDir/beta/build"
 def buildDir2 = "$rootDir/beta/.cxx"
 def buildDir3 = "$rootDir/beta/zygisk/build"
+def buildDir4 = "$rootDir/build"
 
 android {
     namespace 'com.pixelify.next.beta.zygisk'
@@ -230,6 +231,6 @@ afterEvaluate {
     }
     
     task("cleanDir", type: Delete) { 
-            delete buildDir1, buildDir2, buildDir3
+            delete buildDir1, buildDir2, buildDir3, buildDir4
         }
 }

@@ -248,6 +248,9 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Bug fixes
    - Fix WebUI script errors
 
+### Version 6.0.1
+ - Bug Fixes
+   - Add a forgotten quote :)
 
 
 
