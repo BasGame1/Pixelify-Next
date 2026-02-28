@@ -135,7 +135,7 @@ if [ $MODULE_TYPE -eq 2 ]; then
         rm -rf $MODPATH/zygisk/libpixelify-next-camera-32.so
         rm -rf $MODPATH/zygisk/libpixelify-next-photos-32.so
         rm -rf $MODPATH/zygisk-tensor/armeabi-v7a.so
-    else if [ $ARCH = armeabi ] || [ $ARCH = armeabi-v7a ] || [ $ARCH = arm32]; then
+    else if [ $ARCH = armeabi ] || [ $ARCH = armeabi-v7a ] || [ $ARCH = arm32 ]; then
         rm -rf $MODPATH/zygisk/arm64-v8a.so
         rm -rf $MODPATH/zygisk/libpixelify-next-camera-64.so
         rm -rf $MODPATH/zygisk/libpixelify-next-photos-64.so
