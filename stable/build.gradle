@@ -230,7 +230,7 @@ afterEvaluate {
         variant.assembleProvider.get().finalizedBy("novkzip${variantCapped}")
     }
     
-    task("CleanBuild", type: Delete) { 
+    task("cleanDir", type: Delete) { 
         delete buildDir1, buildDir2
     }
 }
