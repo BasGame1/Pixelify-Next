@@ -242,8 +242,11 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop flag system for props and spoofing based system
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
-
-
+ 
+### Version 6.0
+ - Rework all gradle and build system
+ - Bug fixes
+   - Fix WebUI script errors
 
 
 
