@@ -37,7 +37,7 @@ A Root (Magisk, Apatch, KSU, KSUn, ... ) Module which enables Pixel UI and some 
 ### Pixelify Submodules
 - Github (https://github.com/BasGame1/Pixelify-NEXT-Submodules)
 
-### Installation instructions for v4
+### Installation instructions for latest version
 - Make Sure Play Store not installing when Pixelify is installing.
 - If using KSU, install KSU zygisk module first
 - Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
@@ -242,6 +242,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop flag system for props and spoofing based system
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
+
 
 
 
