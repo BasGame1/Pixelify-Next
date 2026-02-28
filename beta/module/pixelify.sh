@@ -1,5 +1,5 @@
 #!/system/bin/sh
-DIR=/data/adb/modules/Pixelify
+DIR=/data/adb/modules/PixelifyNext
 option=$1
 sel=$2
 ac=0
