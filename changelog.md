@@ -38,3 +38,8 @@
 ### Version 5.8.2
   - Bug fixes
    - Fix the install APK process
+
+### Version 6.0
+ - Rework all the gradle system and build system
+ - Bug fixes
+   - Fix WebUI script errors
