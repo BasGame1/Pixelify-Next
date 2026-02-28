@@ -2,7 +2,8 @@
 ![Platform](https://img.shields.io/badge/Platform-Android-green?style=flat-square&logo=android)
 ![Static Badge](https://img.shields.io/badge/Language-Bash-blue?logo=GNU%20Bash)
 <p>
-A Root Module which enables Pixel UI and some exclusive features.<br>
+A Root (Magisk, Apatch, KSU, KSUn, ... ) Module which enables Pixel UI and some exclusive features.<br>
+
 # WORK IN PROGRESS
 
 ## 🐛 Bugs
@@ -32,6 +33,9 @@ A Root Module which enables Pixel UI and some exclusive features.<br>
 ### :building_construction: To Build
 - Use build.sh (linux, android, etc) or build.bat (windows) and select the version you want to build
 - Use 'build and flash.sh' (linux, android, etc) or 'build and flash.sh' (windows) to build and flash it to the device connected via ADB
+
+### Pixelify Submodules
+- Github (https://github.com/BasGame1/Pixelify-NEXT-Submodules)
 
 ### Installation instructions for v4
 - Make Sure Play Store not installing when Pixelify is installing.
@@ -176,7 +180,7 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ## Other projects
 - Circle to search (github link)(Lsposed neccesary) <a href=https://github.com/parallelcc/MiCTS/tree/v2.3>MyCTS by parallelcc<a>
 - Call recording (github link)<a href=https://github.com/chenxiaolong/BCR>Call recording by chenxiaolong<a>
-- Pixel studio enabler (TG link) (if pixel studio crashes) <a href=https://t.me/GappsLeaks/933>Pixel Studio Enabler by GappsLeaks (TG)<a>
+- Pixel studio enabler (TG link) <a href=https://t.me/GappsLeaks/933>Pixel Studio Enabler by GappsLeaks (TG)<a>
 
 ## ⭐ Credits
 - Google for creating these awesome features
@@ -238,6 +242,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
  - Drop flag system for props and spoofing based system
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
+
+
 
 
 
