@@ -10,6 +10,9 @@ plugins {
 
 apply from: file(rootProject.file('module.gradle'))
 
+def buildDir1 = "$rootDir/stable/build"
+def buildDir2 = "$rootDir/stable/.cxx"
+	
 android {
     namespace 'com.pixelify.next.zygisk'
     compileSdk target_sdk
@@ -33,7 +36,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path "stable/zygisk/src/main/cpp/CMakeLists.txt"
+            path "zygisk/src/main/cpp/CMakeLists.txt"
         }
     }
 }
@@ -43,10 +46,11 @@ afterEvaluate {
         def variantCapped = variant.name.capitalize()
         def variantLowered = variant.name.toLowerCase()
 
-        def zipName = "${magiskModuleId.replace('_', '-')}-${moduleVersion}.zip"
-        def zipNamenovk = "${magiskModuleId.replace('_', '-')}-${moduleVersion}-no-VK.zip"
-        def magiskDir = file("$outDir/magisk_module_$variantLowered")
-        def templatePath = "$rootDir/module"
+	def stablePath = "$rootDir/stable"
+        def zipName = "${magiskModuleId.replace('_', '-')}-STABLE-${moduleVersion}.zip"
+        def zipNamenovk = "${magiskModuleId.replace('_', '-')}-STABLE-${moduleVersion}-no-VK.zip"
+        def magiskDir = file("$outDir/magisk_module_stable_$variantLowered")
+        def templatePath = "$stablePath/module"
         def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a',Instance3: 'x86',Instance4: 'x86_64']
 
         task("prepareMagiskFiles${variantCapped}", type: Sync) {
@@ -220,7 +224,13 @@ afterEvaluate {
             dependsOn("flash${variantCapped}")
             commandLine android.adbExecutable, "shell", "reboot"
         }
+        
+
 
         variant.assembleProvider.get().finalizedBy("novkzip${variantCapped}")
+    }
+    
+    task("CleanBuild", type: Delete) { 
+        delete buildDir1, buildDir2
     }
 }
