@@ -135,7 +135,7 @@ if [ $MODULE_TYPE -eq 2 ]; then
         rm -rf $MODPATH/zygisk/libpixelify-next-camera-32.so
         rm -rf $MODPATH/zygisk/libpixelify-next-photos-32.so
         rm -rf $MODPATH/zygisk-tensor/armeabi-v7a.so
-    else if [ $ARCH = armeabi ] || [ $ARCH = armeabi-v7a ] || [ $ARCH = arm32 ]; then
+    elif [ $ARCH = armeabi ] || [ $ARCH = armeabi-v7a ] || [ $ARCH = arm32 	]; then
         rm -rf $MODPATH/zygisk/arm64-v8a.so
         rm -rf $MODPATH/zygisk/libpixelify-next-camera-64.so
         rm -rf $MODPATH/zygisk/libpixelify-next-photos-64.so
@@ -756,7 +756,7 @@ no_vk "GLOBAL_SPOOFING"
                     chmod -R 0700 "$DATA_PATH_DATA"
                     fi
                 fi
-                fi
+                fi"
                 # Enable global spoofing
                 
                 echo 'resetprop -n "gsm.operator.iso-country us"' >> $MODPATH/post-fs-data.sh
@@ -793,7 +793,7 @@ no_vk "GLOBAL_SPOOFING"
                 echo 'resetprop -n "ro.product.vendor.name blazer"' >> $MODPATH/post-fs-data.sh
                 echo 'resetprop -n "ro.product.vendor_dlkm.device blazer"' >> $MODPATH/post-fs-data.sh
                 echo 'resetprop -n "ro.product.vendor_dlkm.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys' >> $MODPATH/post-fs-data.sh
+                echo 'resetprop -n "ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
                 echo 'resetprop -n "ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
                 echo 'resetprop -n "ro.system_ext.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
                 echo 'resetprop -n "ro.vendor.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
@@ -807,7 +807,6 @@ no_vk "GLOBAL_SPOOFING"
         echo "- Global Spoofing Disabled" >>$logfile
     fi
 fi
-
 # Disable Android System intelligence as there it already installed.
 if [ ! -z $(pm list packages -s | grep com.google.android.as) ]; then
     echo " - Android System Intelligence is installed as system app" >>$logfile
