@@ -10,6 +10,9 @@ plugins {
 
 apply from: file(rootProject.file('module.gradle'))
 
+def buildDir1 = "$rootDir/beta/build"
+def buildDir2 = "$rootDir/beta/.cxx"
+
 android {
     namespace 'com.pixelify.next.beta.zygisk'
     compileSdk target_sdk
@@ -33,7 +36,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path "beta/zygisk/src/main/cpp/CMakeLists.txt"
+            path "zygisk/src/main/cpp/CMakeLists.txt"
         }
     }
 }
@@ -42,11 +45,12 @@ afterEvaluate {
     android.libraryVariants.forEach { variant ->
         def variantCapped = variant.name.capitalize()
         def variantLowered = variant.name.toLowerCase()
-
-        def zipName = "${magiskModuleId.replace('_', '-')}-${moduleVersion}.zip"
-        def zipNamenovk = "${magiskModuleId.replace('_', '-')}-${moduleVersion}-no-VK.zip"
-        def magiskDir = file("$outDir/magisk_module_$variantLowered")
-        def templatePath = "$rootDir/module"
+	
+	def betaPath = "$rootDir/beta"
+        def zipName = "${magiskModuleId.replace('_', '-')}-BETA-${moduleVersion}.zip"
+        def zipNamenovk = "${magiskModuleId.replace('_', '-')}-BETA-${moduleVersion}-no-VK.zip"
+        def magiskDir = file("$outDir/magisk_module_beta_$variantLowered")
+        def templatePath = "$betaPath/module"
         def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a',Instance3: 'x86',Instance4: 'x86_64']
 
         task("prepareMagiskFiles${variantCapped}", type: Sync) {
@@ -57,7 +61,7 @@ afterEvaluate {
 
             into magiskDir
             from(templatePath) {
-                exclude 'module.prop', 'files/system'
+                exclude 'module.prop', 'module/files/system'
             }
             from(templatePath) {
                 include 'module.prop'
@@ -121,7 +125,7 @@ afterEvaluate {
 
             into magiskDir
             from(templatePath) {
-                exclude 'module.prop', 'files/system'
+                exclude 'module.prop', 'module/files/system'
             }
             from(templatePath) {
                 include 'module.prop'
@@ -216,11 +220,15 @@ afterEvaluate {
             commandLine "adb", "shell", "su", "-c", "ksud module install /data/local/tmp/${zipName}"
         }
 
-        task("Reboot${variantCapped}", type: Exec) {
+        task("reboot${variantCapped}", type: Exec) {
             dependsOn("flash${variantCapped}")
             commandLine android.adbExecutable, "shell", "reboot"
         }
 
         variant.assembleProvider.get().finalizedBy("novkzip${variantCapped}")
     }
+    
+    task("cleanDir", type: Delete) { 
+            delete buildDir1, buildDir2
+        }
 }
