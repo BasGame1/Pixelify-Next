@@ -2,7 +2,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Android-green?style=flat-square&logo=android)
 ![Static Badge](https://img.shields.io/badge/Language-Bash-blue?logo=GNU%20Bash)
 <p>
-A Magisk Module which enables Pixel UI and some exclusive features.<br>
+A Root Module which enables Pixel UI and some exclusive features.<br>
 # WORK IN PROGRESS
 
 ## 🐛 Bugs
@@ -28,6 +28,10 @@ A Magisk Module which enables Pixel UI and some exclusive features.<br>
 
 ### 📱 Supported Roms
 - Tested on LineageOS (Android 15 and 16)
+
+### :building_construction: To Build
+- Use build.sh (linux, android, etc) or build.bat (windows) and select the version you want to build
+- Use 'build and flash.sh' (linux, android, etc) or 'build and flash.sh' (windows) to build and flash it to the device connected via ADB
 
 ### Installation instructions for v4
 - Make Sure Play Store not installing when Pixelify is installing.
