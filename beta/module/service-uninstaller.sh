@@ -10,10 +10,10 @@ MODPATH=$MODDIR
 . $MODDIR/vars.sh
 . $MODDIR/utils.sh
 
-MAINDIR=/data/adb/modules/Pixelify
+MAINDIR=/data/adb/modules/PixelifyNext
 # This script will be executed in late_start service mode
 
-sqlite=/data/adb/modules/PixelifyUninstaller/addon/sqlite3
+sqlite=/data/adb/modules/PixelifyNextUninstaller/addon/sqlite3
 chmod 0755 $sqlite
 
 gms=/data/data/com.google.android.gms/databases/phenotype.db
@@ -214,7 +214,7 @@ else
     # Call Screening
     #cp -Tf $MAINDIR/com.google.android.dialer /data/data/com.google.android.dialer/files/phenotype/com.google.android.dialer
     # copy bootlogs to Pixelify folder if bootloop happened.
-    [ -f /data/adb/modules/Pixelify/boot_logs.txt ] && rm -rf /sdcard/Pixelify/boot_logs.txt && mv /data/adb/modules/Pixelify/boot_logs.txt /sdcard/Pixelify/boot_logs.txt
+    [ -f /data/adb/modules/PixelifyNext/boot_logs.txt ] && rm -rf /sdcard/Pixelify/boot_logs.txt && mv /data/adb/modules/Pixelify/boot_logs.txt /sdcard/Pixelify/boot_logs.txt
 
     for i in $disable; do
         pm disable $i
