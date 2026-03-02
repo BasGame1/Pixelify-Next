@@ -146,38 +146,6 @@ if [ $MODULE_TYPE -eq 2 ]; then
     fi
 fi
 
-elif [ $MODULE_TYPE -eq 3 ]; then
-    # The module is using Riru.
-    # Enforce installation from the Magisk app.
-    enforce_install_from_magisk_app
-    # Detect the API level and architecture.
-    api_level_arch_detect
-    # Create the `riru` directory in the module path.
-    mkdir "$MODPATH/riru"
-    # Check the 32-bit ABI.
-    if [ "$ABI32" == "armeabi-v7a" ]; then
-        # The module is using the 32-bit ARM ABI.
-        # Move the 32-bit ARM library to the `lib` directory in the `riru` directory.
-        mv -f "$RIRU_LIB_PATH/armeabi-v7a" "$MODPATH/riru/lib"
-        # Check if the module is using the 64-bit ARM ABI.
-        if [ "$IS64BIT" = true ]; then
-            # The module is using the 64-bit ARM ABI.
-            # Move the 64-bit ARM library to the `lib64` directory in the `riru` directory.
-            mv -f "$RIRU_LIB_PATH/arm64-v8a" "$MODPATH/riru/lib64"
-        fi
-    else
-        # The module is using the 32-bit x86 ABI.
-        # Move the 32-bit x86 library to the `lib` directory in the `riru` directory.
-        mv -f "$RIRU_LIB_PATH/x86" "$MODPATH/riru/lib"
-        # Check if the module is using the 64-bit x86 ABI.
-        if [ "$IS64BIT" = true ]; then
-            # The module is using the 64-bit x86 ABI.
-            # Move the 64-bit x86 library to the `lib64` directory in the `riru` directory.
-            mv -f "$RIRU_LIB_PATH/x86_64" "$MODPATH/riru/lib64"
-        fi
-    fi
-fi
-
 # Exit for Unsupported Android Versions (Required Nougat+)
 if [ $API -le 23 ]; then
     ui_print " x Minimum requirements doesn't meet"
@@ -1198,7 +1166,7 @@ gphotos8
                 settings put global bug_report 0
                 settings put secure tethering_allow_vpn_upstreams 1s
 
-                . $MODPATH/installAPK.sh aicore.apkm $MODPATH/files/aicore.apkm
+                . $MODPATH/installAPK.sh aicore.apkm $MODPATH/files/aicore.apkm arm64
                 
                 db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 1 45381881 45402581 45402583 45402584 45403203 45407941 45409770 45411345 45411686 45413174 45413174 45414216 45417169 45417223 45418519 45418578 45419570 45420396 45420648
                 db_edit com.google.android.dialer.directboot#com.google.android.dialer boolVal 0 45411667
@@ -1884,12 +1852,12 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
 	   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 	   else
 		   if [ -f "/product/media/bootanimation.zip" ]; then
-		   	mkdir -p $MODPATH/product/media
-		   	mv $MODPATH/files/bootanimation.zip $MODPATH/system/product/media/bootanimation.zip
+		   	mkdir -p $MODPATH/system/product/media
+		   	mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/product/media/bootanimation.zip
 		   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 		   else
-		   print " Failed to find bootanimation"
-	  fi
+		   	print " Failed to find bootanimation"
+	  	   fi
 	  fi
        else
         echo " - Installing Pixel Bootanimation" >>$logfile
