@@ -45,5 +45,12 @@
    - Fix WebUI script errors
 
 ### Version 6.0.1
- - Bug Fixes
+ - Bug fixes
    - Add a forgotten quote :)
+
+### Version 6.1
+ - Add ABI argument to installAPK
+ - Bug fixes
+  - Gemini bootaniamtion not appearing
+  - Aicore not installing on some arm64 and arm32 devices
+  - Syntax errors in customize
