@@ -14,8 +14,10 @@ ui_print "                                          ";
 ui_print "                                          ";
 ui_print "                                          ";
 # run Pixelify Functions and Variables
+. $MODPATH/terminal.sh | abort
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
+. $MODPATH/functions.sh || abort
 
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
@@ -45,38 +47,38 @@ else
 fi
 # Set Installation type: Normal, Zygsik, Riru
 if [ "$KSU" == true ]; then
-    ui_print "- Root App: KSU"
+    log "- Root App: KSU"
     if [ -d '/data/adb/modules/rezygisk' ]; then
         # Rezygisk is installed.
         # Set the module type to Rezygisk
         MODULE_TYPE=2
-        ui_print "- Installation Type: Rezygisk"
+        log "- Installation Type: Rezygisk"
     elif [ -d '/data/adb/modules/zygisksu' ]; then
     	# ZygsikNext is installed.
         # Set the module type to ZygiskNext
         MODULE_TYPE=2
-        ui_print "- Installation Type: ZygiskNext"
+        log "- Installation Type: ZygiskNext"
     else
         # Rezygisk or zygisk next is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
-        ui_print "- Installation Type: normal installation"
+        log "- Installation Type: normal installation"
     fi
 elif [ ! -z  "$MAGISK_CLI" ]; then 
-    ui_print "- Root App: Magisk"
+    log "- Root App: Magisk"
     if [ ! -z $riru_path ]; then
         # Riru is installed.
         # Check if Zygisk is enabled.
         if [ "$zygisk_enabled" == "value=1" ]; then
             # Set the module type to Zygsik
             MODULE_TYPE=2
-            ui_print "! Riru Installed but disabled"
-            ui_print "- Switching to zygisk mode"
-            ui_print ""
-            ui_print "- Installation Type: Zygisk"
+            log "! Riru Installed but disabled"
+            log "- Switching to zygisk mode"
+            log ""
+            log "- Installation Type: Zygisk"
         else
             # Riru is disabled.
-            ui_print "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
+            log "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
             # Load the Riru utility functions.
             . $riru_path
             # Check the installation type.
@@ -89,38 +91,38 @@ elif [ ! -z  "$MAGISK_CLI" ]; then
             # Magisk is at least version 24000.
             # Set the module type to 2.
             MODULE_TYPE=2
-            ui_print "- Installation Type: Zygisk"
+            log "- Installation Type: Zygisk"
             # Check if zygsik is enabled.
             if [ "$zygisk_enabled" != "value=1" ]; then
                 # Riru is not enabled.
-                ui_print "! Please enable zygisk in magisk"
+                log "! Please enable zygisk in magisk"
             fi
         else
             # Magisk is not at least version 24000.
             # Set the module type normal installation
             MODULE_TYPE=1
-            ui_print "- Installation Type: normal installation"
+            log "- Installation Type: normal installation"
         fi
     fi
 else 
     # Apatch or an unkown root app is installed.
     # Set the module type to normal installation
-    ui_print "- Root App: Apatch or unknown"
+    log "- Root App: Apatch or unknown"
     if [ -d '/data/adb/modules/rezygisk' ]; then
         # Rezygisk is installed.
         # Set the module type to Rezygisk
         MODULE_TYPE=2
-        ui_print "- Installation Type: Rezygisk"
+        blue "- Installation Type: Rezygisk"
     elif [ -d '/data/adb/modules/zygisksu' ]; then
     	# ZygsikNext is installed.
         # Set the module type to ZygiskNext
         MODULE_TYPE=2
-        ui_print "- Installation Type: ZygiskNext"
+        blue "- Installation Type: ZygiskNext"
     else
         # Rezygisk or zygisk next is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
-        ui_print "- Installation Type: normal installation"
+        blue "- Installation Type: normal installation"
     fi
 fi
 
@@ -131,25 +133,23 @@ if [ $MODULE_TYPE -eq 2 ]; then
     mv "$ZYGISK_LIB_PATH" "$MODPATH/zygisk"
  # Delete other arch libraries
     if [ $ARCH = arm64 ] || [ $ARCH = aarch64 ]; then
-        rm -rf $MODPATH/zygisk/armeabi-v7a.so
-        rm -rf $MODPATH/zygisk/libpixelify-next-camera-32.so
-        rm -rf $MODPATH/zygisk/libpixelify-next-photos-32.so
-        rm -rf $MODPATH/zygisk-tensor/armeabi-v7a.so
+        for FILE in $MODPATH/zygisk/armeabi-v7a.so $MODPATH/zygisk/libpixelify-next-camera-32.so $MODPATH/zygisk/libpixelify-next-photos-32.so $MODPATH/zygisk-tensor/armeabi-v7a.so; do
+            rm -rf $FILE
+        done
     elif [ $ARCH = armeabi ] || [ $ARCH = armeabi-v7a ] || [ $ARCH = arm32 	]; then
-        rm -rf $MODPATH/zygisk/arm64-v8a.so
-        rm -rf $MODPATH/zygisk/libpixelify-next-camera-64.so
-        rm -rf $MODPATH/zygisk/libpixelify-next-photos-64.so
-        rm -rf $MODPATH/zygisk-tensor/arm64-v8a.so
+        for FILE in $MODPATH/zygisk/arm64-v8a.so $MODPATH/zygisk/libpixelify-next-camera-64.so $MODPATH/zygisk/libpixelify-next-photos-64.so $MODPATH/zygisk-tensor/arm64-v8a.so; do
+            rm -rf $FILE
+        done
     else
-        ui_print " x Unsupported zygisk platform: $ARCH." 
-        ui_print " x Spoofing and other features wont work."
+        error " x Unsupported zygisk platform: $ARCH." 
+        error " x Spoofing and other features wont work."
     fi
 fi
 
 # Exit for Unsupported Android Versions (Required Nougat+)
 if [ $API -le 23 ]; then
-    ui_print " x Minimum requirements doesn't meet"
-    ui_print " x Android version: 7.0+"
+    error " x Minimum requirements doesn't meet"
+    error " x Android version: 7.0+"
     exit 1
 fi
 
@@ -263,9 +263,9 @@ fi
 # Check internet is present of not
 online
 if [ $internet -eq 1 ]; then
-    print "- Internet: Present"
+    green "- Internet: Present"
 else
-    print "- Internet: Not Present"
+    error "- Internet: Not Present"
 fi
 
 #Create Pixelify directory for saving backups and logs.
@@ -457,13 +457,13 @@ mkdir -p $MODPATH/system$product/priv-app
 mkdir -p $MODPATH/system$product/app
 
 # print basic device info
-print ""
-print "- Detected Arch: $ARCH"
-print "- Detected SDK : $API"
+blue ""
+blue "- Detected Arch: $ARCH"
+blue "- Detected SDK : $API"
 RAM=$(grep MemTotal /proc/meminfo | tr -dc '0-9')
-print "- Detected Ram: $RAM"
+blue "- Detected Ram: $RAM"
 check_rom_type
-print ""
+blue ""
 
 # remove pinning of Google camera, as it is not recommended to use for device less than 6gb ram
 if [ $RAM -le "6000000" ]; then
@@ -506,17 +506,17 @@ export TURN_OFF_SEL_VOL_PROMPT=0
 # Setup Volume keys for installation
 # Check if it is no-Vk zip
 if [ "$VOL_KEYS" -eq 0 ]; then
-    print "- Skipping Vol Keys -"
+    log "- Skipping Vol Keys -"
     if [ -f /sdcard/Pixelify/config.prop ]; then
-        print ""
-        print " Using config: $vk_loc"
+        log ""
+        log " Using config: $vk_loc"
         VKSEL=no_vksel
     else
-        print "X Config not found installation"
-        print "- Config is now placed at /sdcard/Pixelify/config.prop"
+        error "X Config not found installation"
+        log "- Config is now placed at /sdcard/Pixelify/config.prop"
         mkdir -p /sdcard/Pixelify
         cp -f $vk_loc /sdcard/Pixelify/config.prop
-        print "- Please configure it and reinstall pixelify"
+        error "- Please configure it and reinstall pixelify"
         abort
     fi
 else
@@ -527,23 +527,23 @@ else
     else
         VKSEL=chooseportold
         echo "- using chooseportold method for Volume Keys" >>$logfile
-        print "  ! Legacy device detected! Using old keycheck method"
-        print " "
-        print "- Vol Key Programming -"
-        print "  Press Vol Up Again:"
+        error "  ! Legacy device detected! Using old keycheck method"
+        log " "
+        log "- Vol Key Programming -"
+        log "  Press Vol Up Again:"
         $VKSEL "UP"
-        print "  Press Vol Down"
+        log "  Press Vol Down"
         $VKSEL "DOWN"
     fi
 fi
 
 # Installtion
-print ""
-print "- Installing Pixelify Module"
-print "- Extracting Files...."
-print ""
-print "- Please don't turn off screen between the installation"
-print ""
+log ""
+blue "- Installing Pixelify Module"
+green "- Extracting Files...."
+log ""
+error "- Please don't turn off screen between the installation"
+log ""
 echo "- Extracting Files ..." >>$logfile
 
 # install Google Health services for Android Pie and Above
@@ -553,10 +553,10 @@ echo "- Extracting Files ..." >>$logfile
 
 # Allow users to use config with Volume key installation if config is placed
 if [ -f /sdcard/Pixelify/config.prop ] && [ $VOL_KEYS -eq 1 ]; then
-    print "  (Config detected)"
-    print "  Do you want to use config for installation?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    log "  (Config detected)"
+    log "  Do you want to use config for installation?"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     if $VKSEL; then
         VKSEL=no_vksel
         VOL_KEYS=0
@@ -570,17 +570,17 @@ FIRST_ONLINE_TIME=1
 echo "$var_menu" >>$logfile
 
 # Internal Spoofing
-if [ ! -z $exact_prop ] && [ $API -ge 31 ] && [ $BETA_BUILD -eq 1 ]; then
+if [ ! -z $exact_prop ] && [ $API -ge 31 ]; then
     print "  Disclaimer: This Feature is in BETA"
-    print "  This features is only intended to Quick Phrase."
+    log "  This features is only intended to Quick Phrase."
     #print "  Disabling Internal Spoofing can break OTA Update (rom dependent)"
-    print "  If it doesn't work properly then it causes issues to Google app"
-    print "  If you are not aware of We wont recommended to enable it."
+    log "  If it doesn't work properly then it causes issues to Google app"
+    log "  If you are not aware of We wont recommended to enable it."
     print ""
-    print "  Do you want to disable Internal spoofing of rom?"
-    print "  Note: This may break ota update of your rom"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    log "  Do you want to disable Internal spoofing of rom?"
+    log "  Note: This may break ota update of your rom"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     no_vk "DISABLE_INTERNAL_SPOOFING"
     if $VKSEL; then
         echo " " >>$MODPATH/system.prop
@@ -591,10 +591,10 @@ fi
 # Google Photos Unlimited Backup Setup
 if [ $TENSOR -eq 1 ]; then
     print "(TENSOR CHIPSET DETECTED)"
-    print "  Do you want to enable Google Photos Unlimited Backup?"
-    print "  Note: Photos unblur won't work and Magic eraser may work slower"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    log "  Do you want to enable Google Photos Unlimited Backup?"
+    log "  Note: Photos unblur won't work and Magic eraser may work slower"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     no_vk "ENABLE_PHOTOS_UNLIMITED"
     if $VKSEL; then
         echo "- Enabling Unlimited storage in this Tensor chipset device" >>$logfile
@@ -606,10 +606,10 @@ if [ $TENSOR -eq 1 ]; then
 ###################################################################################################################################################################################################################
 if [ $API -ge 31 ]; then
 print ""
-print "Do you want to activate global spoofing?"
-print "It may break roms OTAs, but its neccesary for some features (call screen etc..)"
-print "   Vol Up += Yes"
-print "   Vol Down += No"
+log "Do you want to activate global spoofing?"
+log "It may break roms OTAs and show a mesage to update your pixel"
+log "   Vol Up += Yes"
+log "   Vol Down += No"
 no_vk "GLOBAL_SPOOFING"
     if $VKSEL; then
         GLOBAL_SPOOF=1
@@ -817,14 +817,14 @@ if [ $DPAS -eq 1 ]; then
         if [ "$(cat /sdcard/Pixelify/version/dp-$API.txt)" != "$DPVERSION" ] || [ $SEND_DPS -eq 1 ] || [ ! -f /sdcard/Pixelify/version/dp-$API.txt ]; then
             echo " - New Version Detected for Android System Intelligence" >>$logfile
             echo " - Installed version: $(cat /sdcard/Pixelify/version/dp-$API.txt) , New Version: $DPVERSION " >>$logfile
-            print "  (Network Connection Needed)"
-            print "  New version Detected of Android System Intelligence"
-            print "  Do you Want to update or use Old Backup?"
-            print "  Version: $DPVERSION"
-            print "  Size: $DPSIZE Mb"
-            print ""
-            print "   Vol Up += Update"
-            print "   Vol Down += Use Old Backup"
+            log "  (Network Connection Needed)"
+            log "  New version Detected of Android System Intelligence"
+            log "  Do you Want to update or use Old Backup?"
+            log "  Version: $DPVERSION"
+            log "  Size: $DPSIZE Mb"
+            log ""
+            log "   Vol Up += Update"
+            log "   Vol Down += Use Old Backup"
             no_vk "UPDATE_DPS"
             if $VKSEL; then
                 online
@@ -848,9 +848,9 @@ if [ $DPAS -eq 1 ]; then
                     print "- Creating Backup"
                 else
                     print ""
-                    print " ! No internet detected"
+                    error " ! No internet detected"
                     print ""
-                    print "! Using Old backup for now."
+                    log "! Using Old backup for now."
                     echo " ! Using Old backup for Android System Intelligence due to no internet services" >>$logfile
                     print ""
                 fi
@@ -861,27 +861,27 @@ if [ $DPAS -eq 1 ]; then
         fi
         # Install Now now playing (option is disabled)
         #now_playing
-        print "- Installing Android System Intelligence"
-        print ""
+        log "- Installing Android System Intelligence"
+        log ""
         # Copy Android System Intelligence overlay to grant default permissions
         cp -f $MODPATH/files/PixelifyDPS.apk $MODPATH/system/product/overlay/PixelifyDPS.apk
         tar -xf /sdcard/Pixelify/backup/dp-$API.tar.xz -C $MODPATH/system$product/priv-app
         echo dp-$API >$pix/app2.txt
     else
         # Give option to user wether to download or not in case no backup is detected
-        print ""
+        log ""
         echo " - No backup Detected for Android System Intelligence" >>$logfile
-        print "  (Network Connection Needed)"
-        print "  Do you want to install and Download Android System Intelligence?"
-        print "  Size: $DPSIZE Mb"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
+        log "  (Network Connection Needed)"
+        log "  Do you want to install and Download Android System Intelligence?"
+        log "  Size: $DPSIZE Mb"
+        log "   Vol Up += Yes"
+        log "   Vol Down += No"
         no_vk "ENABLE_DPS"
         if $VKSEL; then
             # Checker internet is available or not
             online
             if [ $internet -eq 1 ]; then
-                print "- Downloading Android System Intelligence"
+                log "- Downloading Android System Intelligence"
                 echo " - Downloading and installing Android System Intelligence" >>$logfile
                 print ""
                 cd $MODPATH/files
@@ -896,7 +896,7 @@ if [ $DPAS -eq 1 ]; then
                 cd /
                 #now_playing
                 print ""
-                print "- Installing Android System Intelligence"
+                log "- Installing Android System Intelligence"
                 # copy Android system intelligence overlay to give defualt permissions
                 cp -f $MODPATH/files/PixelifyDPS.apk $MODPATH/system/product/overlay/PixelifyDPS.apk
 
@@ -908,27 +908,27 @@ if [ $DPAS -eq 1 ]; then
                 REMOVE="$REMOVE $DP"
 
                 # Create backup
-                print ""
-                print "  Do you want to create backup of Android System Intelligence?"
-                print "  so that you don't need redownload it every time."
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
+                log ""
+                log "  Do you want to create backup of Android System Intelligence?"
+                log "  so that you don't need redownload it every time."
+                log "   Vol Up += Yes"
+                log "   Vol Down += No"
                 no_vk "BACKUP_DPS"
                 if $VKSEL; then
                     echo " - Creating backup for Android System Intelligence" >>$logfile
-                    print "- Creating Backup"
+                    log "- Creating Backup"
                     mkdir -p /sdcard/Pixelify/backup
                     rm -rf /sdcard/Pixelify/backup/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-net-$API.tar.xz /sdcard/Pixelify/version/dp.txt /sdcard/Pixelify/version/dp-$API.txt
                     cp -f $MODPATH/files/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-$API.tar.xz
                     print ""
                     mkdir /sdcard/Pixelify/version
                     echo "$DPVERSION" >>/sdcard/Pixelify/version/dp-$API.txt
-                    print " - Done"
+                    green " - Done"
                 fi
             else
-                print " ! No internet detected"
+                error " ! No internet detected"
                 print ""
-                print "- Skipping Android System Intelligence"
+                error "- Skipping Android System Intelligence"
                 print ""
                 echo " - Skipping Android System Intelligence due to no internet services" >>$logfile
             fi
@@ -1123,10 +1123,10 @@ gphotos8
 #        P2=${P2/0a/}
 #        CSBIN=0a140a02${P1}120e0a0c0a05${P2}12030a0102
 #        #$sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer'"
-            print "  Do you want to enable automatic Call Screening and other dialer features?"
-            print "  Note: This feature is in BETA and you will need stron integrity"
-            print "   Vol Up += Yes"
-            print "   Vol Down += No"
+            blue "  Do you want to enable automatic Call Screening and other dialer features?"
+            blue "  Note: This feature is in BETA and you will need strong integrity and android 16"
+            blue "   Vol Up += Yes"
+            blue "   Vol Down += No"
             no_vk "AUTO_CALL_SCREENING"
             if $VKSEL; then
                 
@@ -1219,31 +1219,31 @@ gphotos8
         db_edit com.google.android.dialer extensionVal G__tk_mdd_ph_config $TKBIN
         db_edit com.google.android.dialer extensionVal model_download_group_config $XATUCONFIGBIN
         db_edit com.google.android.dialer.directboot#com.google.android.dialer extensionVal 45417183 $XATUCONFIGBIN
-	db_editbugle_phenotype__use_legacy_normalized_destination_in_participant_creation 1
-	db_edit bugle_phenotype__use_main_activity_everywhere_v2 1
-	db_edit bugle_phenotype__use_messaging_identity_list_in_insert_protocol_tombstone 1
-	db_edit bugle_phenotype__verify_participant_in_conversation 1
-	db_edit bugle_phenotype__verify_thread_ids_cache 1
-	db_edit bugle_phenotype__verify_unique_session_ids 1
-	db_edit enable_lighter_clean_up_handler 1
-	db_edit bugle_phenotype__bug_169439511_change_default_filter 1
-	db_edit bugle_phenotype__conversation_labels_enabled 1
-	db_edit bugle_phenotype__enable_additional_annotation_logging 1
-	db_edit bugle_phenotype__enable_home_screen_banner 1
-	db_edit bugle_phenotype__enable_maestro_demo 1
-	db_edit bugle_phenotype__enable_otp_auto_deletion 1
-	db_edit bugle_phenotype__enable_supersort_annotators 1
-	db_edit bugle_phenotype__supersort_badge_all_filter 1
-	db_edit bugle_phenotype__supersort_enable_otp_banner_in_business_updates 1
-	db_edit bugle_phenotype__supersort_enable_qpbc 1
-	db_edit bugle_phenotype__supersort_enable_update_donation_banner 1
+        db_editbugle_phenotype__use_legacy_normalized_destination_in_participant_creation 1
+        db_edit bugle_phenotype__use_main_activity_everywhere_v2 1
+        db_edit bugle_phenotype__use_messaging_identity_list_in_insert_protocol_tombstone 1
+        db_edit bugle_phenotype__verify_participant_in_conversation 1
+        db_edit bugle_phenotype__verify_thread_ids_cache 1
+        db_edit bugle_phenotype__verify_unique_session_ids 1
+        db_edit enable_lighter_clean_up_handler 1
+        db_edit bugle_phenotype__bug_169439511_change_default_filter 1
+        db_edit bugle_phenotype__conversation_labels_enabled 1
+        db_edit bugle_phenotype__enable_additional_annotation_logging 1
+        db_edit bugle_phenotype__enable_home_screen_banner 1
+        db_edit bugle_phenotype__enable_maestro_demo 1
+        db_edit bugle_phenotype__enable_otp_auto_deletion 1
+        db_edit bugle_phenotype__enable_supersort_annotators 1
+        db_edit bugle_phenotype__supersort_badge_all_filter 1
+        db_edit bugle_phenotype__supersort_enable_otp_banner_in_business_updates 1
+        db_edit bugle_phenotype__supersort_enable_qpbc 1
+        db_edit bugle_phenotype__supersort_enable_update_donation_banner 1
         # Patching Ends
 
         # Install language pack
         if [ ! -z $lang ]; then
             if [ -f /sdcard/Pixelify/backup/callscreen-$lang.tar.xz ]; then
-                print "- Installing CallScreening $lang from backups"
-                print ""
+                log "- Installing CallScreening $lang from backups"
+                log ""
                 mkdir -p $MODPATH/system/product/tts/google
                 tar -xf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                 #install TTS Pack
@@ -1270,17 +1270,17 @@ gphotos8
                 fi
             else
                 CRSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
-                print "  (Network Connection Needed)"
-                print "  Do you want to Download Call Screening files for '$lang' language"
-                print "  Size: $CRSIZE"
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
+                log "  (Network Connection Needed)"
+                log "  Do you want to Download Call Screening files for '$lang' language"
+                log "  Size: $CRSIZE"
+                log "   Vol Up += Yes"
+                log "   Vol Down += No"
                 no_vk "ADD_CALL_SCREENING_FILES"
                 if $VKSEL; then
                     online
                     if [ $internet -eq 1 ]; then
                         echo " - Downloading CallScreening files for '$lang'" >>$logfile
-                        print "  Downloading CallScreening files for '$lang'"
+                        log "  Downloading CallScreening files for '$lang'"
                         mkdir -p $MODPATH/system/product/tts/google
                         cd $MODPATH/files
                         $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -1308,25 +1308,25 @@ gphotos8
                                 fi
                             fi
                         fi
-                        print ""
-                        print "  Do you want to create backup of CallScreening files for '$lang'"
-                        print "  so that you don't need redownload it every time."
-                        print "   Vol Up += Yes"
-                        print "   Vol Down += No"
+                        log ""
+                        log "  Do you want to create backup of CallScreening files for '$lang'"
+                        log "  so that you don't need redownload it every time."
+                        log "   Vol Up += Yes"
+                        log "   Vol Down += No"
                         no_vk "BACKUP_CALL_SCREENING_FILES"
                         if $VKSEL; then
                             echo " - Creating backup for CallScreening files for '$lang'" >>$logfile
-                            print "- Creating Backup"
+                            log "- Creating Backup"
                             mkdir -p /sdcard/Pixelify/backup
                             rm -rf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
                             cp -f $MODPATH/files/callscreen-$lang.tar.xz /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
-                            print ""
+                            log ""
                         fi
                     else
-                        print " ! No internet detected"
-                        print ""
-                        print "- Skipping CallScreening Resources."
-                        print ""
+                        error " ! No internet detected"
+                        log ""
+                        log "- Skipping CallScreening Resources."
+                        log ""
                         echo " - skipping CallScreening Resources due to no internet" >>$logfile
                     fi
                 else
@@ -1350,8 +1350,8 @@ gphotos8
         # make Google dialer as system app
         if [ -z $(pm list packages -s $DIALER) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
             print ""
-            print "- Google Dialer is not installed as a system app !!"
-            print "- Making Google Dialer a system app"
+            error "- Google Dialer is not installed as a system app !!"
+            log "- Making Google Dialer a system app"
             echo " - Making Google Dialer a system app" >>$logfile
             print ""
             cp -r $app/com.google.android.dialer*/. $MODPATH/system$product/priv-app/GoogleDialer
@@ -1360,8 +1360,8 @@ gphotos8
         # Remake google dialer as system app if Pixelify made it system app
         elif [ -f /data/adb/modules/PixelifyNext/system$product/priv-app/GoogleDialer/GoogleDialer.apk ]; then
             print ""
-            print "- Google Dialer is not installed as a system app !!"
-            print "- Making Google Dialer a system app"
+            error "- Google Dialer is not installed as a system app !!"
+            log "- Making Google Dialer a system app"
             echo " - Making Google Dialer a system app" >>$logfile
             print ""
             cp -r $app/com.google.android.dialer*/. $MODPATH/system$product/priv-app/GoogleDialer
@@ -1389,10 +1389,10 @@ gphotos8
 
 # Next Generation assistant installation
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
-    print "  Google is installed."
-    print "  Do you want to install Next generation assistant?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    log "  Google is installed."
+    log "  Do you want to install Next generation assistant?"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     no_vk "ENABLE_NGA"
     if $VKSEL; then
         echo " - Installing Next generation assistant" >>$logfile
@@ -1403,13 +1403,13 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
             if [ "$(cat /sdcard/Pixelify/version/nga.txt)" != "$NGAVERSION" ]; then
                 echo " - New Version Detected for NGA Resources" >>$logfile
                 echo " - Installed version: $(cat /sdcard/Pixelify/version/nga.txt) , New Version: $NGAVERSION " >>$logfile
-                print "  (Network Connection Needed)"
-                print "  New version Detected."
-                print "  Do you Want to update or use Old Backup?"
-                print "  Version: $NGAVERSION"
-                print "  Size: $NGASIZE"
-                print "   Vol Up += Update"
-                print "   Vol Down += Use old backup"
+                log "  (Network Connection Needed)"
+                log "  New version Detected."
+                log "  Do you Want to update or use Old Backup?"
+                log "  Version: $NGAVERSION"
+                log "  Size: $NGASIZE"
+                log "   Vol Up += Update"
+                log "   Vol Down += Use old backup"
                 no_vk "UPDATE_NGA_RES"
                 if $VKSEL; then
                     # check internet is avail or not
@@ -1434,67 +1434,67 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                         fi
                         cd /
                         # Create backup
-                        print ""
-                        print "- Creating Backup"
-                        print ""
+                        log ""
+                        log "- Creating Backup"
+                        log ""
                         cp -Tf $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
                         echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
                     else
                         # No internet dected
-                        print " ! No internet detected"
-                        print ""
-                        print " ! Using Old backup for now."
-                        print ""
+                        error " ! No internet detected"
+                        log ""
+                        log " ! Using Old backup for now."
+                        log ""
                         echo " ! using old backup for NGA Resources due to no internet" >>$logfile
                     fi
                 else
                     echo " - using old backup for NGA Resources" >>$logfile
                 fi
             fi
-            print "- Installing NgaResources from backups"
-            print ""
+            log "- Installing NgaResources from backups"
+            log ""
             # Extract nga.tar.xz
             tar -xf /sdcard/Pixelify/backup/nga.tar.xz -C $MODPATH/system/product
         else
-            print "  (Network Connection Needed)"
-            print "  Do you want to install and Download NGA Resources"
-            print "  Size: $NGASIZE"
-            print "   Vol Up += Yes"
-            print "   Vol Down += No"
+            log "  (Network Connection Needed)"
+            log "  Do you want to install and Download NGA Resources"
+            log "  Size: $NGASIZE"
+            log "   Vol Up += Yes"
+            log "   Vol Down += No"
             no_vk "DOWNLOAD_NGA_RES"
             if $VKSEL; then
                 online
                 if [ $internet -eq 1 ]; then
                     echo " - Downloading and Installing NGA Resources" >>$logfile
-                    print " - Downloading NGA Resources"
+                    log " - Downloading NGA Resources"
                     cd $MODPATH/files
                     $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new.tar.xz -o nga.tar.xz -O &>/proc/self/fd/$OUTFD
                     cd /
                     tar -xf $MODPATH/files/nga.tar.xz -C $MODPATH/system/product
-                    print ""
-                    print "  Do you want to create backup of NGA Resources"
-                    print "  so that you don't need redownload it every time."
-                    print "   Vol Up += Yes"
-                    print "   Vol Down += No"
+                    log ""
+                    log "  Do you want to create backup of NGA Resources"
+                    log "  so that you don't need redownload it every time."
+                    log "   Vol Up += Yes"
+                    log "   Vol Down += No"
                     no_vk "BACKUP_NGA"
                     if $VKSEL; then
                         echo " - Creating backup for NGA Resources" >>$logfile
-                        print "- Creating Backup"
+                        log "- Creating Backup"
                         mkdir -p /sdcard/Pixelify/backup
                         rm -rf /sdcard/Pixelify/backup/NgaResources.apk
                         rm -rf /sdcard/Pixelify/backup/nga.tar.xz
                         cp -f $MODPATH/files/nga.tar.xz /sdcard/Pixelify/backup/nga.tar.xz
                         mkdir -p /sdcard/Pixelify/version
                         echo "$NGAVERSION" >>/sdcard/Pixelify/version/nga.txt
-                        print ""
-                        print "- NGA Resources installation complete"
-                        print ""
+                        log ""
+                        log "- NGA Resources installation complete"
+                        log ""
                     fi
                 else
-                    print " ! No internet detected"
-                    print ""
-                    print "- Skipping NGA Resources."
-                    print ""
+                    error " ! No internet detected"
+                    log ""
+                    log "- Skipping NGA Resources."
+                    log ""
                     echo " - skipping NGA Resources due to no internet" >>$logfile
                 fi
             else
@@ -1539,10 +1539,10 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
 
         # Make Google app as system app
         if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
-            print "- Google is not installed as a system app !!"
-            print "- Making Google a system app"
+            error "- Google is not installed as a system app !!"
+            log "- Making Google a system app"
             echo " - Making Google a system app" >>$logfile
-            print ""
+            log ""
             if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                 cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
                 mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
@@ -1555,10 +1555,10 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
         # If Pixelify made system app then remake it
         elif [ -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ]; then
             if [ $FORCE_VELVET -eq 2 ]; then
-                print "- Google is not installed as a system app !!"
-                print "- Making Google a system app"
+                error "- Google is not installed as a system app !!"
+                log "- Making Google a system app"
                 echo " - Making Google a system app" >>$logfile
-                print ""
+                log ""
                 if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                     cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
                     mv $MODPATH/system/product/priv-app/Velvet/base.apk $MODPATH/system/product/priv-app/Velvet/Velvet.apk
@@ -1574,44 +1574,58 @@ fi
 
 # Google Journal
 if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
-    print "  Google is installed."
-    print "  Do you want to installed Journal app?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    blue "  Google is installed."
+    log "  Do you want to installed Journal app?"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     no_vk "INSTALL_JOURNAL"
     if $VKSEL; then
         echo " - Installing Google Journal" >>$logfile
-        print "- Installing Google Journal"
-        print ""
+        log "- Installing Google Journal"
+        log ""
         . $MODPATH/installAPK.sh Journal.apk $MODPATH/files/Journal.apk
      fi
 fi
 
+if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
+    log "  Google is installed."
+    log "  Do you want to installed Now Playing?"
+    log "  (needs aicore and device intelligence)"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
+    no_vk "QUICK_SHARE"
+    if $VKSEL; then
+        log " - Installing Now Playing " >>$logfile
+        log "- Installing Now Playing "
+        log ""
+        . $MODPATH/installAPK.sh nowplaying.apkm $MODPATH/files/nowplaying.apkm arm64
+     fi
+fi
 #if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 36 ]; then
-#    print "  Google is installed."
-#    print "  Do you want to installed AirDrop Quick Share? [UNTESTED]"
-#    print "  (you will need to have quick share installed and pixel 10 spoof)"
-#    print "   Vol Up += Yes"
-#    print "   Vol Down += No"
+#    log "  Google is installed."
+#    log "  Do you want to installed AirDrop Quick Share? [UNTESTED]"
+#    log "  (you will need to have quick share installed and pixel 10 spoof)"
+#    log "   Vol Up += Yes"
+#    log "   Vol Down += No"
 #    no_vk "QUICK_SHARE"
 #    if $VKSEL; then
-#        print " - Installing Quick share extension" >>$logfile
-#        print "- Installing Quick share extension"
-#        print ""
+#        log " - Installing Quick share extension" >>$logfile
+#        log "- Installing Quick share extension"
+#        log ""
 #        . $MODPATH/installAPK.sh mosey.apkm
 #     fi
 #fi
 #if [ -d /data/data/com.google.android.googlequicksearchbox ]; then
-#   print ""
-#   print " Google its installed."
-#   print " Do you want to install other pixel apps? (Weather, recorder, etc)"
-#   print " Vol up += Yes"
-#   print " Vol down += No"
+#   log ""
+#   log " Google its installed."
+#   log " Do you want to install other pixel apps? (Weather, recorder, etc)"
+#   log " Vol up += Yes"
+#   log " Vol down += No"
 #   no_vk "PIXEL_APPS"
 #   if $VKSEL; then
-#       print ""
-#       print "Installing pixel apps"
-#       print ""
+#       log ""
+#       log "Installing pixel apps"
+#       log ""
 #       TODO update with apps names
 #       . $MODPATH/installAPK.sh 
 #       . $MODPATH/installAPK.sh	
@@ -1619,15 +1633,15 @@ fi
 
 # Pixel Studio
 #if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] && [ $TARGET_DEVICE_ONEUI -eq 0 ]; then
-#    print "  Google is installed."
-#   print "  Do you want to install Pixel Studio"
-#    print "   Vol Up += Yes"
-#    print "   Vol Down += No"
+#    log "  Google is installed."
+#   log "  Do you want to install Pixel Studio"
+#    log "   Vol Up += Yes"
+#    log "   Vol Down += No"
 #    no_vk "INSTALL_STUDIO"
 #    if $VKSEL; then
 #        echo " - Installing Pixel Studio" >>$logfile
-#        print "- Installing Pixel Studio"
-#        print ""
+#        log "- Installing Pixel Studio"
+#        log ""
 #        . $MODPATH/installAPK.sh Studio.apkm
 #     fi
 #fi
@@ -1638,23 +1652,23 @@ if [ $API -ge 28 ]; then
     PLW1=$(find /system -name *WallpapersBreel2* | grep -v overlay | grep -v "\.")
     if [ -f /sdcard/Pixelify/backup/pixel.tar.xz ]; then
         echo " - Backup Detected for Pixel Wallpapers" >>$logfile
-        print "  Do you want to install Pixel Live Wallpapers?"
-        print "  (Backup detected, no internet needed)"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
+        log "  Do you want to install Pixel Live Wallpapers?"
+        log "  (Backup detected, no internet needed)"
+        log "   Vol Up += Yes"
+        log "   Vol Down += No"
         no_vk "ENABLE_LIVE_WALLPAPERS"
         if $VKSEL; then
             sed -i -e "s/Live=0/Live=1/g" $MODPATH/var.prop
             if [ "$(cat /sdcard/Pixelify/version/pixel.txt)" != "$LWVERSION" ]; then
                 echo " - New Version Backup Detected for Pixel Wallpapers" >>$logfile
                 echo " - Old version:$(cat /sdcard/Pixelify/version/pixel.txt), New Version:  $LWVERSION " >>$logfile
-                print "  (Network Connection Needed)"
-                print "  New version Detected "
-                print "  Do you Want to update or use Old Backup?"
-                print "  Version: $LWVERSION"
-                print "  Size: $LWSIZE"
-                print "   Vol Up += Update"
-                print "   Vol Down += Use old backup"
+                log "  (Network Connection Needed)"
+                log "  New version Detected "
+                log "  Do you Want to update or use Old Backup?"
+                log "  Version: $LWVERSION"
+                log "  Size: $LWSIZE"
+                log "   Vol Up += Update"
+                log "   Vol Down += Use old backup"
                 no_vk "DOWNLOAD_LIVE_WALLPAPERS"
                 if $VKSEL; then
                     online
@@ -1670,22 +1684,22 @@ if [ $API -ge 28 ]; then
                             mv pixel-old.tar.xz pixel.tar.xz
                         fi
                         cd /
-                        print "- Creating Backup"
-                        print ""
+                        log "- Creating Backup"
+                        log ""
                         cp -f $MODPATH/files/pixel.tar.xz /sdcard/Pixelify/backup/pixel.tar.xz
                         echo " - Creating Backup for Pixel Wallpapers" >>$logfile
                         echo "$LWVERSION" >>/sdcard/Pixelify/version/pixel.txt
                     else
-                        print " ! No internet detected"
-                        print ""
-                        print " ! Using Old backup for now."
-                        print ""
+                        error " ! No internet detected"
+                        log ""
+                        log " ! Using Old backup for now."
+                        log ""
                         echo " ! Using old Backup for Pixel Wallpapers due to no internet" >>$logfile
                     fi
                 fi
             fi
-            print "- Installing Pixel LiveWallpapers"
-            print ""
+            log "- Installing Pixel LiveWallpapers"
+            log ""
             tar -xf /sdcard/Pixelify/backup/pixel.tar.xz -C $MODPATH/system$product
             pm install $MODPATH/system$product/priv-app/PixelLiveWallpaperPrebuilt/*.apk &>/dev/null
 
@@ -1703,19 +1717,19 @@ if [ $API -ge 28 ]; then
             echo " - Using old backup Pixel Wallpapers" >>$logfile
         fi
     else
-        print "  (Network Connection Needed)"
-        print "  Do you want to install and Download Pixel LiveWallpapers?"
-        print "  Size: $LWSIZE"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
+        log "  (Network Connection Needed)"
+        log "  Do you want to install and Download Pixel LiveWallpapers?"
+        log "  Size: $LWSIZE"
+        log "   Vol Up += Yes"
+        log "   Vol Down += No"
         no_vk "ENABLE_LIVE_WALLPAPERS"
         if $VKSEL; then
             online
             if [ $internet -eq 1 ]; then
                 sed -i -e "s/Live=0/Live=1/g" $MODPATH/var.prop
-                print "- Downloading Pixel LiveWallpapers"
+                log "- Downloading Pixel LiveWallpapers"
                 echo " - Downloading and Installing Pixel Wallpapers" >>$logfile
-                print ""
+                log ""
                 cd $MODPATH/files
                 if [ $API -ge 31 ]; then
                     $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/pixel.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -1724,8 +1738,8 @@ if [ $API -ge 28 ]; then
                     mv pixel-old.tar.xz pixel.tar.xz
                 fi
                 cd /
-                print ""
-                print "- Installing Pixel Live Wallpapers"
+                log ""
+                log "- Installing Pixel Live Wallpapers"
                 tar -xf $MODPATH/files/pixel.tar.xz -C $MODPATH/system$product
                 pm install $MODPATH/system$product/priv-app/PixelLiveWallpaperPrebuilt/*.apk &>/dev/null
 
@@ -1733,22 +1747,22 @@ if [ $API -ge 28 ]; then
                     mv $MODPATH/system/overlay/Breel*.apk $MODPATH/vendor/overlay
                     rm -rf $MODPATH/system/overlay
                 fi
-                print ""
-                print "  Do you want to create backup of Pixel LiveWallpapers?"
-                print "  so that you don't need redownload it every time."
-                print "   Vol Up += Yes"
-                print "   Vol Down += No"
+                log ""
+                log "  Do you want to create backup of Pixel LiveWallpapers?"
+                log "  so that you don't need redownload it every time."
+                log "   Vol Up += Yes"
+                log "   Vol Down += No"
                 no_vk "BACKUP_LIVE_WALLPAPERS"
                 if $VKSEL; then
-                    print "- Creating Backup"
+                    log "- Creating Backup"
                     mkdir -p /sdcard/Pixelify/backup
                     rm -rf /sdcard/Pixelify/backup/pixel.tar.xz
                     cp -f $MODPATH/files/pixel.tar.xz /sdcard/Pixelify/backup/pixel.tar.xz
-                    print ""
+                    log ""
                     mkdir /sdcard/Pixelify/version
                     echo " - Creating Backup for Pixel Wallpapers" >>$logfile
                     echo "$LWVERSION" >>/sdcard/Pixelify/version/pixel.txt
-                    print " - Done"
+                    green " - Done"
                     print ""
                 fi
                 REMOVE="$REMOVE $PLW $PLW1"
@@ -1758,9 +1772,9 @@ if [ $API -ge 28 ]; then
                 install_wallpaper_with_backup
                 WALL_DID=1
             else
-                print " ! No internet detected"
+                error " ! No internet detected"
                 print ""
-                print " ! Skipping Pixel LiveWallpaper"
+                error " ! Skipping Pixel LiveWallpaper"
                 print ""
                 echo " ! Skipping Pixel Wallpapers due to no internet" >>$logfile
             fi
@@ -1786,14 +1800,14 @@ if [ $API -ge 36 ]; then
     KW=$(find /system -name *Lawnchair* | grep -v overlay | grep -v "\.")
 
             REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
-        print "  Do you want to install Pixel Launcher? (Android 16 only)"
-        print "   Vol Up += Yes"
-        print "   Vol Down += No"
+        log "  Do you want to install Pixel Launcher? (Android 16 only)"
+        log "   Vol Up += Yes"
+        log "   Vol Down += No"
         no_vk "ENABLE_PIXEL_LAUNCHER"
         if $VKSEL; then
-                print "- Installing Pixel Launcher"
+                log "- Installing Pixel Launcher"
                 echo " - Installing Pixel Launcher" >>$logfile
-                print ""
+                log ""
                 unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025/DevicePersonalizationPrebuiltPixel2025.zip $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025
                 set_perm_recursive $MODPATH/system/etc 0 0 0755 0644
                 set_perm_recursive $MODPATH/system/product/app 0 0 0755 0644
@@ -1829,14 +1843,14 @@ fi
 
 # Pixel bootanimation
 if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
-    print "  Do you want to install Pixel Bootanimation?"
-    print "   Vol Up += Yes"
-    print "   Vol Down += No"
+    log "  Do you want to install Pixel Bootanimation?"
+    log "   Vol Up += Yes"
+    log "   Vol Down += No"
     no_vk "ENABLE_BOOTANIMATION"
     if $VKSEL; then
-    	print " Do you want to install Gemini Bootanimation? (only AOSP)"
-    	print "   Vol Up += Yes"
-    	print "   Vol Down += No"
+    	log " Do you want to install Gemini Bootanimation? (only AOSP)"
+    	log "   Vol Up += Yes"
+    	log "   Vol Down += No"
     	no_vk "GEMINI_BOOTANIMATION"
 	if $VKSEL; then
 	   echo " - Installing Pixel Bootanimation" >>$logfile
@@ -1850,7 +1864,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
 		   	mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/product/media/bootanimation.zip
 		   	set_perm_recursive $MODPATH/system/product/media 0 0 0755 0644
 		   else
-		   	print " Failed to find bootanimation"
+		   	error " Failed to find bootanimation"
 	  	   fi
 	  fi
        else
@@ -1862,28 +1876,28 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
         fi
         boot_res=$(unzip -p /$MEDIA_PATH/bootanimation.zip desc.txt | head -n 1 | cut -d' ' -f1)
         if [ ! -z "$boot_res" ]; then
-            print " - Detected $boot_res Resolution Bootanimation"
+            green " - Detected $boot_res Resolution Bootanimation"
         else
-            print " ! Failed to detect Resolution of Bootanimation"
+            error " ! Failed to detect Resolution of Bootanimation"
         fi
-        print ""
+        log ""
         mkdir -p $MODPATH/$MEDIA_PATH
         if [ $MONET_BOOTANIMATION -eq 0 ]; then
             case "$boot_res" in
             720)
                 tar -xf $MODPATH/files/bootanimation-720.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 720p resolution pixel Bootanimation"
+                log " - Using 720p resolution pixel Bootanimation"
                 ;;
             1440)
                 tar -xf $MODPATH/files/bootanimation-1440.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 1440p resolution pixel Bootanimation"
+                log " - Using 1440p resolution pixel Bootanimation"
                 ;;
             *)
                 tar -xf $MODPATH/files/bootanimation.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 1080p resolution pixel Bootanimation"
+                log " - Using 1080p resolution pixel Bootanimation"
                 ;;
             esac
-            print ""
+            log ""
             if [ ! -f /system/bin/themed_bootanimation ]; then
                 rm -rf $MODPATH/$MEDIA_PATH/bootanimation.zip
                 cp -f $MODPATH/$MEDIA_PATH/bootanimation-dark.zip $MODPATH/$MEDIA_PATH/bootanimation.zip
@@ -1893,18 +1907,18 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
             case "$boot_res" in
             720)
                 tar -xf $MODPATH/files/bootanimation-m-720.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 720p resolution pixel Bootanimation"
+                log " - Using 720p resolution pixel Bootanimation"
                 ;;
             1440)
                 tar -xf $MODPATH/files/bootanimation-m-1440.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 1440p resolution pixel Bootanimation"
+                log " - Using 1440p resolution pixel Bootanimation"
                 ;;
             *)
                 tar -xf $MODPATH/files/bootanimation-m.tar.xz -C $MODPATH/$MEDIA_PATH
-                print " - Using 1080p resolution pixel Bootanimation"
+                log " - Using 1080p resolution pixel Bootanimation"
                 ;;
             esac
-            print ""
+            log ""
             cp -f $MODPATH/$MEDIA_PATH/bootanimation.zip $MODPATH/$MEDIA_PATH/bootanimation-dark.zip
         fi
         fi
@@ -1917,11 +1931,11 @@ else
 fi
 
 #Adding Google san font.
-print ""
+log ""
 #print "  (NOTE: Playstore or Google or GMS crashes then dont enable it)"
-print "  Do you want add Google San Fonts?"
-print "    Vol Up += Yes"
-print "    Vol Down += No"
+log "  Do you want add Google San Fonts?"
+log "    Vol Up += Yes"
+log "    Vol Down += No"
 no_vk "GSAN_FONT"
 if $VKSEL; then
     patch_font
@@ -1935,10 +1949,10 @@ fi
 
 # Google Settings service
 if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
-    print "  Do you want to install Google settings service?"
-    # print "  (Battery Widget)"
-    print "    Vol Up += Yes"
-    print "    Vol Down += No"
+    log "  Do you want to install Google settings service?"
+    # log "  (Battery Widget)"
+    log "    Vol Up += Yes"
+    log "    Vol Down += No"
     no_vk "ENABLE_GSI"
     if $VKSEL; then
         SI=$(find /system -name *SettingsIntelligence* | grep -v overlay | grep -v "\.")
@@ -1955,13 +1969,13 @@ fi
 
 # Rboard app fixes
 if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
-    print ""
-    print "- Rboard app is installed !!"
-    print ""
-    print "  Do you want to apply fix for Rboard by disabling GMS overriding flags?"
-    print "  Note: Pixelify will still try to patch other method"
-    print "    Vol Up += Yes"
-    print "    Vol Down += No"
+    log ""
+    log "- Rboard app is installed !!"
+    log ""
+    log "  Do you want to apply fix for Rboard by disabling GMS overriding flags?"
+    log "  Note: Pixelify will still try to patch other method"
+    log "    Vol Up += Yes"
+    log "    Vol Down += No"
     no_vk "DISABLE_GBOARD_GMS_OVERRIDE"
     if $VKSEL; then
         DISABLE_GBOARD_GMS=1
@@ -1970,10 +1984,10 @@ fi
 
 # Google keyboard
 if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; then
-    print ""
-    print " Google keyboard is installed."
-    print "- Enabling pixel exclusive features"
-    [ $API -ge 31 ] && print "- Enabling NGA Voice typing (If Nga is installed)"
+    log ""
+    log " Google keyboard is installed."
+    log "- Enabling pixel exclusive features"
+    [ $API -ge 31 ] && log "- Enabling NGA Voice typing (If Nga is installed)"
 
     # Flags patch for Gboard
     echo " - Patching Google Keyboard's bools" >>$logfile
@@ -1992,11 +2006,11 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin intVal 301153970 "nga_min_version_code_for_streaming_rpc"
         db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin stringVal "en" "enabled_ocr_language_tags"
         # G Logo
-        print ""
-        print "  Do you want enable G logo in google keyboard?"
-        print "  Note: Enabling it will not show you languages in spacebar"
-        print "    Vol Up += Yes"
-        print "    Vol Down += No"
+        log ""
+        log "  Do you want enable G logo in google keyboard?"
+        log "  Note: Enabling it will not show you languages in spacebar"
+        log "    Vol Up += Yes"
+        log "    Vol Down += No"
         no_vk "G_LOGO"
         if $VKSEL; then
             db_edit com.google.android.inputmethod.latin#com.google.android.inputmethod.latin boolVal 1 "show_branding_on_space"
@@ -2009,8 +2023,8 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
     fi
 
     if [ -z $(pm list packages -s com.google.android.inputmethod.latin) ] && [ -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
-        print "- GBoard is not installed as a system app !!"
-        print "- Making Gboard a system app"
+        error "- GBoard is not installed as a system app !!"
+        log "- Making Gboard a system app"
         echo " - Making Google Keyboard a system app" >>$logfile
         cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
         mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
@@ -2018,9 +2032,9 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
         #mv $MODPATH/files/privapp-permissions-com.google.android.inputmethod.latin.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.inputmethod.latin.xml
         echo "gboard" >>$pix/app2.txt
     elif [ ! -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
-        print "- GBoard is not installed as a system app !!"
+        log "- GBoard is not installed as a system app !!"
         echo " - Making Google Keyboard as system app" >>$logfile
-        print "- Making Gboard a system app"
+        log "- Making Gboard a system app"
         cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
         mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
         rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat
@@ -2037,17 +2051,17 @@ if [ ! -z $(pm list packages com.google.android.tts) ]; then
         install_tts
     fi
 else
-    print ""
-    print " ! It is recommended to install Google TTS"
-    print " ! If you face any problem regarding call screening or call recording"
-    [ $API -ge 31 ] && print " ! It is required for Live caption data downloading"
-    print " ! Then Install GoogleTTS via playstore"
-    print " ! Reinstall module to make it system app"
-    print ""
+    error ""
+    error " ! It is recommended to install Google TTS"
+    error " ! If you face any problem regarding call screening or call recording"
+    [ $API -ge 31 ] && error " ! It is required for Live caption data downloading"
+    error " ! Then Install GoogleTTS via playstore"
+    error " ! Reinstall module to make it system app"
+    error ""
 fi
 
-ui_print " - Patching GMS flags to enable features"
-ui_print " - This may take a minute or two"
+blue " - Patching GMS flags to enable features"
+blue " - This may take a minute or two"
 
 # Android System Intelligence
 $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.platform.device_personalization_services' AND name LIKE 'Echo__search_%'"
@@ -2306,9 +2320,9 @@ $REMOVE
 ------------------
 " >>$logfile
 
-echo " ---- Installation Finished ----" >>$logfile
+green " ---- Installation Finished ----" >>$logfile
 
-print ""
-print "- Done"
-print ""
-print " - Installation logs were saved as /sdcard/Pixelify/logs.txt"
+green ""
+green "- Done"
+green ""
+green " - Installation logs were saved as /sdcard/Pixelify/logs.txt"
