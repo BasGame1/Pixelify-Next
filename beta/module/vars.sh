@@ -1,4 +1,6 @@
 #!/system/bin/sh
+# Escape code var
+ESC=$(printf '\033')
 
 # Riru Vars
 MAGISKTMP="$(magisk --path)"
