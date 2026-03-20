@@ -49,7 +49,7 @@ elif [ "$APK_CUT" = "apks" ] || [ "$APK_CUT" = "apkm" ]; then
  if [ "$ABI" == "arm64" ]; then
   echo "Creating session with ABI arm64"
   SESSION=$(pm install-create --abi arm64-v8a -S $TOTAL_SIZE | grep -Eo '[0-9]+')
- elif [ "$ABI" == "arm64" ]; then
+ elif [ "$ABI" == "arm32" ]; then
   echo "Creating session with ABI arm32"
   SESSION=$(pm install-create --abi armabi-v7a -S $TOTAL_SIZE | grep -Eo '[0-9]+')
  else
