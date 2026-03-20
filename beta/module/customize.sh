@@ -14,7 +14,7 @@ ui_print "                                          ";
 ui_print "                                          ";
 ui_print "                                          ";
 # run Pixelify Functions and Variables
-. $MODPATH/terminal.sh | abort
+. $MODPATH/terminal.sh || abort
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
 . $MODPATH/functions.sh || abort
