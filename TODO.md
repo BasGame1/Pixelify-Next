@@ -7,3 +7,4 @@
 () Delete all remaining code from previous version that only makes errors
 () Divide the customize file into smaller files for more readability
 () Clean the project structure and delete unncesary files
+() Add script to change version automatically
