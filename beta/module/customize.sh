@@ -1835,7 +1835,7 @@ if [ $API -ge 36 ]; then
         fi
 else
     echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
-    for FILE in $MODPATH/system/*.apk; do
+    for FILE in $(find "$MODPATH/system" -type f -name "*.apk"); do
         rm -rf $FILE 2>/dev/null
     done
     rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024
