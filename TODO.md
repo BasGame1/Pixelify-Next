@@ -8,3 +8,7 @@
 () Divide the customize file into smaller files for more readability
 () Clean the project structure and delete unncesary files
 () Add script to change version automatically
+() Add function to pass args to build scripts, to avoid the selector menu
+() Make end message on build scripts
+() Make debug and non debug versions for the build scripts, which shows the whole error block or just a small decorated piece
+(X) Change NDK from 27 to 25 due to compatibility errors
