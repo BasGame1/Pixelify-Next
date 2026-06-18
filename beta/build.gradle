@@ -1,7 +1,6 @@
 import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.api.file.DuplicatesStrategy
-
 import java.security.MessageDigest
 
 plugins {
@@ -18,6 +17,7 @@ def buildDir4 = "$rootDir/build"
 android {
     namespace 'com.pixelify.next.beta.zygisk'
     compileSdk target_sdk
+    ndkVersion rootProject.ext.ndkVersion
     defaultConfig {
         minSdk min_sdk
         targetSdk target_sdk
@@ -26,7 +26,8 @@ android {
             //     path("zygisk/src/main/cpp/external/Android.mk")
             // }
             cmake {
-                arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
+                arguments "-DMODULE_NAME:STRING=$moduleLibraryName"
+                cppFlags "-std=gnu++17" // Dowgrade for zygisk v2
             }
         }
         ndk {
