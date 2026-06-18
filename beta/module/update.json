@@ -1,6 +1,6 @@
 {
-    "version": v6.1,
-    "versionCode": 600010000,
-    "zipUrl": https://github.com/BasGame1/Pixelify-Next/releases/download/BETA-6.1/PixelifyNext-v6.1-BETA.zip,
+    "version": v6.2,
+    "versionCode": 600020000,
+    "zipUrl": https://github.com/BasGame1/Pixelify-Next/releases/download/BETA-6.2/PixelifyNext-v6.2-BETA.zip,
     "changelog": https://github.com/BasGame1/Pixelify-Next/blob/DEV/changelog.md
 }
