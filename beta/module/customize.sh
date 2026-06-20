@@ -1824,7 +1824,7 @@ if [ $API -ge 36 ]; then
                 REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
         else
             echo " - Deleting Pixel Launcher" >>$logfile
-            for FILE in $MODPATH/system/*.apk; do
+            for FILE in $(find "$MODPATH/system" -type f -name "*.apk"); do
                 rm -rf $FILE 2>/dev/null
             done
             for FILE in $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml $MODPATH/system/product/etc/permissions/com.android.systemui.plugin.globalactions.wallet.xml $MODPATH/system/product/etc/permissions/com.google.android.apps.nexuslauncher.xml $MODPATH/system/product/etc/permissions/com.google.android.apps.wallpaper.xml $MODPATH/system/product/etc/permissions/com.google.android.apps.weather.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.apps.nexuslauncher.xml; do
