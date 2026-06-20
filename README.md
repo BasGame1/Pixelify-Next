@@ -2,7 +2,8 @@
 ![Platform](https://img.shields.io/badge/Platform-Android-green?style=flat-square&logo=android)
 ![Static Badge](https://img.shields.io/badge/Language-Bash-blue?logo=GNU%20Bash)
 <p>
-A Root (Magisk, Apatch, KSU, KSUn, ... ) Module which enables Pixel UI and some exclusive features.<br>
+A Root (Magisk, Apatch, KSU, KSUn, ... ) Mcustomize
+    ustomizeustomizedule which enables Pixel UI and some exclusive features.<br>
 
 # WORK IN PROGRESS
 
@@ -259,12 +260,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
   - Aicore not installing on some arm64 and arm32 devices
   - Syntax errors in customize
 
-
-
-
-
-
-
-
-
-
+### Version 6.2
+- Fix pixel launcher not being deleted
+- Downgrade to zygisk ApI v2 to fix compatibility errors
