@@ -1,6 +1,5 @@
-#!/system/bin/sh
 #Universal script to install apk, apks and apkm
-
+install_apk() {
 APK_NAME=$1
 APK_PATH=$2
 ABI=$3
@@ -85,4 +84,8 @@ else
  exit 1
  
 fi
-
+}
+# If the script is not sourced from other scripts still can be executed as an individual file
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    install_apk
+fi
