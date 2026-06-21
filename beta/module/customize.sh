@@ -14,10 +14,19 @@ ui_print "                                          ";
 ui_print "                                          ";
 ui_print "                                          ";
 # run Pixelify Functions and Variables
-. $MODPATH/terminal.sh || abort
-. $MODPATH/vars.sh || abort
-. $MODPATH/utils.sh || abort
-. $MODPATH/functions.sh || abort
+. $MODPATH/terminal.sh || abort "terminal script not loaded"
+. $MODPATH/vars.sh || abort "vars script not loaded"
+. $MODPATH/utils.sh || abort "utils script not loaded"
+. $MODPATH/functions.sh || abort "functions script not loaded"
+. $MODPATH/install_apk.sh || abort "apk installer script not loaded"
+. $MODPATH/install_wallpapers.sh || abort "Wallpapers script not loaded"
+. $MODPATH/install_launcher.sh || abort "Launcher script not loaded"
+. $MODPATH/install_bootanimation.sh || abort "Bootanimation script not loaded"
+. $MODPATH/install_dialer.sh || abort "dialer script not loaded"
+. $MODPATH/install_nga.sh || abort "nga script not loaded"
+. $MODPATH/install_apps.sh || abort "apps script not loaded"
+. $MODPATH/systemize_velvet.sh || abort "systemize velvet script not loaded"
+
 
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
