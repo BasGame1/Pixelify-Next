@@ -25,8 +25,8 @@ ui_print "                                          ";
 . $MODPATH/install_dialer.sh || abort "dialer script not loaded"
 . $MODPATH/install_nga.sh || abort "nga script not loaded"
 . $MODPATH/install_apps.sh || abort "apps script not loaded"
-. $MODPATH/systemize_velvet.sh || abort "systemize velvet script not loaded"
-
+. $MODPATH/systemize_velvet.sh || abort "systemize velvet
+script not loaded"
 
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
