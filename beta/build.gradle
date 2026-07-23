@@ -165,6 +165,14 @@ afterEvaluate {
             }
 
             doLast {
+		filesMatching('**/module.prop') {
+			filter { String line ->
+			    if (line.contains('DEVICE_USES_VOLUME_KEY')) {
+				return line.replaceAll('DEVICE_USES_VOLUME_KEY\\s*=\\s*1', 'DEVICE_USES_VOLUME_KEY=0')
+			    }
+			    return line
+			}
+		    }
                 copy {
                     from "$nativeOutDir"
                     into "$magiskDir/lib/riru"
