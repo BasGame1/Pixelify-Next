@@ -1008,6 +1008,10 @@ IMEI1=$(getprop ro.boot.imei1)
 IMEI2=$(getprop ro.boot.imei2)
 SERIAL_NO=$(getprop ro.serialno)
 
+# Mosey
+BUILT_WITH_MOSEY_SUPPORT=0
+
+# Var menu
 var_menu="
 =====================
 Installation Menu
