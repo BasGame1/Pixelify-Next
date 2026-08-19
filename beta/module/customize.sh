@@ -1034,6 +1034,23 @@ install_launcher
 
 # Pixel bootanimation (helper script install_bootanimation.sh)
 install_bootanimation
+if [ BUILT_WITH_MOSEY_SUPPORT ]; then
+ echo "Built with mosey supported, asking user" >> $logfile
+ log "  Do you want air drop support?"
+ log "  Note: GKI 5.10, 5.15 and 6.1 only"
+ log "    Vol Up += Yes"
+ log "    Vol Down += No"
+ no_vk "MOSEY_SUPPORT"
+ if $VKSEL; then
+   # This block will be replaced with the mosey code at compilation
+   #CUSTOMIZE.SH_MOSEY_STUB
+  else
+   log "Selected no, skipping"
+ fi
+else
+ log "This build doesnt have mosey, skipping"
+ echo "Built with mosey unsupported, compile with submodules" >> $logfile
+fi
 
 #Adding Google san font.
 log ""
