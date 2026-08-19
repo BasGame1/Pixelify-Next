@@ -193,7 +193,9 @@ afterEvaluate {
             archiveFileName = zipName
             destinationDirectory = outDir
         }
-
+        task("buildMosey", type: Exec) {
+            commandLine "${rootDir}/build_mosey.sh"
+        }
         task("novkzip${variantCapped}", type: Zip) {
             dependsOn("zip${variantCapped}")
             dependsOn("novk${variantCapped}")
