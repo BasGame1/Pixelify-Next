@@ -53,195 +53,260 @@ afterEvaluate {
         def zipName = "${magiskModuleId.replace('_', '-')}-BETA-${moduleVersion}.zip"
         def zipNamenovk = "${magiskModuleId.replace('_', '-')}-BETA-${moduleVersion}-no-VK.zip"
         def magiskDir = file("$outDir/magisk_module_beta_$variantLowered")
-        def templatePath = "$betaPath/module"
+        def templatePath = file("$betaPath/module")
         def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a',Instance3: 'x86',Instance4: 'x86_64']
+        def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
 
-        task("prepareMagiskFiles${variantCapped}", type: Sync) {
-            duplicatesStrategy = DuplicatesStrategy.WARN
-            
-            dependsOn("assemble$variantCapped")
-            def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
-
-            into magiskDir
-            from(templatePath) {
-                exclude 'module.prop', 'module/files/system'
-            }
-            from(templatePath) {
-                include 'module.prop'
-                expand([
-                        id          : magiskModuleId,
-                        name        : moduleName,
-                        version     : moduleVersion,
-                        versionCode: moduleVersionCode.toString(),
-                        author      : moduleAuthor,
-                        description: moduleDescription,
-                        volType: "1",
-                ])
-                filter(FixCrLfFilter.class,
-                        eol: FixCrLfFilter.CrLf.newInstance("lf"))
-            }
-            types.each { instance, resourceDir ->
-                def libSourceDir = "$buildDir/intermediates/stripped_native_libs/$variantLowered/strip${variantCapped}DebugSymbols/out/lib/$resourceDir"
-                def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
-                from(libSourceDir) {
-                    into 'lib/zygisk'
-                    include "**/libpixelify-next.so" 
-                    rename 'libpixelify-next.so', "${resourceDir}.so"
-                }
-                from(libSourceDir) {
-                    into 'lib/zygisk'
-                    include "**/libpixelify-next-camera.so"
-                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
-                }
-                from(libSourceDir) {
-                    into 'lib/zygisk'
-                    include "**/libpixelify-next-photos.so"
-                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
-                }
-                from(libSourceDir) {
-                    into 'lib/zygisk_tensor'
-                    include "**/libpixelify-next-tensor.so"
-                    rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
-                }
-            }
-
-            doLast {
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
-                }
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify-next.so"
-                    rename "libpixelify-next-tensor.so" , "$variant.name"
-                }
-            }
-        }
-
-    task("novk${variantCapped}", type: Sync) {
-            duplicatesStrategy = DuplicatesStrategy.WARN
-            
-            dependsOn("assemble$variantCapped")
-            def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
-
-            into magiskDir
-            from(templatePath) {
-                exclude 'module.prop', 'module/files/system'
-            }
-            from(templatePath) {
-                include 'module.prop'
-                expand([
-                        id          : magiskModuleId,
-                        name        : moduleName,
-                        version     : moduleVersion,
-                        versionCode: moduleVersionCode.toString(),
-                        author      : moduleAuthor,
-                        description: moduleDescription,
-                        volType: "0",
-                ])
-                filter(FixCrLfFilter.class,
-                        eol: FixCrLfFilter.CrLf.newInstance("lf"))
-            }
-            types.each { instance, resourceDir ->
-                def libSourceDir = "$buildDir/intermediates/stripped_native_libs/$variantLowered/strip${variantCapped}DebugSymbols/out/lib/$resourceDir"
-                def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
-                from(libSourceDir) {
-                    into 'lib/zygisk'
-                    include "**/libpixelify-next.so"
-                    rename 'libpixelify-next.so', "${resourceDir}.so"
-                }
-                from(libSourceDir) {
-                    into 'lib/zygisk'
-                    include "**/*camera.so", "**/*photos.so"
-                    rename { String fn -> fn.replace(".so", "${archSuffix}") }
-                }
-                from(libSourceDir) {
-                    into 'lib/zygisk_tensor'
-                    include "**/libpixelify-next-tensor.so"
-                    rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
-                }
-            }
-
-            doLast {
-		filesMatching('**/module.prop') {
-			filter { String line ->
-			    if (line.contains('DEVICE_USES_VOLUME_KEY')) {
-				return line.replaceAll('DEVICE_USES_VOLUME_KEY\\s*=\\s*1', 'DEVICE_USES_VOLUME_KEY=0')
-			    }
-			    return line
-			}
-		    }
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
-                }
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify-next.so"
-                    rename "libpixelify-next-tensor.so" , "libpixelify.so"
-                }
-            }
-        }
-
-        task("zip${variantCapped}", type: Zip) {
-            dependsOn("prepareMagiskFiles${variantCapped}")
-            from magiskDir
-            archiveFileName = zipName
-            destinationDirectory = outDir
-        }
-        task("buildMosey", type: Exec) {
-            commandLine "${rootDir}/build_mosey.sh"
-        }
-        task("novkzip${variantCapped}", type: Zip) {
-            dependsOn("zip${variantCapped}")
-            dependsOn("novk${variantCapped}")
-            tasks.findByName("novk${variantCapped}").mustRunAfter "zip${variantCapped}"
-            from magiskDir
-            archiveFileName = zipNamenovk
-            destinationDirectory = outDir
-            doLast {
-                delete {
-                    from "$outDir"
-                    include "config.prop"
-                }
-                copy {
-                    from "$templatePath"
-                    into "$outDir"
-                    include "config.prop"
-                }
-            }           
-        }
-
-        task("push${variantCapped}", type: Exec) {
-            dependsOn("zip${variantCapped}")
-            workingDir outDir
-            commandLine android.adbExecutable, "push", zipName, "/data/local/tmp/"
-        }
-
-        task("flashMagisk${variantCapped}", type: Exec) {
-            dependsOn("push${variantCapped}")
-            commandLine android.adbExecutable, "shell", "su", "-c",
-                    "magisk --install-module /data/local/tmp/${zipName}"
-        }
-        
-        task("flashKsu${variantCapped}", type: Exec) {
-            dependsOn("push${variantCapped}")
-            commandLine "adb", "shell", "su", "-c", "ksud module install /data/local/tmp/${zipName}"
-        }
-
-        task("reboot${variantCapped}", type: Exec) {
-            dependsOn("flash${variantCapped}")
-            commandLine android.adbExecutable, "shell", "reboot"
-        }
+        createVariantTasks(
+            project,
+            variant.name,
+            variantCapped,
+            variantLowered,
+            magiskDir,
+            nativeOutDir,
+            templatePath,
+            buildDir,
+            rootDir,
+            outDir,
+            zipName,
+            zipNamenovk,
+            magiskModuleId,
+            moduleName,
+            moduleVersion,
+            moduleVersionCode.toString(),
+            moduleAuthor,
+            moduleDescription,
+            types
+        )
 
         variant.assembleProvider.get().finalizedBy("novkzip${variantCapped}")
     }
-    
     task("cleanDir", type: Delete) { 
             delete buildDir1, buildDir2, buildDir3, buildDir4
         }
+}
+
+void createVariantTasks(
+    Project proj,
+    String varName,
+    String varCapped,
+    String varLowered,
+    File mDir,
+    File nativeOut,
+    File tempPath,
+    File pBuildDir,
+    File rDir,
+    File oDir,
+    String zName,
+    String zNameNoVk,
+    String mModuleId,
+    String mName,
+    String mVersion,
+    String mVersionCode,
+    String mAuthor,
+    String mDescription,
+    Map<String, String> tps
+) {
+    proj.tasks.register("prepareMagiskFiles${varCapped}", Sync) {
+        duplicatesStrategy = DuplicatesStrategy.WARN
+        dependsOn("assemble${varCapped}")
+        into mDir
+        from(tempPath) {
+            exclude 'module.prop', 'module/files/system'
+        }
+        from(tempPath) {
+            include 'module.prop'
+            expand([
+                    id          : mModuleId,
+                    name        : mName,
+                    version     : mVersion,
+                    versionCode: mVersionCode,
+                    author      : mAuthor,
+                    description: mDescription,
+                    volType: "1",
+            ])
+            filter(FixCrLfFilter.class, eol: FixCrLfFilter.CrLf.newInstance("lf"))
+        }
+        tps.each { instance, resourceDir ->
+            def libSourceDir = proj.file("${pBuildDir}/intermediates/stripped_native_libs/${varLowered}/strip${varCapped}DebugSymbols/out/lib/${resourceDir}")
+            def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
+            from(libSourceDir) {
+                into 'lib/zygisk'
+                include "**/libpixelify-next.so" 
+                rename 'libpixelify-next.so', "${resourceDir}.so"
+            }
+            from(libSourceDir) {
+                into 'lib/zygisk'
+                include "**/libpixelify-next-camera.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
+            from(libSourceDir) {
+                into 'lib/zygisk'
+                include "**/libpixelify-next-photos.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
+            from(libSourceDir) {
+                into 'lib/zygisk_tensor'
+                include "**/libpixelify-next-tensor.so"
+                rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
+            }
+        }
+        from(nativeOut) {
+            into "lib/riru"
+            exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
+        }
+        from(nativeOut) {
+            into "lib/riru_tensor"
+            exclude "**/*.txt" , "**/libpixelify-next.so"
+            rename "libpixelify-next-tensor.so" , varName
+        }
+    }
+
+    proj.tasks.register("novk${varCapped}", Sync) {
+        duplicatesStrategy = DuplicatesStrategy.WARN
+        dependsOn("assemble${varCapped}")
+        into mDir
+        from(tempPath) {
+            exclude 'module.prop', 'module/files/system'
+        }
+        from(tempPath) {
+            include 'module.prop'
+            expand([
+                    id          : mModuleId,
+                    name        : mName,
+                    version     : mVersion,
+                    versionCode: mVersionCode,
+                    author      : mAuthor,
+                    description: mDescription,
+                    volType: "0",
+            ])
+            filter(FixCrLfFilter.class, eol: FixCrLfFilter.CrLf.newInstance("lf"))
+        }
+        filesMatching('**/module.prop') {
+            filter { String line ->
+                if (line.contains('DEVICE_USES_VOLUME_KEY')) {
+                    return line.replaceAll('DEVICE_USES_VOLUME_KEY\\s*=\\s*1', 'DEVICE_USES_VOLUME_KEY=0')
+                }
+                return line
+            }
+        }
+        tps.each { instance, resourceDir ->
+            def libSourceDir = proj.file("${pBuildDir}/intermediates/stripped_native_libs/${varLowered}/strip${varCapped}DebugSymbols/out/lib/${resourceDir}")
+            def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
+            from(libSourceDir) {
+                into 'lib/zygisk'
+                include "**/libpixelify-next.so"
+                rename 'libpixelify-next.so', "${resourceDir}.so"
+            }
+            from(libSourceDir) {
+                into 'lib/zygisk'
+                include "**/*camera.so", "**/*photos.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
+            from(libSourceDir) {
+                into 'lib/zygisk_tensor'
+                include "**/libpixelify-next-tensor.so"
+                rename 'libpixelify-next-tensor.so', "${resourceDir}.so"
+            }
+        }
+        from(nativeOut) {
+            into "lib/riru"
+            exclude "**/*.txt" , "**/libpixelify-next-tensor.so"
+        }
+        from(nativeOut) {
+            into "lib/riru_tensor"
+            exclude "**/*.txt" , "**/libpixelify-next.so"
+            rename "libpixelify-next-tensor.so" , "libpixelify.so"
+        }
+    }
+
+    proj.tasks.register("buildMosey${varCapped}", Exec) {
+        dependsOn("prepareMagiskFiles${varCapped}")
+        workingDir rDir
+        def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+        def scriptName = isWindows ? "build_mosey.bat" : "build_mosey.sh"
+        def scriptFile = proj.file("${rDir}/scripts/${scriptName}")
+        if (isWindows) {
+            commandLine 'cmd', '/c', scriptFile.absolutePath, mDir.absolutePath
+        } else {
+            commandLine 'bash', scriptFile.absolutePath, mDir.absolutePath
+        }
+        onlyIf {
+            def isSubmoduleCloned = new File(rDir, "mosey-p8a/build_mosey.sh").exists()
+            if (!isSubmoduleCloned) {
+                logger.warn("WARNING: Skipping buildMosey${varCapped} because mosey-p8a submodule is not cloned.")
+                return false
+            }
+            return true
+        }
+    }
+
+    proj.tasks.register("buildMoseyNovk${varCapped}", Exec) {
+        dependsOn("novk${varCapped}")
+        workingDir rDir
+        def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+        def scriptName = isWindows ? "build_mosey.bat" : "build_mosey.sh"
+        def scriptFile = proj.file("${rDir}/scripts/${scriptName}")
+        if (isWindows) {
+            commandLine 'cmd', '/c', scriptFile.absolutePath, mDir.absolutePath
+        } else {
+            commandLine 'bash', scriptFile.absolutePath, mDir.absolutePath
+        }
+        onlyIf {
+            def isSubmoduleCloned = new File(rDir, "mosey-p8a/build_mosey.sh").exists()
+            if (!isSubmoduleCloned) {
+                logger.warn("WARNING: Skipping buildMoseyNovk${varCapped} because mosey-p8a submodule is not cloned.")
+                return false
+            }
+            return true
+        }
+    }
+
+    proj.tasks.register("zip${varCapped}", Zip) {
+        dependsOn("buildMosey${varCapped}")
+        from mDir
+        archiveFileName = zName
+        destinationDirectory = oDir
+    }
+
+    proj.tasks.register("novkzip${varCapped}", Zip) {
+        dependsOn("zip${varCapped}")
+        dependsOn("buildMoseyNovk${varCapped}")
+        mustRunAfter "zip${varCapped}"
+        from mDir
+        archiveFileName = zNameNoVk
+        destinationDirectory = oDir
+        doLast {
+            project.delete {
+                from oDir
+                include "config.prop"
+            }
+            project.copy {
+                from tempPath
+                into oDir
+                include "config.prop"
+            }
+        }
+    }
+
+    proj.tasks.register("push${varCapped}", Exec) {
+        dependsOn("zip${varCapped}")
+        workingDir oDir
+        commandLine proj.android.adbExecutable, "push", zName, "/data/local/tmp/"
+    }
+
+    proj.tasks.register("flashMagisk${varCapped}", Exec) {
+        dependsOn("push${varCapped}")
+        commandLine proj.android.adbExecutable, "shell", "su", "-c", "magisk --install-module /data/local/tmp/${zName}"
+    }
+
+    proj.tasks.register("flashKsu${varCapped}", Exec) {
+        dependsOn("push${varCapped}")
+        commandLine "adb", "shell", "su", "-c", "ksud module install /data/local/tmp/${zName}"
+    }
+
+    proj.tasks.register("reboot${varCapped}", Exec) {
+        dependsOn("flash${varCapped}")
+        commandLine proj.android.adbExecutable, "shell", "reboot"
+    }
 }
