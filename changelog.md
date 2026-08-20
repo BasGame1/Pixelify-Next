@@ -1,5 +1,16 @@
-## Changelog for Pixelify Next BETA
-## V5.0:
+### Version 4.0
+-INIT PIxelify Next
+### Version 4.1
+-Fix bugs
+### Version 4.4
+-Add Pixelify Launcher
+### Version 4.4.1
+-Fix bugs
+### Version 4.5
+-Added Pixel Journal app and Pixel Studio app (they crash on some devices)
+### Version 4.6
+-Removed Pixel Studio, added gemini bootaniamtion and introduce Air Drop Quick Share (Quick share extension)
+### Version 5.0
 -Add webui to control the module
 -Add KSUn Next banner
 -Update the zygisk code
@@ -14,7 +25,7 @@
     - Journal not installing
     - System files not unpacking
     - Zygisk code not being compatible
-    
+
 ### Version 5.1
  - Recode apk installer script
  - Fix bugs
@@ -30,27 +41,33 @@
  - Fix pixel Launcher on all qpr android versions
  - Add AiCore for dialer features
  
-### Version 5.8.1
-  - Bug fixes
-   - Correct name for aicore
-   - Fix echo estaments
-
-### Version 5.8.2
-  - Bug fixes
-   - Fix the install APK process
-
 ### Version 6.0
- - Rework all the gradle system and build system
+ - Rework all gradle and build system
  - Bug fixes
    - Fix WebUI script errors
 
 ### Version 6.0.1
- - Bug fixes
+ - Bug Fixes
    - Add a forgotten quote :)
 
 ### Version 6.1
  - Add ABI argument to installAPK
  - Bug fixes
-  - Gemini bootaniamtion not appearing
-  - Aicore not installing on some arm64 and arm32 devices
-  - Syntax errors in customize
+   - Gemini bootaniamtion not appearing
+   - Aicore not installing on some arm64 and arm32 devices
+   - Syntax errors in customize
+
+### Version 6.2
+- Fix pixel launcher not being deleted
+- Downgrade to zygisk ApI v2 to fix compatibility errors
+
+### Version 7.0
+ - Upgrade Zygisk engine to API v4 with multi-ABI detection and bootloop protection
+ - Add WebUI per-app model override selector with quick presets
+ - Add Phenotype microhooks flag patcher for Call Screen, Hold for Me, Call Recording, AICore, and PSI without LSPosed
+ - Add WebUI Phenotype Flags status monitor screen with real-time verification and re-patch controls
+ - Add LineageOS 23.2 warning prompt during installation
+ - Add live 2-boot rotation recovery logger (`live-logging-boot1.log` & `live-logging-boot2.log`)
+ - Add Magisk/KernelSU auto-download support via update.json
+ - Codebase cleanup, fixing syntax errors and corrupted terminal escape sequences
+ - Add pretier readme
