@@ -68,6 +68,15 @@
             align-self: flex-start;
         }
 
+        .section-title {
+            color: black;
+            font-weight: bold;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            font-size: 15px;
+        }
+
         .status-card {
             margin-top: 10px;
             background-color: white;
@@ -122,6 +131,106 @@
             0% { opacity: 1; }
             50% { opacity: 0.3; }
             100% { opacity: 1; }
+        }
+
+        .config-row {
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .config-row .pkg-label {
+            font-weight: 500;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .config-row .row-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .config-row select {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            background: #f5f5f5;
+        }
+
+        .config-row .remove-btn {
+            background-color: #F44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .add-row {
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .add-row input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .add-row .add-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .save-btn {
+            margin-top: 12px;
+            padding: 12px 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .save-btn:active {
+            transform: scale(0.98);
+        }
+
+        .config-note {
+            color: #555;
+            font-size: 11px;
+            margin-top: 6px;
+            text-align: center;
         }
 
         footer {
@@ -185,11 +294,36 @@
 
             <button class="refresh-btn" onclick="forceRefresh()">Force Stop & Verify</button>
         </div>
+
+        <div class="section-title">Per-App Model Override</div>
+        <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting the target app.</div>
+        <div id="config-list" style="width: 100%;"></div>
+        <div class="add-row">
+            <input type="text" id="new-pkg" placeholder="com.example.app">
+            <button class="add-btn" onclick="addConfigEntry()">Add</button>
+        </div>
+        <button class="save-btn" onclick="saveConfig()">Save Config</button>
     </div>
 
     <script>
         const MODULE_ID = "PixelifyNext";
         const TARGET_PKG = "com.google.android.apps.photos";
+        const CONFIG_FILE = `/data/adb/modules/${MODULE_ID}/spoof_config`;
+
+        const DEVICE_OPTIONS = [
+            {key: "pixel_10_pro", label: "Pixel 10 Pro"},
+            {key: "pixel_9_pro", label: "Pixel 9 Pro"},
+            {key: "pixel_8_pro", label: "Pixel 8 Pro"},
+            {key: "pixel_fold", label: "Pixel Fold"},
+            {key: "pixel_7_pro", label: "Pixel 7 Pro"},
+            {key: "pixel_6_pro", label: "Pixel 6 Pro"},
+            {key: "pixel_5", label: "Pixel 5"},
+            {key: "pixel_2", label: "Pixel 2"},
+            {key: "pixel_xl", label: "Pixel XL"},
+            {key: "none", label: "Skip (no spoof)"},
+        ];
+
+        let configEntries = [];
 
         async function execShell(command) {
             try {
@@ -300,7 +434,82 @@
             else dotElem.style.backgroundColor = "#F44336";
         }
 
+        function buildSelect(selectedKey) {
+            let html = '';
+            for (const opt of DEVICE_OPTIONS) {
+                let sel = (opt.key === selectedKey) ? ' selected' : '';
+                html += `<option value="${opt.key}"${sel}>${opt.label}</option>`;
+            }
+            return html;
+        }
+
+        function renderConfig() {
+            const list = document.getElementById('config-list');
+            let html = '';
+            for (let i = 0; i < configEntries.length; i++) {
+                const entry = configEntries[i];
+                html += `<div class="config-row">
+                    <div class="pkg-label">${entry.pkg}</div>
+                    <div class="row-controls">
+                        <select onchange="configEntries[${i}].device=this.value">${buildSelect(entry.device)}</select>
+                        <button class="remove-btn" onclick="removeEntry(${i})">X</button>
+                    </div>
+                </div>`;
+            }
+            list.innerHTML = html;
+        }
+
+        function addConfigEntry() {
+            const input = document.getElementById('new-pkg');
+            const pkg = input.value.trim();
+            if (!pkg) return;
+            if (configEntries.some(e => e.pkg === pkg)) return;
+            configEntries.push({pkg: pkg, device: "pixel_10_pro"});
+            input.value = '';
+            renderConfig();
+        }
+
+        function removeEntry(index) {
+            configEntries.splice(index, 1);
+            renderConfig();
+        }
+
+        async function loadConfig() {
+            let raw = await execShell(`cat ${CONFIG_FILE} 2>/dev/null`);
+            configEntries = [];
+            if (!raw || raw === "ERROR_EXEC" || raw === "ERROR_NO_API") {
+                renderConfig();
+                return;
+            }
+            let lines = raw.split("\n");
+            for (const line of lines) {
+                let trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith("#")) continue;
+                let eq = trimmed.indexOf("=");
+                if (eq < 0) continue;
+                let pkg = trimmed.substring(0, eq);
+                let dev = trimmed.substring(eq + 1);
+                if (pkg && dev) {
+                    configEntries.push({pkg: pkg, device: dev});
+                }
+            }
+            renderConfig();
+        }
+
+        async function saveConfig() {
+            let content = "# Per-app device model overrides\n";
+            for (const entry of configEntries) {
+                content += `${entry.pkg}=${entry.device}\n`;
+            }
+            let escaped = content.replace(/'/g, "'\\''");
+            await execShell(`echo '${escaped}' > ${CONFIG_FILE}`);
+
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "[OK] Config saved (" + configEntries.length + " entries)\nRestart target apps to apply changes.";
+        }
+
         refreshDashboard();
+        loadConfig();
     </script>
 
     <footer>By the PixelifyNEXT project</footer>
