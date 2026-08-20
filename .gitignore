@@ -16,3 +16,8 @@ beta/build
 stable/build
 beta/.cxx
 stable/.cxx
+
+# Ignore temporary flag manifests
+allflags.json
+complete_manifest_flags.json
+dialer_flags.json
