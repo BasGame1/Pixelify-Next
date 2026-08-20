@@ -210,6 +210,30 @@
             font-size: 13px;
         }
 
+        .preset-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .preset-chip {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .preset-chip:active {
+            background-color: #4285F4;
+            color: white;
+        }
+
         .save-btn {
             margin-top: 12px;
             padding: 12px 24px;
@@ -296,7 +320,14 @@
         </div>
 
         <div class="section-title">Per-App Model Override</div>
-        <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting the target app.</div>
+        <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting target app.</div>
+        
+        <div class="preset-row">
+            <button class="preset-chip" onclick="addPreset('com.google.android.apps.photos', 'pixel_xl')">+ Photos (Pixel XL Unlimited Backup)</button>
+            <button class="preset-chip" onclick="addPreset('com.google.android.aicore', 'pixel_10_pro')">+ AICore (Pixel 10 Pro AI)</button>
+            <button class="preset-chip" onclick="addPreset('com.google.android.gms', 'pixel_8_pro')">+ Framework / GMS (Pixel 8 Pro)</button>
+        </div>
+
         <div id="config-list" style="width: 100%;"></div>
         <div class="add-row">
             <input type="text" id="new-pkg" placeholder="com.example.app">
@@ -311,16 +342,16 @@
         const CONFIG_FILE = `/data/adb/modules/${MODULE_ID}/spoof_config`;
 
         const DEVICE_OPTIONS = [
-            {key: "pixel_10_pro", label: "Pixel 10 Pro"},
+            {key: "pixel_10_pro", label: "Pixel 10 Pro (AICore / AI Apps)"},
             {key: "pixel_9_pro", label: "Pixel 9 Pro"},
-            {key: "pixel_8_pro", label: "Pixel 8 Pro"},
+            {key: "pixel_8_pro", label: "Pixel 8 Pro (Framework / GMS)"},
             {key: "pixel_fold", label: "Pixel Fold"},
             {key: "pixel_7_pro", label: "Pixel 7 Pro"},
             {key: "pixel_6_pro", label: "Pixel 6 Pro"},
             {key: "pixel_5", label: "Pixel 5"},
             {key: "pixel_2", label: "Pixel 2"},
-            {key: "pixel_xl", label: "Pixel XL"},
-            {key: "none", label: "Skip (no spoof)"},
+            {key: "pixel_xl", label: "Pixel XL (Unlimited Backup)"},
+            {key: "none", label: "Skip (No Spoof)"},
         ];
 
         let configEntries = [];
@@ -469,6 +500,16 @@
             renderConfig();
         }
 
+        function addPreset(pkg, deviceKey) {
+            let existing = configEntries.find(e => e.pkg === pkg);
+            if (existing) {
+                existing.device = deviceKey;
+            } else {
+                configEntries.push({pkg: pkg, device: deviceKey});
+            }
+            renderConfig();
+        }
+
         function removeEntry(index) {
             configEntries.splice(index, 1);
             renderConfig();
@@ -478,6 +519,11 @@
             let raw = await execShell(`cat ${CONFIG_FILE} 2>/dev/null`);
             configEntries = [];
             if (!raw || raw === "ERROR_EXEC" || raw === "ERROR_NO_API") {
+                configEntries = [
+                    {pkg: "com.google.android.apps.photos", device: "pixel_xl"},
+                    {pkg: "com.google.android.aicore", device: "pixel_10_pro"},
+                    {pkg: "com.google.android.gms", device: "pixel_8_pro"}
+                ];
                 renderConfig();
                 return;
             }
@@ -492,6 +538,13 @@
                 if (pkg && dev) {
                     configEntries.push({pkg: pkg, device: dev});
                 }
+            }
+            if (configEntries.length === 0) {
+                configEntries = [
+                    {pkg: "com.google.android.apps.photos", device: "pixel_xl"},
+                    {pkg: "com.google.android.aicore", device: "pixel_10_pro"},
+                    {pkg: "com.google.android.gms", device: "pixel_8_pro"}
+                ];
             }
             renderConfig();
         }
