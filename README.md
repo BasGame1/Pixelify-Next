@@ -1,15 +1,22 @@
-# PIXELIFY NEXT MAGISK MODULE
-![Platform](https://img.shields.io/badge/Platform-Android-green?style=flat-square&logo=android)
-![Static Badge](https://img.shields.io/badge/Language-Bash-blue?logo=GNU%20Bash)
+<div align=center>
+    <img src="https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=Pixelify%20Next&fontColor=00A3A3&textBg=false" alt="Pixelify Next Animated Title" /> 
+    
+![Platform](https://img.shields.io/badge/Android-green?style=flat-square&logo=android)
+![Static Badge](https://img.shields.io/badge/Bash-white?logo=GNU%20Bash)
+![Static Badge](https://img.shields.io/badge/C++-blue?logo=c)
+![Static Badge](https://img.shields.io/badge/magisk-black?logo=magisk)
+![Static Badge](https://img.shields.io/badge/Gradle-red?logo=gradle)
 <p>
-A Root (Magisk, Apatch, KSU, KSUn, ... ) Mcustomize
-    ustomizeustomizedule which enables Pixel UI and some exclusive features.<br>
+A Root module to give Pixel Stuff to all phones!
+</div>
 
-# WORK IN PROGRESS
+---
 
-## 🐛 Bugs
-- **Flag system (ex. editor features) due to server side changes**
-## ⭐ Requirements
+## Bugs
+- **Google Flags [server side changes]**
+- **On some devices or roms sudden bootloop can be seen with pixel launcher [Unkown cause]**
+---
+## Requirements
 - **Supported Android Versions: Android 7.0 to Android 16**
 - **ARM64 or ARM32 device**
 - **Volume Keys (optional)**
@@ -17,96 +24,31 @@ A Root (Magisk, Apatch, KSU, KSUn, ... ) Mcustomize
 - **Magisk v24 or above from Pixelify v2+**
 - **Zygisk (Recommended but not mandatory, needed for spoofing functions)**
 - **NOTE: Flash the module zip file in the Magisk Manager app only; flashing the module in TWRP or any other recovery won't work.**
-
-## 📞 Contact (for errors or suggestions)
-- Telegram (https://t.me/basgame1)
-- Group Chat (https://t.me/PixelifyNext)
-- Group Channel (https:/t.me/Pixelifychannel)
-- Xda (https://xdaforums.com/m/basgame1.13021465/)
-- Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
-### ❌ Unsupported Roms
-- Realme Ui (Android 14), Oxygen Os (Android 14), axion Os (Android 16) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset.
-- **LineageOS 23.2**: May contain bugs or bootloops. An installer warning prompt will be shown.
-#Don't Flash Pixelify Next on it
-
-### 📱 Supported Roms
-- Tested on LineageOS (Android 15 and 16)
-
-### :building_construction: To Build
-- Use build.sh (linux, android, etc) or build.bat (windows) and select the version you want to build
-- Use 'build and flash.sh' (linux, android, etc) or 'build and flash.sh' (windows) to build and flash it to the device connected via ADB
-
+---
+### Unsupported Roms
+- **Realme Ui (Android 14)**, Oxygen Os (Android 14), axion Os (Android 16) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset.
+- **LineageOS 23.2 (android 16)**: MAY contain bugs or bootloops but is not guaranteed, its luck!
+- **OneUI (all android version)**: Most of the features like pixel launcher or bootanimation arent compatible, recommended use of the [submodules](https://github.com/BasGame1/Pixelify-NEXT-Submodules)
+---
+### Tested Roms
+- LineageOS (Android 15 & 16)
+- Stock android (android 16 & 17)
+---
+### To Build
+- Use `build.sh` (linux, android, etc) or `build.bat` (windows) and select the version you want to build
+- Use `build and flash.sh` (linux, android, etc) or `build and flash.sh` (windows) to build and flash it to the device connected via ADB
+---
 ### Pixelify Submodules
-- Github (https://github.com/BasGame1/Pixelify-NEXT-Submodules)
-
-### Installation instructions for latest version
-- Make Sure Play Store not installing when Pixelify is installing.
-- If using KSU, install KSU zygisk module first
-- Add Google Play Services and inside com.google.android.gms.unstable in DenyList.
-- On installation, If see error when installing Google Photos, then uninstalling updates of google apps
-
-### Installation instructions for Pixel Launcher
-- Your launcher app will crash, so go to settings
-- Search for deafult apps
-- And select Pixel Launcher as your default home launcher
-
-### After Installations (For First Time Pixelify Next Installation):-
-1) Playstore
-- Clear Playstore data
-- Open Playstore for 5-10 secs
-- Force Stop Playstore
-- Update Google App (For NGA & NGA Voice Typing)
-- Untick Auto Updates for Google Photos, Android System Intelligence (Don't Update these app from playstore)
-
-2)  Google Dialer
-- Clear Data
-- Open it for 5-10 secs
-- Force Stop Google Dialer
-- Open Google Dialer
-
-3) Google App
-- After Updating Google app from playstore
-- Launch Google Assistant
-- Let it Download and setup everything
-- After setting up, automatically NGA Voice should work.
-
-4) If NGA Voice typing not working then
-- Set main Language of phone and Gboard to Supported NGA Languages
-- Download 50xx Voice Pack in Google app
-- Restart
-
-5) Google Photos
-- Clear Data
-- Make sure connected to WiFi
-- You may receive Updating Photos Editor, wait for it.
-- Google Photos may download around 300-400mb only with WiFi
-
-*Note:* Photos editor tool struck  Editing Tool will install soon 
-- First Wait for sometimes and connect with WiFi
-- Reboot
-- if still not fixed (Reinstall Pixelify;- sometimes flags doesn't get patched due to gms performing action on database)
-
-Working of Magic Editor, New Automatic Call Screening depends on Device, Kernel.
-
-If Some features not working,
-- Make Sure to Select YES for Disable Internal Spoofing
-- Check file /sdcard/Pixelify/flaglog.txt
-if you find Status: Error xxxxx on some flags, then you may need to reinstall pixelify.
-
-### Installation without Volume Keys
-- Use packages with Pixelify-${version}-no_VK.zip
-- Place config.prop in your internal storage>Pixelify (/sdcard/Pixelify/config.prop)
-- Edit the prop file according to what features you want
-- (If you have any problem placing config.prop there then you also can extract and update config.prop inside the packages it automatically use it.) 
-
-### Zygisk spoofing configuration
-- Pixel XL:- Google Photos
-- Pixel 10 Pro:- AICore and AI apps
-- Pixel 9 Pro XL:- Dialer functions
-- Pixel 8 Pro / Pixel 6 Pro:- Rest Google apps except (all Google camera package)
-<br><br>**Note** :- Zygisk spoofing can be configured per-app directly from the WebUI.
-
-### Features of Pixelify module
+- For installing just a specific feature, like pixel launcher or call screen, use [submodules](https://github.com/BasGame1/Pixelify-NEXT-Submodules)
+---
+## Instructions
+- [Instructions file](installation.md)
+---
+## Changelog
+- [Changelog file](changelog.md)
+---
+## Features
+(They may not work depending on the device, bc some are server side, but report them if they dont work, u are adviced)
 - Initial Size of module is low
 - Open Source
 - Works with most of Android version
@@ -124,8 +66,6 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Patches Phenotype microhooks for Call Screen, Hold for Me, Call Recording without LSPosed
 - WebUI with status monitor, per-app model override selector, and Phenotype Flags status screen
 
-## ⭐ Pixel Features
-(They may not work depending on the device, bc some are server side, but report them if they dont work, u are adviced)
 ### Pixel 7 & 8 Features Enabled
 -   Pixel 6 & Pixel 7 Live Wallpapers*
 -   Magic Eraser
@@ -168,111 +108,66 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 <br>
 * - Requires Spoofing to Pixel device
 ** - Crash/ not work on some devices
+    
 ### Call Screening Supported languages other than English US <br>
 - Italian (IT)
 - Japanese (JP)
 - Spain (ES)
 - France (FR)
 - Germany (DE)
+  
+---
+
+## Contact (for errors or suggestions)
+- [Group Chat](https://t.me/PixelifyNext)
+- [Group Channel](https:/t.me/Pixelifychannel)
+- [Github Issues](https://github.com/BasGame1/Pixelify-Next/issues)
+  
+---
 
 ## Contribute to project
+- *All contributions are appreciated*
 - Reporting bugs with logs
 - Feature Requests
 - Supporting other persons on issues or telegram (t.me/@basgame1)
 - Creating pull request to enable new feature or code improvements
+  
+---
 
-## Other projects
-- Circle to search (github link)(Lsposed neccesary) <a href=https://github.com/parallelcc/MiCTS/tree/v2.3>MyCTS by parallelcc<a>
-- Call recording (github link)<a href=https://github.com/chenxiaolong/BCR>Call recording by chenxiaolong<a>
-- Pixel studio enabler (TG link) <a href=https://t.me/GappsLeaks/933>Pixel Studio Enabler by GappsLeaks (TG)<a>
-
-## ⭐ Credits
-- Google for creating these awesome features
-- [Tristan] (https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files and Journal app
+## Credits <3
+- Google for creating these awesome features  
+- [Tristan](https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files and Journal app
+  
 - [topjohnwu](https://github.com/topjohnwu) for Magisk
+  
 - [#TeamFiles](https://t.me/modulesrepo) for so many themed icons for Pixel Launcher android 12
+  
 - [Kdrag0n](https://github.com/kdrag0n) for SimpleDeviceConfig
+  
 - [Freak07](https://forum.xda-developers.com/m/freak07.3428502/) for Adaptive Sound
+  
 - [Pranav Pandey](https://forum.xda-developers.com/m/pranav-pandey.3962236/) for BreelWallpaper2020 Port
+  
 - [HuskyDG](https://github.com/HuskyDG) for intial Riru Port, Bootloop saver
-- [Enzo Ariel] (https://github.com/enzosanchezariel) for pixel launcher fix 
+  
+- [Enzo Ariel](https://github.com/enzosanchezariel) for pixel launcher fix
+    
 - [Saitama](https://github.com/saitamasahil) Fixing Pixel Launcher crashes
+    
 - [Gapps Flag Leaks](https://t.me/GappsLeaks) AssembleDebug For some flags
-- [Mewona] (https://t.me/@TempMeow) For Pixel Launcher files
+    
+- [Mewona](https://t.me/@TempMeow) For Pixel Launcher files
+  
 - [Kevin] for gemini bootanimation
+  
 - [Android Port World & Amr Gamal Store] (Telegram) for Pixel Launcher 7.1 overlays
-- [SQlite Organization] (https://www.sqlite.org/) for SQlite3 uncompiled files
-- [UhExooHw] (https://github.com/UhExooHw) For call screening flags
-- Pixelify Support Group Members for testing beta versions :)
-### Version 4.0
--INIT PIxelify Next
-### Version 4.1
--Fix bugs
-### Version 4.4
--Add Pixelify Launcher
-### Version 4.4.1
--Fix bugs
-### Version 4.5
--Added Pixel Journal app and Pixel Studio app (they crash on some devices)
-### Version 4.6
--Removed Pixel Studio, added gemini bootaniamtion and introduce Air Drop Quick Share (Quick share extension)
-### Version 5.0
--Add webui to control the module
--Add KSUn Next banner
--Update the zygisk code
--Add update json
--Update zygisk code
--Add global spoofing
--Add sim card us spoofing
--Fix bugs
-    - Pixel launcher pausing the installation
-    - Pixel launcher asking a y or n question
-    - Bootanimation not appearing
-    - Journal not installing
-    - System files not unpacking
-    - Zygisk code not being compatible
-
-### Version 5.1
- - Recode apk installer script
- - Fix bugs
-   - Mosey not installing
    
-### Version 5.2
- - Drop mosey support (it was not working correctly)
- - Fix bugs
-   - Syntax errors causing the installation to fail
-   
-### Version 5.8
- - Drop flag system for props and spoofing based system
- - Fix pixel Launcher on all qpr android versions
- - Add AiCore for dialer features
- 
-### Version 6.0
- - Rework all gradle and build system
- - Bug fixes
-   - Fix WebUI script errors
+- [SQlite Organization](https://www.sqlite.org/) for SQlite3 uncompiled files
+  
+- [UhExooHw](https://github.com/UhExooHw) For call screening flags
+  
+- [Polobard](https://github.com/polodarb/GMS-Flags-Reborn) for inspiration on the new flag system
+    
+- Pixelify Support Group Members for testing beta versions :)  
+---
 
-### Version 6.0.1
- - Bug Fixes
-   - Add a forgotten quote :)
-
-### Version 6.1
- - Add ABI argument to installAPK
- - Bug fixes
-   - Gemini bootaniamtion not appearing
-   - Aicore not installing on some arm64 and arm32 devices
-   - Syntax errors in customize
-
-### Version 6.2
-- Fix pixel launcher not being deleted
-- Downgrade to zygisk ApI v2 to fix compatibility errors
-
-### Version 7.0
- - Upgrade Zygisk engine to API v4 with multi-ABI detection and bootloop protection
- - Add WebUI per-app model override selector with quick presets
- - Add Phenotype microhooks flag patcher for Call Screen, Hold for Me, Call Recording, AICore, and PSI without LSPosed
- - Add WebUI Phenotype Flags status monitor screen with real-time verification and re-patch controls
- - Add LineageOS 23.2 warning prompt during installation
- - Add live 2-boot rotation recovery logger (`live-logging-boot1.log` & `live-logging-boot2.log`)
- - Add Magisk/KernelSU auto-download support via update.json
- - Codebase cleanup, fixing syntax errors and corrupted terminal escape sequences
