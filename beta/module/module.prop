@@ -7,3 +7,6 @@ description=Enables pixel exclusive features on android 15 and 16, enjoy it :)
 # 0 -  Disable, 1 - Enable
 DEVICE_USES_VOLUME_KEY=1
 zygisk=true
+
+# Credits to lok1s for mosey
+# He is the original creator of the mosey module

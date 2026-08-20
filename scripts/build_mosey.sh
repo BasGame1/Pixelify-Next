@@ -94,7 +94,7 @@ else
 fi
 
 # Build Mosey structure if needed
-if [ ! -f "$MOSEY_OUT/module.prop" ]; then
+if [ ! -d "$MOSEY_OUT/common" ]; then
     echo "Mosey not found, creating structure"
     cd "$ROOT_DIR/mosey-p8a"
     build_mosey

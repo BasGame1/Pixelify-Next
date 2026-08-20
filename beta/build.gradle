@@ -163,6 +163,7 @@ void createVariantTasks(
     }
 
     proj.tasks.register("novk${varCapped}", Sync) {
+        mustRunAfter("zip${varCapped}")
         duplicatesStrategy = DuplicatesStrategy.WARN
         dependsOn("assemble${varCapped}")
         into mDir
