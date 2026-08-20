@@ -1,6 +1,9 @@
-id=PIxelifyNext
-name=PIxelifyNext
-version=2.0
-versionCode=2.0
+id=PixelifyNext
+name=Pixelify Next
+version=v7.0
+versionCode=700000000
 author=BasGame1
-description=Module to enable pixel functions on almost every android :)
+description=Enables pixel exclusive features on android 15 and 16, enjoy it :)
+updateJson=https://raw.githubusercontent.com/BasGame1/Pixelify-Next/main/update.json
+DEVICE_USES_VOLUME_KEY=1
+zygisk=true

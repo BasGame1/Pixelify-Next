@@ -1,10 +1,10 @@
 id=PixelifyNext
 name=Pixelify Next Beta
-version=v6.2-BETA
-versionCode=600020000
+version=v7.0-BETA
+versionCode=700000000
 author=BasGame1
 description=Enables pixel exclusive features on android 15 and 16, enjoy it :)
-# 0 -  Disable, 1 - Enable
+updateJson=https://raw.githubusercontent.com/BasGame1/Pixelify-Next/main/update.json
 DEVICE_USES_VOLUME_KEY=1
 zygisk=true
 
