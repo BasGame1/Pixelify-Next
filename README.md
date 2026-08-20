@@ -25,7 +25,8 @@ A Root (Magisk, Apatch, KSU, KSUn, ... ) Mcustomize
 - Xda (https://xdaforums.com/m/basgame1.13021465/)
 - Github Issues (https://github.com/BasGame1/Pixelify-Next/issues)
 ### ❌ Unsupported Roms
-- Realme Ui (Android 14), Oxygen Os (Android 14), axion Os (Android 16) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset. 
+- Realme Ui (Android 14), Oxygen Os (Android 14), axion Os (Android 16) will not work. It will bootloop rom after reboot. only way is to fix it by factory reset.
+- **LineageOS 23.2**: May contain bugs or bootloops. An installer warning prompt will be shown.
 #Don't Flash Pixelify Next on it
 
 ### 📱 Supported Roms
@@ -100,15 +101,16 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 
 ### Zygisk spoofing configuration
 - Pixel XL:- Google Photos
+- Pixel 10 Pro:- AICore and AI apps
 - Pixel 9 Pro XL:- Dialer functions
-- Pixel 6 Pro:- Rest Google apps except (all Google camera package)
-<br><br>**Note** :- Zygisk spoofing can't override PixelProp Utils.
+- Pixel 8 Pro / Pixel 6 Pro:- Rest Google apps except (all Google camera package)
+<br><br>**Note** :- Zygisk spoofing can be configured per-app directly from the WebUI.
 
 ### Features of Pixelify module
 - Initial Size of module is low
 - Open Source
 - Works with most of Android version
-- Uses Dynamic spoofing (Zygisk) for only Google apps to prevent crashes and other issues
+- Uses Dynamic spoofing (Zygisk API v4) for only Google apps to prevent crashes and other issues
 - Provides most of the Pixel exclusive features
 - Installation of features is optional
 - Supports (720p,1080p,1440p) Google bootanimation
@@ -119,7 +121,8 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 - Creates Google keyboard, Google app, Google Text to speech, Google Dialer as system app if not installed
 - Dynamic Permission generation of apps installed by pixelify
 - Config as well as Volume key installation
-- Patches Flags to force enable pixel features
+- Patches Phenotype microhooks for Call Screen, Hold for Me, Call Recording without LSPosed
+- WebUI with status monitor, per-app model override selector, and Phenotype Flags status screen
 
 ## ⭐ Pixel Features
 (They may not work depending on the device, bc some are server side, but report them if they dont work, u are adviced)
@@ -256,10 +259,20 @@ if you find Status: Error xxxxx on some flags, then you may need to reinstall pi
 ### Version 6.1
  - Add ABI argument to installAPK
  - Bug fixes
-  - Gemini bootaniamtion not appearing
-  - Aicore not installing on some arm64 and arm32 devices
-  - Syntax errors in customize
+   - Gemini bootaniamtion not appearing
+   - Aicore not installing on some arm64 and arm32 devices
+   - Syntax errors in customize
 
 ### Version 6.2
 - Fix pixel launcher not being deleted
 - Downgrade to zygisk ApI v2 to fix compatibility errors
+
+### Version 7.0
+ - Upgrade Zygisk engine to API v4 with multi-ABI detection and bootloop protection
+ - Add WebUI per-app model override selector with quick presets
+ - Add Phenotype microhooks flag patcher for Call Screen, Hold for Me, Call Recording, AICore, and PSI without LSPosed
+ - Add WebUI Phenotype Flags status monitor screen with real-time verification and re-patch controls
+ - Add LineageOS 23.2 warning prompt during installation
+ - Add live 2-boot rotation recovery logger (`live-logging-boot1.log` & `live-logging-boot2.log`)
+ - Add Magisk/KernelSU auto-download support via update.json
+ - Codebase cleanup, fixing syntax errors and corrupted terminal escape sequences
