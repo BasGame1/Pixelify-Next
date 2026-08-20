@@ -47,6 +47,30 @@
             border-radius: 20px;
         }
 
+        .tab-bar {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tab-btn.active {
+            background-color: #4285F4;
+            color: white;
+        }
+
         .log-console {
             background-color: black;
             color: #00ff00;
@@ -257,6 +281,14 @@
             text-align: center;
         }
 
+        .flag-group-title {
+            color: #333;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
         footer {
             margin-top: 50px;
             font-size: 14px;
@@ -272,10 +304,16 @@
 <body>
     <div class="title"></div>
     <div class="root_container">
+        <div class="tab-bar">
+            <button class="tab-btn active" id="btn-tab-main" onclick="switchTab('main')">Main Monitor</button>
+            <button class="tab-btn" id="btn-tab-flags" onclick="switchTab('flags')">Phenotype Flags</button>
+        </div>
+
         <div class="text-console">Log Console</div>
         <div class="log-console" id="log-console">INITIALIZING...</div>
 
-        <div id="status-panel" style="width: 100%;">
+        <!-- SCREEN 1: MAIN MONITOR -->
+        <div id="screen-main" style="width: 100%;">
             <div class="status-card">
                 <div>
                     <span>Zygisk Module</span>
@@ -317,23 +355,68 @@
             </div>
 
             <button class="refresh-btn" onclick="forceRefresh()">Force Stop & Verify</button>
+
+            <div class="section-title">Per-App Model Override</div>
+            <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting target app.</div>
+            
+            <div class="preset-row">
+                <button class="preset-chip" onclick="addPreset('com.google.android.apps.photos', 'pixel_xl')">+ Photos (Pixel XL Unlimited Backup)</button>
+                <button class="preset-chip" onclick="addPreset('com.google.android.aicore', 'pixel_10_pro')">+ AICore (Pixel 10 Pro AI)</button>
+                <button class="preset-chip" onclick="addPreset('com.google.android.gms', 'pixel_8_pro')">+ Framework / GMS (Pixel 8 Pro)</button>
+            </div>
+
+            <div id="config-list" style="width: 100%;"></div>
+            <div class="add-row">
+                <input type="text" id="new-pkg" placeholder="com.example.app">
+                <button class="add-btn" onclick="addConfigEntry()">Add</button>
+            </div>
+            <button class="save-btn" onclick="saveConfig()">Save Config</button>
         </div>
 
-        <div class="section-title">Per-App Model Override</div>
-        <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting target app.</div>
-        
-        <div class="preset-row">
-            <button class="preset-chip" onclick="addPreset('com.google.android.apps.photos', 'pixel_xl')">+ Photos (Pixel XL Unlimited Backup)</button>
-            <button class="preset-chip" onclick="addPreset('com.google.android.aicore', 'pixel_10_pro')">+ AICore (Pixel 10 Pro AI)</button>
-            <button class="preset-chip" onclick="addPreset('com.google.android.gms', 'pixel_8_pro')">+ Framework / GMS (Pixel 8 Pro)</button>
-        </div>
+        <!-- SCREEN 2: PHENOTYPE FLAGS STATUS -->
+        <div id="screen-flags" style="width: 100%; display: none;">
+            <div class="status-card">
+                <div>
+                    <span>Phenotype Microhooks Engine</span>
+                    <div class="status-detail" id="detail-flags-engine">48 flags configured across 4 databases</div>
+                </div>
+                <div id="dot-flags-engine" class="status-dot"></div>
+            </div>
 
-        <div id="config-list" style="width: 100%;"></div>
-        <div class="add-row">
-            <input type="text" id="new-pkg" placeholder="com.example.app">
-            <button class="add-btn" onclick="addConfigEntry()">Add</button>
+            <div class="status-card">
+                <div>
+                    <span>Call Screen (Atlas / Beesly)</span>
+                    <div class="status-detail" id="detail-callscreen">18 microhook overrides active</div>
+                </div>
+                <div id="dot-callscreen" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Hold for Me (Dobby)</span>
+                    <div class="status-detail" id="detail-dobby">11 microhook overrides active</div>
+                </div>
+                <div id="dot-dobby" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Call Recording</span>
+                    <div class="status-detail" id="detail-callrec">4 geofence microhook overrides active</div>
+                </div>
+                <div id="dot-callrec" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>AICore & PSI</span>
+                    <div class="status-detail" id="detail-aicore-flags">System intelligence overrides active</div>
+                </div>
+                <div id="dot-aicore-flags" class="status-dot"></div>
+            </div>
+
+            <button class="refresh-btn" onclick="applyMicrohooks()">Re-Patch Phenotype Microhooks</button>
         </div>
-        <button class="save-btn" onclick="saveConfig()">Save Config</button>
     </div>
 
     <script>
@@ -356,6 +439,14 @@
 
         let configEntries = [];
 
+        function switchTab(tab) {
+            document.getElementById('screen-main').style.display = (tab === 'main') ? 'block' : 'none';
+            document.getElementById('screen-flags').style.display = (tab === 'flags') ? 'block' : 'none';
+            document.getElementById('btn-tab-main').className = (tab === 'main') ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('btn-tab-flags').className = (tab === 'flags') ? 'tab-btn active' : 'tab-btn';
+            if (tab === 'flags') refreshFlagsStatus();
+        }
+
         async function execShell(command) {
             try {
                 if (typeof ksu !== 'undefined' && ksu.exec) {
@@ -376,6 +467,27 @@
             consoleDiv.innerText = "Killing Google Photos...\nWaiting for restart...";
             await execShell(`am force-stop ${TARGET_PKG}`);
             setTimeout(() => { refreshDashboard(); }, 1500);
+        }
+
+        async function applyMicrohooks() {
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "Re-patching Phenotype Microhooks...\nPlease wait...";
+            let result = await execShell(`sh /data/adb/modules/${MODULE_ID}/patch_microhooks.sh 2>&1`);
+            consoleDiv.innerText = result || "Microhooks re-patched.";
+            refreshFlagsStatus();
+        }
+
+        async function refreshFlagsStatus() {
+            let statusRaw = await execShell(`cat /data/adb/modules/${MODULE_ID}/flags_status 2>/dev/null`);
+            let isOk = statusRaw && statusRaw.includes("ACTIVE");
+            updateStatus('dot-flags-engine', isOk);
+            updateStatus('dot-callscreen', isOk);
+            updateStatus('dot-dobby', isOk);
+            updateStatus('dot-callrec', isOk);
+            updateStatus('dot-aicore-flags', isOk);
+            
+            let count = isOk ? statusRaw.split("|")[1] || "48" : "0";
+            document.getElementById('detail-flags-engine').innerText = isOk ? `${count} microhook flags active` : "Not patched yet";
         }
 
         async function refreshDashboard() {
