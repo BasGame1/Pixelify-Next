@@ -105,5 +105,8 @@ resetprop -n ro.product.locale.region US
 resetprop -n ro.product.locale.language en
 resetprop -n persist.sys.language en
 
+# Patch Phenotype microhooks flags on boot
+[ -f $MODDIR/patch_microhooks.sh ] && . $MODDIR/patch_microhooks.sh
+
 # Stub for replacing with mosey code
 #SERVICE.SH_MOSEY_STUB

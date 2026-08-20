@@ -41,8 +41,8 @@ install_dialer() {
                 settings put global bug_report 0
                 settings put secure tethering_allow_vpn_upstreams 1s
 
-                install_apk "aicore.apkm" "$MODPATH/files/aicore.apkm" "arm64"
-                echo " - Automatic Call Screening enabled" >>$logfile
+                [ -f $MODPATH/patch_microhooks.sh ] && . $MODPATH/patch_microhooks.sh
+                echo " - Automatic Call Screening and Phenotype microhooks enabled" >>$logfile
             else
                 $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'"
                 echo " - Automatic Call Screening not enabled" >>$logfile

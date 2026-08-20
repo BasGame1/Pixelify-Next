@@ -471,6 +471,19 @@ blue "- Detected SDK : $API"
 RAM=$(grep MemTotal /proc/meminfo | tr -dc '0-9')
 blue "- Detected Ram: $RAM"
 check_rom_type
+
+LINEAGE_VER="$(getprop ro.lineage.version 2>/dev/null)"
+LINEAGE_BUILD="$(getprop ro.lineage.build.version 2>/dev/null)"
+MOD_VER="$(getprop ro.modversion 2>/dev/null)"
+if echo "$LINEAGE_VER $LINEAGE_BUILD $MOD_VER" | grep -q "23.2"; then
+    error "=================================================="
+    error " WARNING: LineageOS 23.2 Detected!"
+    error " This version may contain bugs or bootloops."
+    error " Proceed with caution!"
+    error "=================================================="
+    echo "- LineageOS 23.2 warning displayed" >> $logfile
+    sleep 3
+fi
 blue ""
 
 # remove pinning of Google camera, as it is not recommended to use for device less than 6gb ram
