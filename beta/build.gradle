@@ -193,7 +193,7 @@ afterEvaluate {
             archiveFileName = zipName
             destinationDirectory = outDir
         }
-        task("buildMosey", type: Exec) {
+        tasks.maybeCreate("buildMosey", Exec).configure {
             commandLine "${rootDir}/build_mosey.sh"
         }
         task("novkzip${variantCapped}", type: Zip) {
