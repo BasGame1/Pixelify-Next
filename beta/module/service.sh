@@ -56,7 +56,7 @@ check() {
 sleep 5
 
 MAIN_ZYGOTE_NICENAME=zygote
-CPU_ABI=$(getprop ro.product.cpu.api)
+CPU_ABI=$(getprop ro.product.cpu.abi)
 [ "$CPU_ABI" = "arm64-v8a" -o "$CPU_ABI" = "x86_64" ] && MAIN_ZYGOTE_NICENAME=zygote64
 
 ZYGOTE_PID1=$(pidof "$MAIN_ZYGOTE_NICENAME")
