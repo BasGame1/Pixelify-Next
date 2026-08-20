@@ -25,8 +25,7 @@ ui_print "                                          ";
 . $MODPATH/install_dialer.sh || abort "dialer script not loaded"
 . $MODPATH/install_nga.sh || abort "nga script not loaded"
 . $MODPATH/install_apps.sh || abort "apps script not loaded"
-. $MODPATH/systemize_velvet.sh || abort "systemize velvet
-script not loaded"
+. $MODPATH/systemize_velvet.sh || abort "systemize velvet script not loaded"
 
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
@@ -620,169 +619,29 @@ log "It may break roms OTAs and show a mesage to update your pixel"
 log "   Vol Up += Yes"
 log "   Vol Down += No"
 no_vk "GLOBAL_SPOOFING"
-    if $VKSEL; then
-        GLOBAL_SPOOF=1
-        echo "- Global Spoofing Enabled" >>$logfile
-        echo "#!/system/bin/sh
-                MODDIR=${0%/*}
-
-                . $MODDIR/vars.sh
-                . $MODDIR/utils.sh
-
-                sqlite=$MODDIR/addon/sqlite3
-                chmod 0755 $sqlite
-                chmod 0755 $MODDIR/system/bin/pixelify
-
-                log() {
-                    date=$(date +%y/%m/%d)
-                    tim=$(date +%H:%M:%S)
-                    temp="$temp
-                $date $tim: $@"
-                }
-
-                TARGET_LOGGING=1
-                temp=""
-
-                pm_enable() {
-                    pm enable $1 >/dev/null 2>&1
-                    log "Enabling $1"
-                }
-
-                bootlooped() {
-                    echo -n >>$MODDIR/disable
-                    log "- Bootloop detected"
-                    #echo "$temp" >> /sdcard/Pixelify/logs.txt
-                    #logcat -d >> /sdcard/Pixelify/boot_logs.txt
-                    rip="$(logcat -d)"
-                    rm -rf $MODDIR/boot_logs.txt
-                    echo "$(getprop)" >>MODDIR/boot_logs.txt
-                    echo "$rip" >>$MODDIR/boot_logs.txt
-                    cp -Tf $MODDIR/boot_logs.txt /sdcard/Pixelify/boot_logs.txt
-                    #echo "$rip" >> /sdcard/Pixelify/boot_logs.txt
-                    sleep .5
-                    reboot
-                }
-
-                check() {
-                    TEXT1="$1"
-                    TEXT2="$2"
-                    result=false
-                    for i in $TEXT1; do
-                        for j in $TEXT2; do
-                            [ "$i" == "$j" ] && result=true
-                        done
-                    done
-                    $result
-                }
-
-                #HuskyDG@github's bootloop preventer
-
-                # Wait for zygote starts
-                sleep 5
-
-                MAIN_ZYGOTE_NICENAME=zygote
-                CPU_ABI=$(getprop ro.product.cpu.api)
-                [ "$CPU_ABI" = "arm64-v8a" -o "$CPU_ABI" = "x86_64" ] && MAIN_ZYGOTE_NICENAME=zygote64
-
-                ZYGOTE_PID1=$(pidof "$MAIN_ZYGOTE_NICENAME")
-                sleep 15
-                ZYGOTE_PID2=$(pidof "$MAIN_ZYGOTE_NICENAME")
-                sleep 15
-                ZYGOTE_PID3=$(pidof "$MAIN_ZYGOTE_NICENAME")
-
-                PIDS=0
-
-                if check "$ZYGOTE_PID1" "$ZYGOTE_PID2" && check "$ZYGOTE_PID2" "$ZYGOTE_PID3"; then
-                    if [ -z "$ZYGOTE_PID1" ] && [ "$(getprop init.svc.bootanim)" != "stopped" ]; then
-                        bootlooped
-                    else
-                        PIDS=1
-                    fi
-                fi
-
-                if [ $PIDS -eq 0 ]; then
-                    sleep 15
-                    ZYGOTE_PID4=$(pidof "$MAIN_ZYGOTE_NICENAME")
-                    if check "$ZYGOTE_PID3" "$ZYGOTE_PID4"; then
-                        # Set device config
-                        set_device_config
-                    elif [ "$(getprop init.svc.bootanim)" != "stopped" ]; then
-                        bootlooped
-                    fi
-                fi
-                while [ ! -d /data/data ]; do
-                sleep 1
-                done
-
-                PKG_NAME="com.google.android.dialer"
-                DATA_PATH_USER="/data/user/0/$PKG_NAME"
-                DATA_PATH_DATA="/data/data/$PKG_NAME"
-                DIR_TO_CREATE="$DATA_PATH_USER/files/photos/raw"
-
-                mkdir -p "$DIR_TO_CREATE"
-                if [ -d "$DATA_PATH_USER" ]; then
-                # Get the App's User ID (UID)
-                APP_UID=$(stat -c %u "$DATA_PATH_USER")
-                
-                if [ "$APP_UID" -gt 10000 ]; then
-                    chown -R $APP_UID:$APP_UID "$DATA_PATH_USER"
-                    chmod -R 0700 "$DATA_PATH_USER" # 0700 = drwx------
-                    
-                    if [ -L "$DATA_PATH_DATA" ]; then
-                    chown -R $APP_UID:$APP_UID "$DATA_PATH_DATA"
-                    chmod -R 0700 "$DATA_PATH_DATA"
-                    fi
-                fi
-                fi"
-                # Enable global spoofing
-                
-                echo 'resetprop -n "gsm.operator.iso-country us"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "gsm.sim.operator.iso-country us"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "persist.sys.country us"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.locale.region US"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.locale.language en"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "persist.sys.language en"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.brand google"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.manufacturer Google"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.model Pixel 10 Pro"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.name blazer_beta"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.product blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "bluetooth.device.default_name Pixel 10 Pro"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.description blazer_beta-userdebug 16 BP41.250916.015.A1 14331773 release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.display.id Pixelify-Next-Blazer 16 BP41.250916.015.A1 14331773 release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.build.flavor blazer_beta-userdebug"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.odm.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.odm.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.odm.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.product.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.product.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system_dlkm.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system_dlkm.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system_ext.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.system_ext.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.vendor.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.vendor.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.vendor_dlkm.device blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.product.vendor_dlkm.name blazer"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.system_ext.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.vendor.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-                echo 'resetprop -n "ro.vendor_dlkm.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"' >> $MODPATH/post-fs-data.sh
-    else
-        GLOBAL_SPOOF=0
-        echo "- Global Spoofing Disabled" >>$logfile
-    fi
-    else
-        GLOBAL_SPOOF=0
-        echo "- Global Spoofing Disabled" >>$logfile
-    fi
+if $VKSEL; then
+    GLOBAL_SPOOF=1
+    echo "- Global Spoofing Enabled" >>$logfile
+    cat << 'EOF' >> $MODPATH/post-fs-data.sh
+resetprop -n "gsm.operator.iso-country" "us"
+resetprop -n "gsm.sim.operator.iso-country" "us"
+resetprop -n "persist.sys.country" "us"
+resetprop -n "ro.product.locale.region" "US"
+resetprop -n "ro.product.locale.language" "en"
+resetprop -n "persist.sys.language" "en"
+resetprop -n "ro.product.brand" "google"
+resetprop -n "ro.product.manufacturer" "Google"
+resetprop -n "ro.product.model" "Pixel 10 Pro"
+resetprop -n "ro.product.device" "blazer"
+resetprop -n "ro.product.name" "blazer_beta"
+resetprop -n "ro.build.product" "blazer"
+resetprop -n "ro.build.device" "blazer"
+resetprop -n "ro.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+EOF
+else
+    GLOBAL_SPOOF=0
+    echo "- Global Spoofing Disabled" >>$logfile
+fi
 fi
 # Disable Android System intelligence as there it already installed.
 if [ ! -z $(pm list packages -s | grep com.google.android.as) ]; then

@@ -1,58 +1,50 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 
-. $MODDIR/vars.sh
-. $MODDIR/utils.sh
+. $MODDIR/vars.sh 2>/dev/null
+. $MODDIR/utils.sh 2>/dev/null
 
 sqlite=$MODDIR/addon/sqlite3
-chmod 0755 $sqlite
-chmod 0755 $MODDIR/system/bin/pixelify
+chmod 0755 $sqlite 2>/dev/null
+[ -f $MODDIR/system/bin/pixelify ] && chmod 0755 $MODDIR/system/bin/pixelify 2>/dev/null
 
-log() {
-    date=$(date +%y/%m/%d)
-    tim=$(date +%H:%M:%S)
-    temp="$temp
-$date $tim: $@"
+# --- Live Boot Logger ---
+# Rotates logs so live-logging-boot1.log is current boot and live-logging-boot2.log is previous boot.
+# Overwritten after 2 successful boots. Accessible in recovery at $MODDIR/live-logging-boot1.log.
+
+rotate_live_logs() {
+    LOG1="$MODDIR/live-logging-boot1.log"
+    LOG2="$MODDIR/live-logging-boot2.log"
+
+    if [ -f "$LOG1" ]; then
+        mv -f "$LOG1" "$LOG2"
+    fi
+
+    TIMESTAMP=$(date "+%Y-%m-%d_%H-%M-%S")
+    echo "==================================================" > "$LOG1"
+    echo "PixelifyNext Live Recovery Log" >> "$LOG1"
+    echo "Boot Timestamp : $TIMESTAMP" >> "$LOG1"
+    echo "Device Model   : $(getprop ro.product.model)" >> "$LOG1"
+    echo "Device Product : $(getprop ro.product.name)" >> "$LOG1"
+    echo "Android SDK    : $(getprop ro.build.version.sdk)" >> "$LOG1"
+    echo "Fingerprint    : $(getprop ro.build.fingerprint)" >> "$LOG1"
+    echo "==================================================" >> "$LOG1"
+    echo "" >> "$LOG1"
+
+    start_live_logger "$LOG1" &
 }
 
-TARGET_LOGGING=1
-temp=""
-
-pm_enable() {
-    pm enable $1 >/dev/null 2>&1
-    log "Enabling $1"
+start_live_logger() {
+    TARGET_LOGFILE="$1"
+    
+    # Capture Zygisk module tags, runtime crashes, and feature app errors
+    logcat -v time PixelifyNext:V PixelifyPhotos:V PixelifyCameraFix:V PixelifyTensor:V AndroidRuntime:E crash_dump:W DEBUG:E *:S 2>/dev/null | \
+    grep -E --line-buffered "(Pixelify|AndroidRuntime|crash_dump|com.google.android.apps.photos|com.google.android.aicore|com.google.android.gms|com.google.android.googlequicksearchbox)" >> "$TARGET_LOGFILE"
 }
 
-bootlooped() {
-    echo -n >>$MODDIR/disable
-    log "- Bootloop detected"
-    #echo "$temp" >> /sdcard/Pixelify/logs.txt
-    #logcat -d >> /sdcard/Pixelify/boot_logs.txt
-    rip="$(logcat -d)"
-    rm -rf $MODDIR/boot_logs.txt
-    echo "$(getprop)" >>MODDIR/boot_logs.txt
-    echo "$rip" >>$MODDIR/boot_logs.txt
-    cp -Tf $MODDIR/boot_logs.txt /sdcard/Pixelify/boot_logs.txt
-    #echo "$rip" >> /sdcard/Pixelify/boot_logs.txt
-    sleep .5
-    reboot
-}
+rotate_live_logs
 
-check() {
-    TEXT1="$1"
-    TEXT2="$2"
-    result=false
-    for i in $TEXT1; do
-        for j in $TEXT2; do
-            [ "$i" == "$j" ] && result=true
-        done
-    done
-    $result
-}
-
-#HuskyDG@github's bootloop preventer
-
-# Wait for zygote starts
+# --- Bootloop Preventer ---
 sleep 5
 
 MAIN_ZYGOTE_NICENAME=zygote
@@ -67,28 +59,26 @@ ZYGOTE_PID3=$(pidof "$MAIN_ZYGOTE_NICENAME")
 
 PIDS=0
 
-if check "$ZYGOTE_PID1" "$ZYGOTE_PID2" && check "$ZYGOTE_PID2" "$ZYGOTE_PID3"; then
-    if [ -z "$ZYGOTE_PID1" ] && [ "$(getprop init.svc.bootanim)" != "stopped" ]; then
-        bootlooped
-    else
-        PIDS=1
-    fi
+if [ -n "$ZYGOTE_PID1" ] && [ "$ZYGOTE_PID1" = "$ZYGOTE_PID2" ] && [ "$ZYGOTE_PID2" = "$ZYGOTE_PID3" ]; then
+    PIDS=1
 fi
 
 if [ $PIDS -eq 0 ]; then
     sleep 15
     ZYGOTE_PID4=$(pidof "$MAIN_ZYGOTE_NICENAME")
-    if check "$ZYGOTE_PID3" "$ZYGOTE_PID4"; then
-        # Set device config
-        set_device_config
+    if [ -n "$ZYGOTE_PID3" ] && [ "$ZYGOTE_PID3" = "$ZYGOTE_PID4" ]; then
+        PIDS=1
     elif [ "$(getprop init.svc.bootanim)" != "stopped" ]; then
-        bootlooped
+        echo -n >> $MODDIR/disable
+        reboot
     fi
 fi
+
 while [ ! -d /data/data ]; do
   sleep 1
 done
 
+# Dialer permissions fix
 PKG_NAME="com.google.android.dialer"
 DATA_PATH_USER="/data/user/0/$PKG_NAME"
 DATA_PATH_DATA="/data/data/$PKG_NAME"
@@ -96,22 +86,20 @@ DIR_TO_CREATE="$DATA_PATH_USER/files/photos/raw"
 
 mkdir -p "$DIR_TO_CREATE"
 if [ -d "$DATA_PATH_USER" ]; then
-  # Get the App's User ID (UID)
-  APP_UID=$(stat -c %u "$DATA_PATH_USER")
-  
-  if [ "$APP_UID" -gt 10000 ]; then
-    chown -R $APP_UID:$APP_UID "$DATA_PATH_USER"
-    chmod -R 0700 "$DATA_PATH_USER" # 0700 = drwx------
-    
+  APP_UID=$(stat -c %u "$DATA_PATH_USER" 2>/dev/null)
+  if [ -n "$APP_UID" ] && [ "$APP_UID" -gt 10000 ]; then
+    chown -R $APP_UID:$APP_UID "$DATA_PATH_USER" 2>/dev/null
+    chmod -R 0700 "$DATA_PATH_USER" 2>/dev/null
     if [ -L "$DATA_PATH_DATA" ]; then
-      chown -R $APP_UID:$APP_UID "$DATA_PATH_DATA"
-      chmod -R 0700 "$DATA_PATH_DATA"
+      chown -R $APP_UID:$APP_UID "$DATA_PATH_DATA" 2>/dev/null
+      chmod -R 0700 "$DATA_PATH_DATA" 2>/dev/null
     fi
   fi
 fi
-# Enable global spoofing
-resetprop -n gsm.operator.iso-country us,
-resetprop -n gsm.sim.operator.iso-country us,
+
+# Region & Locale props
+resetprop -n gsm.operator.iso-country us
+resetprop -n gsm.sim.operator.iso-country us
 resetprop -n persist.sys.country us
 resetprop -n ro.product.locale.region US
 resetprop -n ro.product.locale.language en
