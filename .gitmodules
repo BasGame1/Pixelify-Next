@@ -1,3 +1,6 @@
 [submodule "mosey-p8a"]
 	path = mosey-p8a
 	url = git@github.com:BasGame1/mosey-p8a
+[submodule "submodules/spoofing"]
+	path = submodules/spoofing
+	url = ./submodules/spoofing
