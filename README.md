@@ -135,7 +135,10 @@ A Root module to give Pixel Stuff to all phones!
 ---
 
 ## Credits <3
-- Google for creating these awesome features  
+- Google for creating these awesome features
+
+- [Wikimedia](https://commons.wikimedia.org) For google icon
+ 
 - [Tristan](https://t.me/@Tristan_xxxxx) For sending the Pixel Launcher files and Journal app
   
 - [topjohnwu](https://github.com/topjohnwu) for Magisk
@@ -158,9 +161,9 @@ A Root module to give Pixel Stuff to all phones!
     
 - [Mewona](https://t.me/@TempMeow) For Pixel Launcher files
   
-- [Kevin] for gemini bootanimation
+- Kevin (tg) for gemini bootanimation
   
-- [Android Port World & Amr Gamal Store] (Telegram) for Pixel Launcher 7.1 overlays
+- Android Port World & Amr Gamal Store (tg) for Pixel Launcher 7.1 overlays
    
 - [SQlite Organization](https://www.sqlite.org/) for SQlite3 uncompiled files
   
