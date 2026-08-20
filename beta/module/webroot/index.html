@@ -54,7 +54,7 @@
             padding: 20px;
             font-size: 10px;
             width: 100%;
-            height: 120px;
+            height: 150px;
             overflow-y: auto;
             font-family: monospace;
             box-sizing: border-box;
@@ -68,7 +68,6 @@
             align-self: flex-start;
         }
 
-        /* Fixed the dot selector */
         .status-card {
             margin-top: 10px;
             background-color: white;
@@ -83,12 +82,19 @@
             font-weight: 500;
         }
 
+        .status-detail {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
         .status-dot {
             height: 12px;
             width: 12px;
             border-radius: 50%;
             display: inline-block;
             background-color: #ccc;
+            flex-shrink: 0;
         }
 
         .refresh-btn {
@@ -113,17 +119,9 @@
         }
 
         @keyframes blink {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 1;
-            }
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
         footer {
@@ -146,23 +144,43 @@
 
         <div id="status-panel" style="width: 100%;">
             <div class="status-card">
-                <span>Zygisk Injection</span>
+                <div>
+                    <span>Zygisk Module</span>
+                    <div class="status-detail" id="detail-zygisk"></div>
+                </div>
                 <div id="dot-zygisk" class="status-dot"></div>
             </div>
 
             <div class="status-card">
-                <span>Spoofing Engine</span>
+                <div>
+                    <span>Spoofing Engine</span>
+                    <div class="status-detail" id="detail-spoof"></div>
+                </div>
                 <div id="dot-spoof" class="status-dot"></div>
             </div>
 
             <div class="status-card">
-                <span>Unlimited Storage</span>
+                <div>
+                    <span>Unlimited Storage</span>
+                    <div class="status-detail" id="detail-storage"></div>
+                </div>
                 <div id="dot-storage" class="status-dot"></div>
             </div>
 
             <div class="status-card">
-                <span id="photos-version-text">Photos Version</span>
+                <div>
+                    <span id="photos-version-text">Photos Version</span>
+                    <div class="status-detail" id="detail-photos"></div>
+                </div>
                 <div id="dot-photos" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Zygisk Spoof Status</span>
+                    <div class="status-detail" id="detail-zygisk-status"></div>
+                </div>
+                <div id="dot-zygisk-status" class="status-dot"></div>
             </div>
 
             <button class="refresh-btn" onclick="forceRefresh()">Force Stop & Verify</button>
@@ -209,32 +227,66 @@
 
             let modCheck = await execShell(`[ -d "/data/adb/modules/${MODULE_ID}" ] && echo "YES" || echo "NO"`);
             updateStatus('dot-zygisk', modCheck === "YES");
+            if (modCheck === "YES") {
+                document.getElementById('detail-zygisk').innerText = "Module installed";
+            } else {
+                document.getElementById('detail-zygisk').innerText = "Module not found";
+            }
+
+            let statusFile = await execShell(`cat /data/adb/modules/${MODULE_ID}/zygisk_status 2>/dev/null`);
+            if (statusFile && statusFile.length > 0 && statusFile !== "ERROR_EXEC") {
+                let parts = statusFile.split("|");
+                let spoofPkg = parts[0] || "unknown";
+                let spoofModel = parts[1] || "unknown";
+                updateStatus('dot-zygisk-status', true);
+                document.getElementById('detail-zygisk-status').innerText = spoofPkg + " -> " + spoofModel;
+                logs.push("[OK] Last spoof: " + spoofPkg + " as " + spoofModel);
+            } else {
+                updateStatus('dot-zygisk-status', 'warn');
+                document.getElementById('detail-zygisk-status').innerText = "No spoof data yet";
+                logs.push("[!] No Zygisk status file found");
+            }
 
             let pid = await execShell(`pidof ${TARGET_PKG}`);
             if (!pid) {
                 updateStatus('dot-spoof', 'warn');
+                document.getElementById('detail-spoof').innerText = "Photos not running";
                 logs.push("[!] Photos closed. Open it to verify.");
             } else {
-                let maps = await execShell(`grep "${MODULE_ID}" /proc/${pid}/maps`);
-                let spoofedProp = await execShell("getprop ro.product.model");
-                if (maps.length > 0 || spoofedProp.toLowerCase().includes("pixel")) {
+                let logCheck = await execShell(`logcat -d -s PixelifyPhotos:I --pid=${pid} 2>/dev/null | tail -1`);
+                if (logCheck && logCheck.includes("spoof applied")) {
                     updateStatus('dot-spoof', true);
-                    logs.push(`[OK] Injected in PID: ${pid}`);
+                    document.getElementById('detail-spoof').innerText = "Active in PID " + pid;
+                    logs.push("[OK] Photos spoofed in PID: " + pid);
                 } else {
-                    updateStatus('dot-spoof', false);
-                    logs.push("[ERR] No injection found.");
+                    let statusMatch = statusFile && statusFile.includes("com.google.android.apps.photos");
+                    if (statusMatch) {
+                        updateStatus('dot-spoof', true);
+                        document.getElementById('detail-spoof').innerText = "Confirmed via status file";
+                        logs.push("[OK] Spoof confirmed via status file");
+                    } else {
+                        updateStatus('dot-spoof', false);
+                        document.getElementById('detail-spoof').innerText = "Not detected";
+                        logs.push("[ERR] No injection detected");
+                    }
                 }
             }
 
             storageDot.classList.add('checking');
             let storageCheck = await execShell("pm list features | grep com.google.android.feature.PIXEL_2016_EXPERIENCE");
-            updateStatus('dot-storage', storageCheck.includes("2016_EXPERIENCE"));
+            let storageOk = storageCheck.includes("2016_EXPERIENCE");
+            updateStatus('dot-storage', storageOk);
+            document.getElementById('detail-storage').innerText = storageOk ? "Pixel 2016 feature present" : "Feature not found";
             storageDot.classList.remove('checking');
 
             let resPhotos = await execShell(`dumpsys package ${TARGET_PKG} | grep versionName | head -n 1 | cut -d'=' -f2`);
             if (resPhotos) {
                 document.getElementById('photos-version-text').innerText = "Photos: " + resPhotos;
                 updateStatus('dot-photos', true);
+                document.getElementById('detail-photos').innerText = "Installed";
+            } else {
+                updateStatus('dot-photos', false);
+                document.getElementById('detail-photos').innerText = "Not installed";
             }
 
             consoleDiv.innerText = logs.join("\n");
