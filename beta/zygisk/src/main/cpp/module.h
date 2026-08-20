@@ -3,21 +3,17 @@
 
 #pragma once
 
-namespace pixelifytag {
-
-#ifndef TAG
-#define TAG    "PixelifyNext"
+#ifndef PIXELIFY_TAG
+#define PIXELIFY_TAG "PixelifyNext"
 #endif
 
 #ifdef NDEBUG
 #define LOGD(...)
+#define LOGI(...)
 #else
-#define LOGD(...)     __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, PIXELIFY_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, PIXELIFY_TAG, __VA_ARGS__)
 #endif
 
-#define LOGI(...)     __android_log_print(ANDROID_LOG_INFO,  TAG, __VA_ARGS__)
-#define LOGW(...) 	  __android_log_print(ANDROID_LOG_WARN,  TAG, __VA_ARGS__)
-#define LOGE(...)     __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
-#define LOGERRNO(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__ ": %d (%s)", errno, strerror(errno))
-
-}
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, PIXELIFY_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, PIXELIFY_TAG, __VA_ARGS__)
