@@ -2,23 +2,11 @@
 #include <sys/system_properties.h>
 #include <unistd.h>
 #include <string>
-#include <vector>
 #include <cstring>
 
-#include "zygisk.hpp"
+#define PIXELIFY_TAG "PixelifyCameraFix"
 #include "module.h"
-
-#define LOG_TAG "PixelifyCameraFix"
-
-#ifdef LOGI
-#undef LOGI
-#endif
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-
-#ifdef LOGW
-#undef LOGW
-#endif
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
+#include "zygisk.hpp"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
@@ -31,30 +19,43 @@ public:
     }
 
     void preAppSpecialize(AppSpecializeArgs *args) override {
-        if (!args || !args->nice_name) return;
-
-        const char *raw_process = env->GetStringUTFChars(args->nice_name, nullptr);
-        if (!raw_process) return;
-
-        std::string process_name(raw_process);
-        env->ReleaseStringUTFChars(args->nice_name, raw_process);
-
-        // List of Camera Apps to Fix
-        bool is_camera = (process_name.find("GoogleCamera") != std::string::npos || 
-                          process_name.find("com.android.camera") != std::string::npos ||
-                          process_name.find("com.google.android.apps.cameralite") != std::string::npos);
-
-        if (is_camera) {
-            LOGI("Detected Camera App: %s. Initiating Reverse Spoof...", process_name.c_str());
-            revertToOriginalProps();
+        if (!args || !args->nice_name) {
+            api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
+            return;
         }
+
+        const char *raw = env->GetStringUTFChars(args->nice_name, nullptr);
+        if (!raw) {
+            api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
+            return;
+        }
+
+        std::string process(raw);
+        env->ReleaseStringUTFChars(args->nice_name, raw);
+
+        bool is_camera = (process.find("GoogleCamera") != std::string::npos ||
+                          process.find("com.android.camera") != std::string::npos ||
+                          process.find("com.google.android.apps.cameralite") != std::string::npos);
+
+        if (!is_camera) {
+            api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
+            return;
+        }
+
+        should_revert = true;
+        LOGI("Camera detected: %s", process.c_str());
+    }
+
+    void postAppSpecialize(const AppSpecializeArgs *args) override {
+        if (!should_revert) return;
+        revertToOriginalProps();
     }
 
 private:
-    Api *api;
-    JNIEnv *env;
+    Api *api = nullptr;
+    JNIEnv *env = nullptr;
+    bool should_revert = false;
 
-    // Helper to read the REAL system properties from the OS
     std::string getSystemProp(const char* key) {
         char buffer[PROP_VALUE_MAX] = {0};
         if (__system_property_get(key, buffer) > 0) {
@@ -63,46 +64,45 @@ private:
         return "";
     }
 
+    void setProp(jclass clazz, const char* field, const char* value) {
+        jfieldID id = env->GetStaticFieldID(clazz, field, "Ljava/lang/String;");
+        if (env->ExceptionCheck()) { env->ExceptionClear(); return; }
+        if (id && value && strlen(value) > 0) {
+            jstring jval = env->NewStringUTF(value);
+            env->SetStaticObjectField(clazz, id, jval);
+            env->DeleteLocalRef(jval);
+        }
+    }
+
     void revertToOriginalProps() {
         if (!env) return;
 
-        jclass build_class = env->FindClass("android/os/Build");
-        if (!build_class) {
+        jclass build = env->FindClass("android/os/Build");
+        if (!build) {
             if (env->ExceptionCheck()) env->ExceptionClear();
-            LOGW("Could not find android.os.Build class");
+            LOGW("Build class not found");
             return;
         }
 
         std::string real_model = getSystemProp("ro.product.model");
-        std::string real_product = getSystemProp("ro.product.name"); 
+        std::string real_product = getSystemProp("ro.product.name");
         std::string real_device = getSystemProp("ro.product.device");
         std::string real_manuf = getSystemProp("ro.product.manufacturer");
         std::string real_brand = getSystemProp("ro.product.brand");
-        std::string real_fingerprint = getSystemProp("ro.build.fingerprint");
+        std::string real_fp = getSystemProp("ro.build.fingerprint");
 
         if (real_product.empty()) real_product = real_device;
 
-        LOGI("Restoring Real Hardware Identity: %s (%s)", real_model.c_str(), real_product.c_str());
+        LOGI("Restoring: %s (%s)", real_model.c_str(), real_product.c_str());
 
-        setProp(build_class, "MODEL", real_model.c_str());
-        setProp(build_class, "PRODUCT", real_product.c_str());
-        setProp(build_class, "DEVICE", real_device.c_str());
-        setProp(build_class, "MANUFACTURER", real_manuf.c_str());
-        setProp(build_class, "BRAND", real_brand.c_str());
-        setProp(build_class, "FINGERPRINT", real_fingerprint.c_str());
-        setProp(build_class, "TAGS", "release-keys");
-        setProp(build_class, "TYPE", "user");
-    }
-
-    void setProp(jclass clazz, const char* field, const char* value) {
-        jfieldID id = env->GetStaticFieldID(clazz, field, "Ljava/lang/String;");
-        if (env->ExceptionCheck()) { env->ExceptionClear(); return; }
-        
-        if (id != nullptr && value != nullptr) {
-            jstring jVal = env->NewStringUTF(value);
-            env->SetStaticObjectField(clazz, id, jVal);
-            env->DeleteLocalRef(jVal);
-        }
+        setProp(build, "MODEL", real_model.c_str());
+        setProp(build, "PRODUCT", real_product.c_str());
+        setProp(build, "DEVICE", real_device.c_str());
+        setProp(build, "MANUFACTURER", real_manuf.c_str());
+        setProp(build, "BRAND", real_brand.c_str());
+        setProp(build, "FINGERPRINT", real_fp.c_str());
+        setProp(build, "TAGS", "release-keys");
+        setProp(build, "TYPE", "user");
     }
 };
 
