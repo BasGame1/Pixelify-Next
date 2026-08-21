@@ -784,7 +784,7 @@ if [ -d /data/data/$DIALER ]; then
         fi
 
         if [ ! -z "$DIALER_FEATURES" ]; then
-            if [[ "$DIALER_FEATURES" == *"call_screening"* ]]; then
+            if echo "$DIALER_FEATURES" | grep -q "call_screening"; then
                 sed -i -e "s/CallScreening=0/CallScreening=1/g" $MODPATH/var.prop
                 print "- Enabling Call Screening & Hold for me & Direct My Call"
                 print " "
@@ -820,7 +820,7 @@ if [ -d /data/data/$DIALER ]; then
                     while true; do
                         ui_print " Current cursor:  $SM"
                         "$VKSEL" && SM="$((SM + 1))" || break
-                        [[ "$SM" -gt "8" ]] && SM=1
+                        [ "$SM" -gt "8" ] && SM=1
                     done
                 else
                     SM=$(grep CALL_SCREENING_LANG= $vk_loc | cut -d= -f2)
@@ -916,7 +916,7 @@ if [ -d /data/data/$DIALER ]; then
                         while true; do
                             ui_print " Current cursor:  $SM"
                             "$VKSEL" && SM="$((SM + 1))" || break
-                            [[ "$SM" -gt "4" ]] && SM=1
+                            [ "$SM" -gt "4" ] && SM=1
                         done
                     else
                         SM=$(grep ENGLISH_COUNTRY_ACCENT= $vk_loc | cut -d= -f2)
@@ -982,7 +982,7 @@ if [ -d /data/data/$DIALER ]; then
                 db_edit com.google.android.dialer boolVal 1 $CALL_SCREEN_FLAGS
             fi
 
-            if [[ "$DIALER_FEATURES" == *"call_recording"* ]]; then
+            if echo "$DIALER_FEATURES" | grep -q "call_recording"; then
                 print "- Enabling Call Recording (Working is device dependent)"
                 print ""
                 print "  Do you want to enable call recording for all countries?"
@@ -996,11 +996,11 @@ if [ -d /data/data/$DIALER ]; then
                 db_edit com.google.android.dialer boolVal 1 $DIALERFLAGS
             fi
 
-            if [[ "$DIALER_FEATURES" == *"hold_for_me"* ]]; then
+            if echo "$DIALER_FEATURES" | grep -q "hold_for_me"; then
                 db_edit com.google.android.dialer boolVal 1 "G__enable_atlas"
             fi
 
-            if [[ "$DIALER_FEATURES" == *"direct_my_call"* ]]; then
+            if echo "$DIALER_FEATURES" | grep -q "direct_my_call"; then
                 db_edit com.google.android.dialer boolVal 1 "G__enable_xatu"
             fi
         fi
@@ -1043,7 +1043,7 @@ if [ -d /data/data/$DIALER ]; then
                 mkdir -p $MODPATH/system/product/tts/google
                 tar -xf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                 #install TTS Pack
-                if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+                if [ -d /data/user_de/0/com.google.android.tts ] && { [ "$lang" = "hi-IN" ] || [ "$lang" = "en-IN" ]; }; then
                     TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
                     [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
                     PACK_NAME="1#"
@@ -1083,7 +1083,7 @@ if [ -d /data/data/$DIALER ]; then
                         cd /
                         tar -xf $MODPATH/files/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                         #install TTS Pack
-                        if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+                        if [ -d /data/user_de/0/com.google.android.tts ] && { [ "$lang" = "hi-IN" ] || [ "$lang" = "en-IN" ]; }; then
                             TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
                             [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
                             PACK_NAME="1#"

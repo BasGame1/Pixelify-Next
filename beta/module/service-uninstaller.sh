@@ -194,7 +194,7 @@ if [ ! -d /data/adb/modules/Pixelify ]; then
     [ -z $(pm list packages -s | grep com.google.pixel.livewallpaper) ] && pm uninstall com.google.pixel.livewallpaper
 
     # Disable Pickachu Wallpaper if device on Pixel 4 or XL
-    [[ "$(getprop ro.product.vendor.model)" != "Pixel 4" || "$(getprop ro.product.vendor.model)" != "Pixel 4 XL" ]] && pm disable -n com.google.pixel.livewallpaper/com.google.pixel.livewallpaper.pokemon.wallpapers.PokemonWallpaper -a android.intent.action.MAIN
+    [ "$(getprop ro.product.vendor.model)" != "Pixel 4" ] && [ "$(getprop ro.product.vendor.model)" != "Pixel 4 XL" ] && pm disable -n com.google.pixel.livewallpaper/com.google.pixel.livewallpaper.pokemon.wallpapers.PokemonWallpaper -a android.intent.action.MAIN
 
     log "- Uninstalled Completed"
 
@@ -207,7 +207,7 @@ else
 
     # @anirudhgupta109 github
     # avoid breaking encryption, set shipping level to 32 for devices >=33 to allow for software attestation.
-    if [[ "$(getprop ro.product.first_api_level)" -ge 33 ]]; then
+    if [ "$(getprop ro.product.first_api_level)" -ge 33 ]; then
         resetprop ro.product.first_api_level 32
     fi
 

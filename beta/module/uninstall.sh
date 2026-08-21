@@ -15,7 +15,7 @@ $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.go
 $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
 $sqlite $gms "DELETE FROM FlagOverrides WHERE packageName='com.google.android.apps.recorder'"
 
-[[ -e "/data/system/package_cache" ]] && rm -rf /data/system/package_cache/*
+[ -e "/data/system/package_cache" ] && rm -rf /data/system/package_cache/*
 
 # Stub for replacing with mosey code
 #UNINSTALLER.SH_MOSEY_STUB

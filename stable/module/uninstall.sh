@@ -15,4 +15,4 @@ $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.googlequic
 $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.inputmethod.latin#com.google.android.inputmethod.latin'"
 $sqlite $gms "DELETE FROM Flags WHERE packageName='com.google.android.apps.recorder'"
 
-[[ -e "/data/system/package_cache" ]] && rm -rf /data/system/package_cache/*
+[ -e "/data/system/package_cache" ] && rm -rf /data/system/package_cache/*

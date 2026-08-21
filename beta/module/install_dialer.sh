@@ -56,7 +56,7 @@ install_dialer() {
                 mkdir -p $MODPATH/system/product/tts/google
                 tar -xf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                 #install TTS Pack
-                if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+                if [ -d /data/user_de/0/com.google.android.tts ] && { [ "$lang" = "hi-IN" ] || [ "$lang" = "en-IN" ]; }; then
                     TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
                     [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
                     PACK_NAME="1#"
@@ -96,7 +96,7 @@ install_dialer() {
                         cd /
                         tar -xf $MODPATH/files/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                         #install TTS Pack
-                        if [ -d /data/user_de/0/com.google.android.tts ] && [[ $lang == "hi-IN" || $lang == "en-IN" ]]; then
+                        if [ -d /data/user_de/0/com.google.android.tts ] && { [ "$lang" = "hi-IN" ] || [ "$lang" = "en-IN" ]; }; then
                             TTS_LOC=/data/user_de/0/com.google.android.tts/files/superpacks/$TT_LANG
                             [ ! -d $TTS_LOC ] && mkdir -p $TTS_LOC
                             PACK_NAME="1#"
