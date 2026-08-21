@@ -30,6 +30,8 @@ unzip -o "$ZIPFILE" -d "$MODPATH" >&2
 . $MODPATH/install_apps.sh || abort "apps script not loaded"
 . $MODPATH/systemize_velvet.sh || abort "systemize velvet script not loaded"
 
+chmod 0755 $MODPATH/addon/* $MODPATH/*.sh 2>/dev/null
+
 alias keycheck="$MODPATH/addon/keycheck"
 sqlite=$MODPATH/addon/sqlite3
 VOL_KEYS="$(grep 'DEVICE_USES_VOLUME_KEY=' $MODPATH/module.prop | cut -d= -f2)"
