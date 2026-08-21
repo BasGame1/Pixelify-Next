@@ -1110,8 +1110,8 @@ mv $pix/app2.txt $pix/app.txt
 REMOVE="$(echo "$REMOVE" | tr ' ' '\n' | sort -u)"
 REPLACE="$REMOVE"
 
-settings put secure show_qr_code_scanner_setting true
-settings put secure lock_screen_show_qr_code_scanner true
+settings put secure show_qr_code_scanner_setting true 2>/dev/null || true
+settings put secure lock_screen_show_qr_code_scanner true 2>/dev/null || true
 
 #Clean Up
 rm -rf $MODPATH/files
