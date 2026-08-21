@@ -13,6 +13,9 @@ ui_print "\\_/  \\|\\____\\/__/\\\\  \\_/                  ";
 ui_print "                                          ";
 ui_print "                                          ";
 ui_print "                                          ";
+# extract module files to MODPATH
+unzip -o "$ZIPFILE" -d "$MODPATH" >&2
+
 # run Pixelify Functions and Variables
 . $MODPATH/terminal.sh || abort "terminal script not loaded"
 . $MODPATH/vars.sh || abort "vars script not loaded"

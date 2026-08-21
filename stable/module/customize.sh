@@ -3,6 +3,9 @@ if [ -f "$MODPATH/banner.txt" ]; then
   cat "$MODPATH/banner.txt"
   ui_print " "
 fi
+# extract module files to MODPATH
+unzip -o "$ZIPFILE" -d "$MODPATH" >&2
+
 # run Pixelify Functions and Variables
 . $MODPATH/vars.sh || abort
 . $MODPATH/utils.sh || abort
