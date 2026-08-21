@@ -43,11 +43,10 @@ install_pixel_launcher() {
         fi
 else
     echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
+    ui_print "You cannot install Pixel Launcher due to being on api $API"
     for FILE in $(find "$MODPATH/system" -type f -name "*.apk"); do
         rm -rf $FILE 2>/dev/null
     done
     rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2024
-else
- ui_print "You cannot install Pixel Launcher due to being on api $API"
 fi
 }

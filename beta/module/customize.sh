@@ -627,6 +627,7 @@ if [ $TENSOR -eq 1 ]; then
         echo "- Disabling Unlimited storage in this Tensor chipset device" >>$logfile
         rm -rf $MODPATH/zygisk $MODPATH/zygisk_1
     fi
+fi
 ###################################################################################################################################################################################################################
 if [ $API -ge 31 ]; then
 print ""
@@ -919,6 +920,7 @@ if [ BUILT_WITH_MOSEY_SUPPORT ]; then
  if $VKSEL; then
    # This block will be replaced with the mosey code at compilation
    #CUSTOMIZE.SH_MOSEY_STUB
+   :
   else
    log "Selected no, skipping"
  fi
