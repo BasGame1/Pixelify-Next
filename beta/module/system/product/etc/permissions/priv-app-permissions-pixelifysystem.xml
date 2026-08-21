@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- This permissions file aims to systemize the google and dialer permissions so it can work under priv-app
+  This permissions file aims to systemize Google apps under priv-app for Android 15/16 allowlisting
 -->
 <permissions>
   <privapp-permissions package="com.google.android.googlequicksearchbox">
@@ -29,5 +29,51 @@
           <permission name="android.permission.STOP_APP_SWITCHES"/>
           <permission name="android.permission.WRITE_EMBEDDED_SUBSCRIPTIONS"/>
           <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+  </privapp-permissions>
+
+  <privapp-permissions package="com.google.android.settings.intelligence">
+          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+          <permission name="android.permission.MODIFY_PHONE_STATE"/>
+          <permission name="android.permission.WRITE_SETTINGS_HOMEPAGE_DATA"/>
+          <permission name="android.permission.SCHEDULE_EXACT_ALARM"/>
+          <permission name="android.permission.READ_SEARCH_INDEXABLES"/>
+          <permission name="android.permission.MANAGE_FINGERPRINT"/>
+          <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND"/>
+          <permission name="android.permission.READ_PRIVILEGED_PHONE_STATE"/>
+          <permission name="android.permission.MANAGE_USERS"/>
+          <permission name="android.permission.INTERACT_ACROSS_USERS"/>
+          <permission name="android.permission.STATUS_BAR"/>
+  </privapp-permissions>
+
+  <privapp-permissions package="com.google.android.apps.magicportrait">
+          <permission name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE"/>
+          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+          <permission name="android.permission.ACCESS_SMARTSPACE"/>
+          <permission name="android.permission.READ_WALLPAPER_INTERNAL"/>
+          <permission name="android.permission.MANAGE_WALLPAPER_EFFECTS_GENERATION"/>
+          <permission name="android.permission.SET_WALLPAPER_COMPONENT"/>
+  </privapp-permissions>
+
+  <privapp-permissions package="com.google.android.wallpaper.effects">
+          <permission name="android.permission.MANAGE_WALLPAPER_EFFECTS_GENERATION"/>
+          <permission name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE"/>
+          <permission name="android.permission.READ_WALLPAPER_INTERNAL"/>
+          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+  </privapp-permissions>
+
+  <privapp-permissions package="com.google.pixel.livewallpaper">
+          <permission name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND"/>
+          <permission name="android.permission.READ_WALLPAPER_INTERNAL"/>
+          <permission name="android.permission.SET_WALLPAPER_COMPONENT"/>
+          <permission name="android.permission.BIND_WALLPAPER"/>
+          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+  </privapp-permissions>
+
+  <privapp-permissions package="com.google.android.apps.aiwallpapers">
+          <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
+          <permission name="android.permission.READ_WALLPAPER_INTERNAL"/>
+          <permission name="android.permission.SET_WALLPAPER_COMPONENT"/>
+          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+          <permission name="android.permission.BIND_WALLPAPER"/>
   </privapp-permissions>
 </permissions>

@@ -21,3 +21,6 @@ stable/.cxx
 allflags.json
 complete_manifest_flags.json
 dialer_flags.json
+
+# Ignore log files
+*.log
