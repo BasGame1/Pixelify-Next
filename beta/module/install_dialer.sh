@@ -78,7 +78,8 @@ install_dialer() {
                     fi
                 fi
             else
-                CRSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
+                CURL_BIN="$(get_curl_cmd)"
+                CRSIZE="$("$CURL_BIN" -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz 2>/dev/null | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
                 log "  (Network Connection Needed)"
                 log "  Do you want to Download Call Screening files for '$lang' language"
                 log "  Size: $CRSIZE"
@@ -92,7 +93,7 @@ install_dialer() {
                         log "  Downloading CallScreening files for '$lang'"
                         mkdir -p $MODPATH/system/product/tts/google
                         cd $MODPATH/files
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz -O &>/proc/self/fd/$OUTFD
+                        [ -n "$CURL_BIN" ] && "$CURL_BIN" https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/callscreen-$lang.tar.xz -O &>/proc/self/fd/$OUTFD 2>/dev/null || true
                         cd /
                         tar -xf $MODPATH/files/callscreen-$lang.tar.xz -C $MODPATH/system/product/tts/google
                         #install TTS Pack

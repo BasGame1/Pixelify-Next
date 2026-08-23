@@ -37,9 +37,9 @@ rotate_live_logs() {
 start_live_logger() {
     TARGET_LOGFILE="$1"
     
-    # Capture Zygisk module tags, runtime crashes, and feature app errors
-    logcat -v time PixelifyNext:V PixelifyPhotos:V PixelifyCameraFix:V PixelifyTensor:V AndroidRuntime:E crash_dump:W DEBUG:E *:S 2>/dev/null | \
-    grep -E --line-buffered "(Pixelify|AndroidRuntime|crash_dump|com.google.android.apps.photos|com.google.android.aicore|com.google.android.gms|com.google.android.googlequicksearchbox)" >> "$TARGET_LOGFILE"
+    # Capture Zygisk module tags, runtime crashes, system errors, and feature app logs
+    logcat -v time 2>/dev/null | \
+    grep -E --line-buffered -i "(Pixelify|AndroidRuntime|crash_dump|DEBUG|Zygote|SystemServer|Fatal|Exception|com\.google\.android|\.dialer|\.photos|\.aicore|\.gms)" >> "$TARGET_LOGFILE" &
 }
 
 rotate_live_logs
@@ -107,6 +107,14 @@ resetprop -n persist.sys.language en
 
 # Patch Phenotype microhooks flags on boot
 [ -f $MODDIR/patch_microhooks.sh ] && . $MODDIR/patch_microhooks.sh
+
+# Ensure SELinux contexts for mounted partitions
+chcon -R u:object_r:system_file:s0 $MODDIR/system 2>/dev/null || true
+[ -d $MODDIR/system/product ] && chcon -R u:object_r:system_file:s0 $MODDIR/system/product 2>/dev/null || true
+[ -d $MODDIR/system/product/app ] && chcon -R u:object_r:product_app_file:s0 $MODDIR/system/product/app 2>/dev/null || true
+[ -d $MODDIR/system/product/priv-app ] && chcon -R u:object_r:product_priv_app_file:s0 $MODDIR/system/product/priv-app 2>/dev/null || true
+[ -d $MODDIR/system/product/overlay ] && chcon -R u:object_r:product_overlay_file:s0 $MODDIR/system/product/overlay 2>/dev/null || true
+[ -d $MODDIR/system/product/etc ] && chcon -R u:object_r:product_etc_file:s0 $MODDIR/system/product/etc 2>/dev/null || true
 
 # Stub for replacing with mosey code
 #SERVICE.SH_MOSEY_STUB

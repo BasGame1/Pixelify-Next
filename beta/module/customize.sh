@@ -1087,14 +1087,24 @@ for i in $MODPATH/system/vendor/overlay $MODPATH/system$product/overlay $MODPATH
     set_perm_recursive $i 0 0 0755 0644
 done
 
+# Restore SELinux contexts for overlayfs mounting
+chcon -R u:object_r:system_file:s0 $MODPATH/system 2>/dev/null || true
+[ -d $MODPATH/system/product ] && chcon -R u:object_r:system_file:s0 $MODPATH/system/product 2>/dev/null || true
+[ -d $MODPATH/system/product/app ] && chcon -R u:object_r:product_app_file:s0 $MODPATH/system/product/app 2>/dev/null || true
+[ -d $MODPATH/system/product/priv-app ] && chcon -R u:object_r:product_priv_app_file:s0 $MODPATH/system/product/priv-app 2>/dev/null || true
+[ -d $MODPATH/system/product/overlay ] && chcon -R u:object_r:product_overlay_file:s0 $MODPATH/system/product/overlay 2>/dev/null || true
+[ -d $MODPATH/system/product/etc ] && chcon -R u:object_r:product_etc_file:s0 $MODPATH/system/product/etc 2>/dev/null || true
+[ -d $MODPATH/system/vendor ] && chcon -R u:object_r:vendor_file:s0 $MODPATH/system/vendor 2>/dev/null || true
+[ -d $MODPATH/system/vendor/etc ] && chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/system/vendor/etc 2>/dev/null || true
+
 # Regenerate overlay list
 rm -rf /data/resource-cache/overlays.list
 find /data/resource-cache/ -name "*Pixelify*" -exec rm -rf {} \;
 find /data/resource-cache/ -name "*PixelLauncherOverlay*" -exec rm -rf {} \;
 
 #make some permissions not enforced
-pm set-permission-enforced android.permission.READ_DEVICE_CONFIG false
-pm set-permission-enforced android.permission.SUSPEND_APPS. false
+pm set-permission-enforced android.permission.READ_DEVICE_CONFIG false 2>/dev/null || true
+pm set-permission-enforced android.permission.SUSPEND_APPS. false 2>/dev/null || true
 
 # Fix unknown creation of data folder
 rm -rf $MODPATH/system/product/data

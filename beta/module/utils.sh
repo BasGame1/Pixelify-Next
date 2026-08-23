@@ -166,10 +166,31 @@ set_version() {
     WLPVERSION=$(cat $pix/wlp-$API.txt)
 }
 
+get_curl_cmd() {
+    if command -v curl >/dev/null 2>&1; then
+        echo "$(command -v curl)"
+    elif [ -x /system/bin/curl ]; then
+        echo "/system/bin/curl"
+    elif [ -x "$MODPATH/addon/curl" ]; then
+        echo "$MODPATH/addon/curl"
+    else
+        echo ""
+    fi
+}
+
 online() {
-    s=$($MODPATH/addon/curl -s -I http://www.google.com --connect-timeout 5 | grep "ok")
-    if [ ! -z "$s" ]; then
-        internet=1
+    CURL_BIN="$(get_curl_cmd)"
+    internet=0
+    if [ -n "$CURL_BIN" ]; then
+        s=$("$CURL_BIN" -s -I http://www.google.com --connect-timeout 5 2>/dev/null | grep -i "HTTP")
+        [ -n "$s" ] && internet=1
+    fi
+    if [ $internet -eq 0 ]; then
+        if ping -c 1 -w 2 8.8.8.8 >/dev/null 2>&1 || ping -c 1 -w 2 google.com >/dev/null 2>&1; then
+            internet=1
+        fi
+    fi
+    if [ $internet -eq 1 ]; then
         echo " - Network is Online" >>$logfile
     elif [ $FORCED_ONLINE -eq 1 ]; then
         internet=1
