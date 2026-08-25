@@ -358,8 +358,8 @@ Magisk version: $MAGISK_VER_CODE
 " >>$logfile
 
 # Set version and size when Pixelify is launcher (used when device doesn't use internet)
-if [ $API -eq 34 ]; then
-    echo "Android version: 14" >>$logfile
+if [ $API -ge 34 ]; then
+    echo "Android version: $API" >>$logfile
     WNEED=1
     DPSIZE="33 Mb"
     WSIZE="6 Mb"
@@ -1085,6 +1085,11 @@ set_perm_recursive $MODPATH 0 0 0755 0644
 
 for i in $MODPATH/system/vendor/overlay $MODPATH/system$product/overlay $MODPATH/system$product/priv-app/* $MODPATH/system$product/app/*; do
     set_perm_recursive $i 0 0 0755 0644
+done
+
+# Set 0755 executable permissions for scripts and binaries
+for bin in $MODPATH/system/vendor/bin/* $MODPATH/system/bin/* $MODPATH/addon/* $MODPATH/*.sh $MODPATH/vendor/bin/*; do
+    [ -f "$bin" ] && set_perm "$bin" 0 0 0755
 done
 
 # Restore SELinux contexts for overlayfs mounting

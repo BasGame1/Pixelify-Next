@@ -68,13 +68,16 @@ if [ $PIDS -eq 0 ]; then
     ZYGOTE_PID4=$(pidof "$MAIN_ZYGOTE_NICENAME")
     if [ -n "$ZYGOTE_PID3" ] && [ "$ZYGOTE_PID3" = "$ZYGOTE_PID4" ]; then
         PIDS=1
-    elif [ "$(getprop init.svc.bootanim)" != "stopped" ]; then
+    elif [ "$(getprop init.svc.bootanim)" != "stopped" ] && [ -x /system/bin/reboot ]; then
         echo -n >> $MODDIR/disable
-        reboot
+        reboot 2>/dev/null || true
     fi
 fi
 
-while [ ! -d /data/data ]; do
+# Wait for /data/data with safety iteration limit for sandbox environments
+DATA_WAIT=0
+while [ ! -d /data/data ] && [ $DATA_WAIT -lt 10 ]; do
+  DATA_WAIT=$((DATA_WAIT + 1))
   sleep 1
 done
 

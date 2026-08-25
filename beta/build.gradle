@@ -131,6 +131,21 @@ void createVariantTasks(
             def libSourceDir = proj.file("${pBuildDir}/intermediates/stripped_native_libs/${varLowered}/strip${varCapped}DebugSymbols/out/lib/${resourceDir}")
             def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
             from(libSourceDir) {
+                into 'zygisk'
+                include "**/libpixelify-next.so" 
+                rename 'libpixelify-next.so', "${resourceDir}.so"
+            }
+            from(libSourceDir) {
+                into 'zygisk'
+                include "**/libpixelify-next-camera.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
+            from(libSourceDir) {
+                into 'zygisk'
+                include "**/libpixelify-next-photos.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
+            from(libSourceDir) {
                 into 'lib/zygisk'
                 include "**/libpixelify-next.so" 
                 rename 'libpixelify-next.so', "${resourceDir}.so"
@@ -194,6 +209,16 @@ void createVariantTasks(
         tps.each { instance, resourceDir ->
             def libSourceDir = proj.file("${pBuildDir}/intermediates/stripped_native_libs/${varLowered}/strip${varCapped}DebugSymbols/out/lib/${resourceDir}")
             def archSuffix = (resourceDir == 'arm64-v8a') ? '-64.so' : '-32.so'
+            from(libSourceDir) {
+                into 'zygisk'
+                include "**/libpixelify-next.so"
+                rename 'libpixelify-next.so', "${resourceDir}.so"
+            }
+            from(libSourceDir) {
+                into 'zygisk'
+                include "**/*camera.so", "**/*photos.so"
+                rename { String fn -> fn.replace(".so", archSuffix) }
+            }
             from(libSourceDir) {
                 into 'lib/zygisk'
                 include "**/libpixelify-next.so"

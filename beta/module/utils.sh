@@ -77,7 +77,7 @@ fetch_version() {
         elif [ $API -eq 33 ]; then
             DPVERSION=$(echo "$ver" | grep asis-new-33 | cut -d'=' -f2)
             DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-33.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
-        elif [ $API -eq 34 ]; then
+        elif [ $API -ge 34 ]; then
             DPVERSION=$(echo "$ver" | grep asis-new-34 | cut -d'=' -f2)
             DPSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-34.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb)"
         fi
@@ -820,7 +820,7 @@ install_wallpaper_with_backup() {
                 print ""
                 print " - Installing Styles and Wallpaper"
                 WREM=0
-                if [ $API -eq 34 ] || [ $REQ_NEW_WLP -eq 1 ]; then
+                if [ $API -ge 34 ] || [ $REQ_NEW_WLP -eq 1 ]; then
                     tar -xf /sdcard/Pixelify/backup/wlp-$API.tar.xz -C $MODPATH/system$product
                 else
                     tar -xf /sdcard/Pixelify/backup/wlp-$API.tar.xz -C $MODPATH/system$product/priv-app
@@ -828,11 +828,11 @@ install_wallpaper_with_backup() {
                 if [ $API -ge 31 ]; then
                     mkdir -p $MODPATH/system/product/app/PixelThemesStub
                     rm -rf $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
-                    [ $API -eq 34 ] && mv $MODPATH/files/PixelThemesStub_14.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
+                    [ $API -ge 34 ] && mv $MODPATH/files/PixelThemesStub_14.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                     [ $API -eq 33 ] && mv $MODPATH/files/PixelThemesStub13.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                     [ $API -le 32 ] && mv $MODPATH/files/PixelThemesStub.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                 fi
-                if [ $API -eq 34 ]; then
+                if [ $API -ge 34 ]; then
                     mkdir -p $MODPATH/system/product/app/PixelThemesStub2022_and_newer
                     mv $MODPATH/files/PixelThemesStub2022_and_newer_14.apk $MODPATH/system/product/app/PixelThemesStub2022_and_newer/PixelThemesStub2022_and_newer.apk
                 fi
@@ -866,7 +866,7 @@ install_wallpaper_with_backup() {
                     print ""
                     print "- Installing Styles and Wallpapers"
                     print ""
-                    if [ $API -eq 34 ] || [ $REQ_NEW_WLP -eq 1 ]; then
+                    if [ $API -ge 34 ] || [ $REQ_NEW_WLP -eq 1 ]; then
                         tar -xf $MODPATH/files/wlp-$API.tar.xz -C $MODPATH/system$product
                     else
                         tar -xf $MODPATH/files/wlp-$API.tar.xz -C $MODPATH/system$product/priv-app
@@ -874,11 +874,11 @@ install_wallpaper_with_backup() {
                     if [ $API -ge 31 ]; then
                         mkdir -p $MODPATH/system/product/app/PixelThemesStub
                         rm -rf $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
-                        [ $API -eq 34 ] && mv $MODPATH/files/PixelThemesStub_14.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
+                        [ $API -ge 34 ] && mv $MODPATH/files/PixelThemesStub_14.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                         [ $API -eq 33 ] && mv $MODPATH/files/PixelThemesStub13.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                         [ $API -le 32 ] && mv $MODPATH/files/PixelThemesStub.apk $MODPATH/system/product/app/PixelThemesStub/PixelThemesStub.apk
                     fi
-                    if [ $API -eq 34 ]; then
+                    if [ $API -ge 34 ]; then
                         mkdir -p $MODPATH/system/product/app/PixelThemesStub2022_and_newer
                         mv $MODPATH/files/PixelThemesStub2022_and_newer_14.apk $MODPATH/system/product/app/PixelThemesStub2022_and_newer/PixelThemesStub2022_and_newer.apk
                     fi
