@@ -411,6 +411,43 @@ no_vksel() {
     fi
 }
 
+# Usage: patch_flag <package_name> <flag_name> <true/false|1/0>
+patch_flag() {
+    PKG="$1"
+    FLAG="$2"
+    VAL="$3"
+    
+    [ -z "$PKG" -o -z "$FLAG" ] && return 1
+
+    case "$(echo "$VAL" | tr '[:upper:]' '[:lower:]')" in
+        true|1) BVAL=1 ;;
+        *) BVAL=0 ;;
+    esac
+
+    DB_PATHS="/data/data/com.google.android.gms/databases/phenotype.db /data/user_de/0/com.google.android.gms/databases/phenotype.db /data/data/com.google.android.dialer/databases/phenotype.db /data/user_de/0/com.google.android.dialer/databases/phenotype.db"
+    SQLITE_BIN=""
+    if [ -f "$MODPATH/addon/sqlite3" ]; then
+        SQLITE_BIN="$MODPATH/addon/sqlite3"
+    elif command -v sqlite3 >/dev/null 2>&1; then
+        SQLITE_BIN="$(command -v sqlite3)"
+    elif [ -x /system/bin/sqlite3 ]; then
+        SQLITE_BIN="/system/bin/sqlite3"
+    fi
+
+    [ -z "$SQLITE_BIN" ] && return 1
+
+    for DB in $DB_PATHS; do
+        if [ -f "$DB" ]; then
+            chmod 0666 "$DB" 2>/dev/null
+            "$SQLITE_BIN" "$DB" "UPDATE Flags SET boolVal = $BVAL WHERE packageName='$PKG' AND name='$FLAG';" 2>/dev/null || true
+            "$SQLITE_BIN" "$DB" "DELETE FROM FlagOverrides WHERE packageName='$PKG' AND name='$FLAG';" 2>/dev/null || true
+            "$SQLITE_BIN" "$DB" "INSERT INTO FlagOverrides (packageName, user, name, flagType, boolVal, committed) VALUES ('$PKG', '', '$FLAG', 0, $BVAL, 0);" 2>/dev/null || true
+            "$SQLITE_BIN" "$DB" "INSERT INTO FlagOverrides (packageName, user, name, flagType, boolVal, committed) VALUES ('$PKG', '', '$FLAG', 0, $BVAL, 1);" 2>/dev/null || true
+            "$SQLITE_BIN" "$DB" "INSERT INTO FlagOverride (packageName, user, name, flagType, boolVal, committed) VALUES ('$PKG', '', '$FLAG', 0, $BVAL, 1);" 2>/dev/null || true
+        fi
+    done
+}
+
 db_edit() {
     sleep .05
     name=$1
