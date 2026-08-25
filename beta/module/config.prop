@@ -169,3 +169,6 @@ QUICK_SHARE=0
 
 #Pixel apps
 PIXEL_APPS=0
+
+#Ai features
+INSTALL_AI_FEATURES=0
