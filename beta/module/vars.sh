@@ -561,6 +561,17 @@ VoicePolicy__enable_unified_voice_policy
 VoicePolicy__enable_unified_vp
 VoiceSelection__enable_experimental_voice"
 
+# Pixel 11 flags / 2026 flags
+RAMBLER_FLAGS="enable_agentic_dictation
+show_clear_all_corrected_words_settings"
+RAMBLER_PACKAGE="com.google.android.inputmethod.latin#com.google.android.inputmethod.latin"
+
+ASK_MAPS_FLAGS="45694011"
+ASK_MAPS_PACKAGE="com.google.geo.apps#com.google.android.apps.maps"
+
+ASK_PHOTOS_FLAGS="45771977"
+ASK_PHOTOS_PACKAGE="com.google.android.apps.photos"
+
 overide_spoof=""
 spoof_message=""
 
