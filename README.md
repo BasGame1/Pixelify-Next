@@ -169,7 +169,9 @@ A Root module to give Pixel Stuff to all phones!
   
 - [UhExooHw](https://github.com/UhExooHw) For call screening flags
   
-- [Polobard](https://github.com/polodarb/GMS-Flags-Reborn) for inspiration on the new flag system
+- [Polobard](https://github.com/polodarb/GMS-Flags-Reborn) for inspiration on the new flag system and some flags
+
+- [Joshua Malava](https://t.me/PixelifyNext/13230) for magic cue 
     
 - Pixelify Support Group Members for testing beta versions :)  
 ---
