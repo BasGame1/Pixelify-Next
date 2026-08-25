@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions>
+<privapp-permissions package="com.google.android.apps.pixel.psi">
+<permission name="android.permission.WAKE_LOCK"/>
+<permission name="android.permission.QUERY_ALL_PACKAGES"/>
+<permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+<permission name="android.permission.USE_ON_DEVICE_INTELLIGENCE"/>
+<permission name="com.google.android.apps.aicore.service.BIND_SERVICE"/>
+<permission name="android.permission.READ_MEDIA_IMAGES"/>
+<permission name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+<permission name="android.permission.INTERACT_ACROSS_USERS"/>
+<permission name="android.permission.ACCESS_NETWORK_STATE"/>
+<permission name="android.permission.POST_NOTIFICATIONS"/>
+<permission name="android.permission.PACKAGE_USAGE_STATS"/>
+<permission name="android.permission.FOREGROUND_SERVICE"/>
+<permission name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+<permission name="android.permission.READ_DEVICE_CONFIG"/>
+<feature name="com.google.android.feature.PIXEL_2025_EXPERIENCE"/>
+</privapp-permissions>
+</permissions>
