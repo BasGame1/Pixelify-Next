@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="com.google.android.aicore">
+        <permission name="android.permission.READ_DEVICE_CONFIG"/>
+        <permission name="android.permission.MANAGE_VIRTUAL_MACHINE"/>
+        <permission name="android.permission.INTERACT_ACROSS_USERS"/>
+        <permission name="android.permission.PACKAGE_USAGE_STATS"/>
+        <permission name="android.permission.REAL_GET_TASKS"/>
+        <permission name="android.permission.USE_ON_DEVICE_INTELLIGENCE"/>
+        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+        <permission name="android.permission.QUERY_ALL_PACKAGES"/>
+        <permission name="android.permission.BIND_JOB_SERVICE"/>
+        <permission name="android.permission.RUN_USER_INITIATED_JOBS"/>
+        <permission name="android.permission.ACCESS_NPU_MODEL_MANAGER_API"/>
+    </privapp-permissions>
+</permissions>
