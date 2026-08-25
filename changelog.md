@@ -71,3 +71,10 @@
  - Add Magisk/KernelSU auto-download support via update.json
  - Codebase cleanup, fixing syntax errors and corrupted terminal escape sequences
  - Add pretier readme
+  
+### Version 7.1
+ - Change log functions inside of the code
+ - Add magic cue
+ - Add rambler
+ - Add Ask photos & ask maps
+ - Make flag system accesible via function
