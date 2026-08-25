@@ -23,6 +23,7 @@ unzip -o "$ZIPFILE" -d "$MODPATH" >&2
 . $MODPATH/functions.sh || abort "functions script not loaded"
 . $MODPATH/install_apk.sh || abort "apk installer script not loaded"
 . $MODPATH/install_wallpapers.sh || abort "Wallpapers script not loaded"
+. $MODPATH/install_ai_features.sh || abort "Ai flags & features script not loaded"
 . $MODPATH/install_launcher.sh || abort "Launcher script not loaded"
 . $MODPATH/install_bootanimation.sh || abort "Bootanimation script not loaded"
 . $MODPATH/install_dialer.sh || abort "dialer script not loaded"
@@ -947,6 +948,9 @@ fi
 # rm -rf $MODPATH/system/product/overlay/PixelifyGsan*.apk
 # rm -rf $MODPATH/system/product/overlay/GInterOverlay.apk
 # rm -rf $MODPATH/system/fonts
+
+# Flag patching (rambler, ask photos, ask maps...)
+install_ai_features
 
 # Google Settings service
 if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
