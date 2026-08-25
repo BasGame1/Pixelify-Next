@@ -24,3 +24,5 @@ dialer_flags.json
 
 # Ignore log files
 *.log
+
+beta/module/system/priv-app/com.google.android.apps.pixel.psi158/split_config.arm64_v8a.apk
