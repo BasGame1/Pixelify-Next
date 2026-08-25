@@ -3,7 +3,7 @@ if [ $API -ge 28 ]; then
     PLW=$(find /system -name *PixelWallpapers2021* | grep -v overlay | grep -v "\.")
     PLW1=$(find /system -name *WallpapersBreel2* | grep -v overlay | grep -v "\.")
     if [ -f /sdcard/Pixelify/backup/pixel.tar.xz ]; then
-        echo " - Backup Detected for Pixel Wallpapers" >>$logfile
+        log " - Backup Detected for Pixel Wallpapers"
         log "  Do you want to install Pixel Live Wallpapers?"
         log "  (Backup detected, no internet needed)"
         log "   Vol Up += Yes"
@@ -12,8 +12,8 @@ if [ $API -ge 28 ]; then
         if $VKSEL; then
             sed -i -e "s/Live=0/Live=1/g" $MODPATH/var.prop
             if [ "$(cat /sdcard/Pixelify/version/pixel.txt)" != "$LWVERSION" ]; then
-                echo " - New Version Backup Detected for Pixel Wallpapers" >>$logfile
-                echo " - Old version:$(cat /sdcard/Pixelify/version/pixel.txt), New Version:  $LWVERSION " >>$logfile
+                log " - New Version Backup Detected for Pixel Wallpapers"
+                log " - Old version:$(cat /sdcard/Pixelify/version/pixel.txt), New Version:  $LWVERSION "
                 log "  (Network Connection Needed)"
                 log "  New version Detected "
                 log "  Do you Want to update or use Old Backup?"
@@ -25,7 +25,7 @@ if [ $API -ge 28 ]; then
                 if $VKSEL; then
                     online
                     if [ $internet -eq 1 ]; then
-                        echo " - Downloading and Installing New Backup for Pixel Wallpapers" >>$logfile
+                        log " - Downloading and Installing New Backup for Pixel Wallpapers"
                         rm -rf /sdcard/Pixelify/backup/pixel.tar.xz
                         rm -rf /sdcard/Pixelify/version/pixel.txt
                         cd $MODPATH/files
@@ -39,14 +39,14 @@ if [ $API -ge 28 ]; then
                         log "- Creating Backup"
                         log ""
                         cp -f $MODPATH/files/pixel.tar.xz /sdcard/Pixelify/backup/pixel.tar.xz
-                        echo " - Creating Backup for Pixel Wallpapers" >>$logfile
+                        log " - Creating Backup for Pixel Wallpapers"
                         echo "$LWVERSION" >>/sdcard/Pixelify/version/pixel.txt
                     else
                         error " ! No internet detected"
                         log ""
                         log " ! Using Old backup for now."
                         log ""
-                        echo " ! Using old Backup for Pixel Wallpapers due to no internet" >>$logfile
+                        log " ! Using old Backup for Pixel Wallpapers due to no internet"
                     fi
                 fi
             fi
@@ -66,7 +66,7 @@ if [ $API -ge 28 ]; then
             install_wallpaper_with_backup
             WALL_DID=1
         else
-            echo " - Using old backup Pixel Wallpapers" >>$logfile
+            log " - Using old backup Pixel Wallpapers"
         fi
     else
         log "  (Network Connection Needed)"
@@ -80,7 +80,7 @@ if [ $API -ge 28 ]; then
             if [ $internet -eq 1 ]; then
                 sed -i -e "s/Live=0/Live=1/g" $MODPATH/var.prop
                 log "- Downloading Pixel LiveWallpapers"
-                echo " - Downloading and Installing Pixel Wallpapers" >>$logfile
+                log " - Downloading and Installing Pixel Wallpapers"
                 log ""
                 cd $MODPATH/files
                 if [ $API -ge 31 ]; then
@@ -112,7 +112,7 @@ if [ $API -ge 28 ]; then
                     cp -f $MODPATH/files/pixel.tar.xz /sdcard/Pixelify/backup/pixel.tar.xz
                     log ""
                     mkdir /sdcard/Pixelify/version
-                    echo " - Creating Backup for Pixel Wallpapers" >>$logfile
+                    log " - Creating Backup for Pixel Wallpapers"
                     echo "$LWVERSION" >>/sdcard/Pixelify/version/pixel.txt
                     green " - Done"
                     print ""
@@ -128,10 +128,10 @@ if [ $API -ge 28 ]; then
                 print ""
                 error " ! Skipping Pixel LiveWallpaper"
                 print ""
-                echo " ! Skipping Pixel Wallpapers due to no internet" >>$logfile
+                log " ! Skipping Pixel Wallpapers due to no internet"
             fi
         else
-            echo " - Skipping Pixel Wallpapers" >>$logfile
+            log " - Skipping Pixel Wallpapers"
         fi
     fi
 fi

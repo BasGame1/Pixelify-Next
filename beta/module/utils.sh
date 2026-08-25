@@ -32,6 +32,10 @@ enforce_install_from_magisk_app() {
     fi
 }
 
+log() {
+    [ -n "$logfile" ] && echo "$@" >> "$logfile"
+}
+
 print() {
     ui_print "$@"
     sleep 0.3
@@ -49,7 +53,7 @@ online_mb() {
 
 fetch_version() {
     if [ $internet -eq 1 ]; then
-        echo "- Fetching version of online packages" >>$logfile
+        log "- Fetching version of online packages"
         ver=$($MODPATH/addon/curl -s https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/version.txt)
         if [ $ENABLE_OSR -eq 1 ] || [ $DOES_NOT_REQ_SPEECH_PACK -eq 1 ]; then
             if [ $API -eq 30 ] || [ $API -ge 33 ]; then
@@ -91,27 +95,27 @@ fetch_version() {
         PLVERSION=$(echo "$ver" | grep pl_$API-$PL_VERSION | cut -d'=' -f2)
         PLSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/PixelLauncher/$API/$PL_VERSION.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
         if [ -z "$PLVERSION" ]; then
-            echo "! Cannot fetch latest version of Pixel Launcher" >>$logfile
+            log "! Cannot fetch latest version of Pixel Launcher"
             PLVERSION=$PLVERSIONP
         fi
         if [ -z "$DPVERSION" ]; then
-            echo "! Cannot fetch latest version of Android System Intelligence" >>$logfile
+            log "! Cannot fetch latest version of Android System Intelligence"
             DPVERSION=$DPVERSIONP
         fi
         if [ -z "$OSRVERSION" ]; then
-            echo "! Cannot fetch latest version of OSR" >>$logfile
+            log "! Cannot fetch latest version of OSR"
             OSRVERSION=$OSRVERSIONP
         fi
         if [ -z "$LWVERSION" ]; then
-            echo "! Cannot fetch latest version of Live Wallpapers" >>$logfile
+            log "! Cannot fetch latest version of Live Wallpapers"
             LWVERSION=$LWVERSIONP
         fi
         if [ -z "$WLPVERSION" ]; then
-            echo "! Cannot fetch latest version of Live Wallpapers" >>$logfile
+            log "! Cannot fetch latest version of Live Wallpapers"
             WLPVERSION=$WLPVERSIONP
         fi
         if [ -z "$GPH8VERSION" ]; then
-            echo "! Cannot fetch latest version of Google photos" >>$logfile
+            log "! Cannot fetch latest version of Google photos"
             GPH8VERSION=$GPH8VERSIONP
         fi
         rm -rf $pix/nga.txt
@@ -131,7 +135,7 @@ fetch_version() {
         OSRSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/os-new.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
         LWSIZE="$($MODPATH/addon/curl -sI https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/pixel.tar.xz | grep -i Content-Length | cut -d':' -f2 | sed 's/ //g' | tr -d '\r' | online_mb) Mb"
     else
-        echo " ! Cannot able to fetch package version, using saved version instead" >>$logfile
+        log " ! Cannot able to fetch package version, using saved version instead"
         if [ ! -f $pix/nga.txt ]; then
             echo "$NGAVERSIONP" >>$pix/nga.txt
         fi
@@ -191,10 +195,10 @@ online() {
         fi
     fi
     if [ $internet -eq 1 ]; then
-        echo " - Network is Online" >>$logfile
+        log " - Network is Online"
     elif [ $FORCED_ONLINE -eq 1 ]; then
         internet=1
-        echo " - Network is forced to be online" >>$logfile
+        log " - Network is forced to be online"
     elif [ $FIRST_ONLINE_TIME -eq 1 ]; then
         FIRST_ONLINE_TIME=0
         print ""
@@ -213,7 +217,7 @@ online() {
         fi
     else
         internet=0
-        echo "- Network is Offline" >>$logfile
+        log "- Network is Offline"
     fi
 }
 
@@ -304,7 +308,7 @@ long_patch() {
 }
 
 abort1() {
-    echo "Installation Failed: $1" >>$logfile
+    log "Installation Failed: $1"
     abort "$1"
 }
 
@@ -630,7 +634,7 @@ set_perm_app() {
     name=$(echo $out | grep package: | cut -d' ' -f2)
     perm="$(echo $out | grep uses-permission:)"
     if [ ! -z "$perm" ]; then
-        echo " - Generatings permission for package: $name" >>$logfile
+        log " - Generatings permission for package: $name"
         mkdir -p $path/etc/permissions
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>" >>$path/etc/permissions/privapp-permissions-$name.xml
         echo "<!-- " >>$path/etc/permissions/privapp-permissions-$name.xml
@@ -659,7 +663,7 @@ set_perm_app() {
 
 oos_fix() {
     if [ $TARGET_DEVICE_OP12 -eq 1 ]; then
-        echo " - Apply fixup for OOS 12/ Color OS 12" >>$logfile
+        log " - Apply fixup for OOS 12/ Color OS 12"
         print ""
         print " -  Applying Compability Fixes"
         cd $MODPATH/system/product/
@@ -692,7 +696,7 @@ install_tts() {
     print ""
     print "- Google TTS is not installed as a system app !!"
     print "- Making Google TTS a system app"
-    echo " - Making Google TTS a system app" >>$logfile
+    log " - Making Google TTS a system app"
     mkdir -p $MODPATH/system$product/app/GoogleTTS
     if [ -f /$app/com.google.android.tts*/base.apk ]; then
         cp -r ~/$app/com.google.android.tts*/. $MODPATH/system$product/app/GoogleTTS
@@ -813,7 +817,7 @@ is_monet() {
 install_wallpaper_with_backup() {
     if [ $WNEED -eq 1 ]; then
         if [ -f /sdcard/Pixelify/backup/wlp-$API.tar.xz ]; then
-            echo " - Backup Detected for Styles and Wallpaper" >>$logfile
+            log " - Backup Detected for Styles and Wallpaper"
             print "  Do you want to install Styles and Wallpaper?"
             print "  (Backup detected, no internet needed)"
             print "   Vol Up += Yes"
@@ -821,8 +825,8 @@ install_wallpaper_with_backup() {
             no_vk "DOWNLOAD_WLP"
             if $VKSEL; then
                 if [ "$(cat /sdcard/Pixelify/version/wlp-$API.txt)" != "$WLPVERSION" ]; then
-                    echo " - New Version Backup Detected for Pixel Launcher" >>$logfile
-                    echo " - Old version:$(cat /sdcard/Pixelify/version/pl-$API.txt), New Version:  $WLPVERSION " >>$logfile
+                    log " - New Version Backup Detected for Pixel Launcher"
+                    log " - Old version:$(cat /sdcard/Pixelify/version/pl-$API.txt), New Version:  $WLPVERSION "
                     print "  (Network Connection Needed)"
                     print "  New version Detected "
                     print "  Do you Want to update or use Old Backup?"
@@ -835,7 +839,7 @@ install_wallpaper_with_backup() {
                         online
                         if [ $internet -eq 1 ]; then
                             print "- Downloading Styles and Wallpapers"
-                            echo " - Downloading and installing Styles and Wallpapers" >>$logfile
+                            log " - Downloading and installing Styles and Wallpapers"
                             cd $MODPATH/files
                             if [ $REQ_NEW_WLP -eq 1 ]; then
                                 $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/wpg-new-$API.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -876,7 +880,7 @@ install_wallpaper_with_backup() {
                 # pm install $MODPATH/system$product/priv-app/WallpaperPickerGoogleRelease/*.apk
                 #WREM=0
             else
-                echo " - Skipping Styles and Wallpaper" >>$logfile
+                log " - Skipping Styles and Wallpaper"
             fi
         else
             print "  (Network Connection Needed)"
@@ -889,7 +893,7 @@ install_wallpaper_with_backup() {
                 online
                 if [ $internet -eq 1 ]; then
                     print "- Downloading Styles and Wallpapers"
-                    echo " - Downloading and installing Styles and Wallpapers" >>$logfile
+                    log " - Downloading and installing Styles and Wallpapers"
                     cd $MODPATH/files
                     if [ $REQ_NEW_WLP -eq 1 ]; then
                         $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/wpg-new-$API.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -934,7 +938,7 @@ install_wallpaper_with_backup() {
                         cp -f $MODPATH/files/wlp-$API.tar.xz /sdcard/Pixelify/backup/wlp-$API.tar.xz
                         print ""
                         mkdir -p /sdcard/Pixelify/version
-                        echo " - Creating Backup for Styles and wallpaper" >>$logfile
+                        log " - Creating Backup for Styles and wallpaper"
                         echo "$WLPVERSION" >>/sdcard/Pixelify/version/wlp-$API.txt
                         print " - Done"
                         print ""
@@ -944,16 +948,16 @@ install_wallpaper_with_backup() {
                     print ""
                     print " ! Skipping Styles and Wallpaper"
                     print ""
-                    echo " ! Skipping Styles and Wallpaper" >>$logfile
+                    log " ! Skipping Styles and Wallpaper"
                     rm -rf $MODPATH/system/product/app/PixelThemesStub
                 fi
             else
-                echo " - Skipping Styles and Wallpaper" >>$logfile
+                log " - Skipping Styles and Wallpaper"
                 rm -rf $MODPATH/system/product/app/PixelThemesStub
             fi
         fi
     else
-        echo " - Skipping Styles and Wallpaper" >>$logfile
+        log " - Skipping Styles and Wallpaper"
         rm -rf $MODPATH/system/product/app/PixelThemesStub
     fi
 }
@@ -970,7 +974,7 @@ install_wallpaper() {
             online
             if [ $internet -eq 1 ]; then
                 print "- Downloading Styles and Wallpapers"
-                echo " - Downloading and installing Styles and Wallpapers" >>$logfile
+                log " - Downloading and installing Styles and Wallpapers"
                 cd $MODPATH/files
                 $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/wpg-$API.tar.xz -O &>/proc/self/fd/$OUTFD
                 cd /
@@ -999,8 +1003,8 @@ install_wallpaper() {
 osr_ins() {
     if [ -f /sdcard/Pixelify/backup/osr.tar.xz ]; then
         if [ "$(cat /sdcard/Pixelify/version/osr.txt)" != "$OSRVERSION" ]; then
-            echo " - New Version Detected for Google offline speech recognition" >>$logfile
-            echo " - Installed version: $(cat /sdcard/Pixelify/version/osr.txt) , New Version: $OSRVERSION " >>$logfile
+            log " - New Version Detected for Google offline speech recognition"
+            log " - Installed version: $(cat /sdcard/Pixelify/version/osr.txt) , New Version: $OSRVERSION "
             print "  (Network Connection Needed)"
             print "  New version of Google offline speech recogonition detected."
             print "  Do you Want to update or use Old Backup?"
@@ -1013,7 +1017,7 @@ osr_ins() {
                 online
                 if [ $internet -eq 1 ]; then
                     REMOVE="$REMOVE /system/product/usr/srec/en-US"
-                    echo " - Downloading, Installing and creating backup Google offline speech recogonition" >>$logfile
+                    log " - Downloading, Installing and creating backup Google offline speech recogonition"
                     rm -rf /sdcard/Pixelify/backup/osr.tar.xz
                     rm -rf /sdcard/Pixelify/version/osr.txt
                     cd $MODPATH/files
@@ -1030,10 +1034,10 @@ osr_ins() {
                     print ""
                     print " ! Using Old backup for now."
                     print ""
-                    echo " ! using old backup for Google offline speech recognition due to no internet" >>$logfile
+                    log " ! using old backup for Google offline speech recognition due to no internet"
                 fi
             else
-                echo " - using old backup for Google offline speech recognition" >>$logfile
+                log " - using old backup for Google offline speech recognition"
             fi
         fi
         print "- Installing Google offline speech recognition from backups"
@@ -1044,7 +1048,7 @@ osr_ins() {
             if [ ! -z "$(grep 'en-US' $i/metadata)" ]; then
                 rm -rf $i/*
                 cp -r $MODPATH/system/product/usr/srec/en-US/. $i
-                echo " - Fixing OSR for Google TTs" >>$logfile
+                log " - Fixing OSR for Google TTs"
             fi
         done
 
@@ -1063,7 +1067,7 @@ osr_ins() {
             online
             if [ $internet -eq 1 ]; then
                 REMOVE="$REMOVE /system/product/usr/srec/en-US"
-                echo " - Downloading and Installing Google offline speech recognition" >>$logfile
+                log " - Downloading and Installing Google offline speech recognition"
                 print "  Downloading Google offline speech recognition"
                 cd $MODPATH/files
                 $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/os-new.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -1077,7 +1081,7 @@ osr_ins() {
                     if [ ! -z "$(grep 'en-US' $i/metadata)" ]; then
                         rm -rf $i/*
                         cp -r $MODPATH/system/product/usr/srec/en-US/. $i
-                        echo " - Fixing OSR for Google TTS" >>$logfile
+                        log " - Fixing OSR for Google TTS"
                     fi
                 done
 
@@ -1091,7 +1095,7 @@ osr_ins() {
                 print "   Vol Down += No"
                 no_vk "BACKUP_OSR"
                 if $VKSEL; then
-                    echo " - Creating backup for Google offline speech recognition" >>$logfile
+                    log " - Creating backup for Google offline speech recognition"
                     print "- Creating Backup"
                     mkdir -p /sdcard/Pixelify/backup
                     rm -rf /sdcard/Pixelify/backup/osr.tar.xz
@@ -1107,10 +1111,10 @@ osr_ins() {
                 print ""
                 print " ! Skipping Google offline speech recognition."
                 print ""
-                echo " ! Skipping Google offline speech recognition due to no internet" >>$logfile
+                log " ! Skipping Google offline speech recognition due to no internet"
             fi
         else
-            echo " - Skipping Google offline speech recognition" >>$logfile
+            log " - Skipping Google offline speech recognition"
         fi
     fi
 }
@@ -1118,8 +1122,8 @@ osr_ins() {
 gphotos8() {
     if [ -f /sdcard/Pixelify/backup/gphotos8.tar.xz ]; then
         if [ "$(cat /sdcard/Pixelify/version/gphotos8.txt)" != "$GPH8VERSION" ]; then
-            echo " - New Version Detected for Google Photos" >>$logfile
-            echo " - Installed version: $(cat /sdcard/Pixelify/version/gphotos8.txt) , New Version: $GPH8VERSION " >>$logfile
+            log " - New Version Detected for Google Photos"
+            log " - Installed version: $(cat /sdcard/Pixelify/version/gphotos8.txt) , New Version: $GPH8VERSION "
             print "  (Network Connection Needed)"
             print "  New version of Google Photos detected."
             print "  Do you Want to update or use Old Backup?"
@@ -1131,7 +1135,7 @@ gphotos8() {
             if $VKSEL; then
                 online
                 if [ $internet -eq 1 ]; then
-                    echo " - Downloading, Installing and creating backup Google offline speech recogonition" >>$logfile
+                    log " - Downloading, Installing and creating backup Google offline speech recogonition"
                     rm -rf /sdcard/Pixelify/backup/gphotos8.tar.xz
                     rm -rf /sdcard/Pixelify/version/gphotos8.txt
                     cd $MODPATH/files
@@ -1147,10 +1151,10 @@ gphotos8() {
                     print ""
                     print " ! Using Old backup for now."
                     print ""
-                    echo " ! using old backup for Google Photos due to no internet" >>$logfile
+                    log " ! using old backup for Google Photos due to no internet"
                 fi
             else
-                echo " - using old backup for Google Photos" >>$logfile
+                log " - using old backup for Google Photos"
             fi
         fi
         print "- Installing Google Photos from backups"
@@ -1171,7 +1175,7 @@ gphotos8() {
         if $VKSEL; then
             online
             if [ $internet -eq 1 ]; then
-                echo " - Downloading and Installing Google Photos" >>$logfile
+                log " - Downloading and Installing Google Photos"
                 print "  Downloading Google Photos"
                 cd $MODPATH/files
                 $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/gphotos8.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -1191,7 +1195,7 @@ gphotos8() {
                 print "   Vol Down += No"
                 no_vk "BACKUP_GOOGLE_PHOTOS"
                 if $VKSEL; then
-                    echo " - Creating backup for Google Photos" >>$logfile
+                    log " - Creating backup for Google Photos"
                     print "- Creating Backup"
                     mkdir -p /sdcard/Pixelify/backup
                     rm -rf /sdcard/Pixelify/backup/gphotos8.tar.xz
@@ -1207,10 +1211,10 @@ gphotos8() {
                 print ""
                 print " ! Skipping Google Photos."
                 print ""
-                echo " ! Skipping Google Photos due to no internet" >>$logfile
+                log " ! Skipping Google Photos due to no internet"
             fi
         else
-            echo " - Skipping Google Photos" >>$logfile
+            log " - Skipping Google Photos"
         fi
     fi
 }
@@ -1231,13 +1235,13 @@ now_playing() {
 }
 
 drop_sys() {
-    echo " - Enabling Google Photos Original quality unlimited storage" >>$logfile
+    log " - Enabling Google Photos Original quality unlimited storage"
     for i in /system/product/etc/sysconfig/*; do
         file=$i
         file=${file/\/system\/product\/etc\/sysconfig\//}
         if [ ! -z "$(grep PIXEL_2020_ $i)" ] || [ ! -z "$(grep PIXEL_2021_ $i)" ] || [ ! -z "$(grep PIXEL_2019_PRELOAD $i)" ] || [ ! -z "$(grep PIXEL_2018_PRELOAD $i)" ] || [ ! -z "$(grep PIXEL_2017_PRELOAD $i)" ] || [ ! -z "$(grep PIXEL_2022_ $i)" ]; then
             [ ! -f $MODPATH/system/product/etc/sysconfig/$file ] && cat /system/product/etc/sysconfig/$file | grep -v PIXEL_2020_ | grep -v PIXEL_2021_ | grep -v PIXEL_2022_ | grep -v PIXEL_2018_PRELOAD | grep -v PIXEL_2019_PRELOAD >$MODPATH/system/product/etc/sysconfig/$file
-            echo " - Fixing Photos Original quality by editing $file in product" >>$logfile
+            log " - Fixing Photos Original quality by editing $file in product"
         fi
     done
     for i in /system/etc/sysconfig/*; do
@@ -1245,7 +1249,7 @@ drop_sys() {
         file=${file/\/system\/etc\/sysconfig\//}
         if [ ! -z "$(grep PIXEL_2020_ $i)" ] || [ ! -z "$(grep PIXEL_2021_ $i)" ] || [ ! -z "$(grep PIXEL_2019_PRELOAD $i)" ] || [ ! -z "$(grep PIXEL_2018_PRELOAD $i)" ] || [ ! -z "$(grep PIXEL_2022_ $i)" ]; then
             [ ! -f $MODPATH/system/product/etc/sysconfig/$file ] && cat /system/etc/sysconfig/$file | grep -v PIXEL_2020_ | grep -v PIXEL_2021_ | grep -v PIXEL_2022_ | grep -v PIXEL_2018_PRELOAD | grep -v PIXEL_2019_PRELOAD | grep -v PIXEL_2017_PRELOAD >$MODPATH/system/etc/sysconfig/$file
-            echo " - Fixing Photos Original quality by editing $file in system" >>$logfile
+            log " - Fixing Photos Original quality by editing $file in system"
         fi
     done
     if [ -d /data/adb/modules/Pixelify/system/product/etc/sysconfig ]; then
@@ -1254,7 +1258,7 @@ drop_sys() {
             file=${file/\/data\/adb\/modules\/Pixelify\/system\/product\/etc\/sysconfig\//}
             if [ ! -f $MODPATH/system/product/etc/sysconfig/$file ]; then
                 cp -f /data/adb/modules/Pixelify/system/product/etc/sysconfig/$file $MODPATH/system/product/etc/sysconfig/$file
-                echo " - Fixing Photos Original quality by copying $file in product" >>$logfile
+                log " - Fixing Photos Original quality by copying $file in product"
             fi
         done
     fi
@@ -1264,7 +1268,7 @@ drop_sys() {
             file=${file/\/data\/adb\/modules\/Pixelify\/system\/etc\/sysconfig\//}
             if [ ! -f $MODPATH/system/etc/sysconfig/$file ]; then
                 cp -f /data/adb/modules/Pixelify/system/etc/sysconfig/$file $MODPATH/system/etc/sysconfig/$file
-                echo " - Fixing Photos Original quality by copying $file in system" >>$logfile
+                log " - Fixing Photos Original quality by copying $file in system"
             fi
         done
     fi
@@ -1286,7 +1290,7 @@ drop_sys() {
         rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
         echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
     else
-        echo " - Not removing Pixel 2021 experience as roms already hide for gphotos" >>$logfile
+        log " - Not removing Pixel 2021 experience as roms already hide for gphotos"
     fi
     rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2022.xml
     echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2022.xml

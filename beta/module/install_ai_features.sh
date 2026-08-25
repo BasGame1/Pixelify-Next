@@ -39,18 +39,18 @@ check_selection() {
    current_selection_option "4) Exit"
   ;;
   *)
-   echo "unkown case option: $CURRENT_SELECTION" >> $logfile
+   log "unkown case option: $CURRENT_SELECTION"
    abort "Error with ai features menu, exiting"
  esac
 }
 install_another_selection() {
  log "$1 patched, install another one?"
  if $VKSEL; then
-   echo "Showing menu again for installing other" >> $logfile
+   log "Showing menu again for installing other"
    ai_installation_menu
    check_selection
  else
-   echo "Dont install another one apart from $1" >> $logfile
+   log "Dont install another one apart from $1"
  fi
 }
 user_make_selection() {
@@ -64,28 +64,28 @@ user_make_selection() {
     case $CURRENT_SELECTION in
      1)
       log "Rambler selected"
-      echo "Rambler selected" >> $logfile
+      log "Rambler selected"
       patch_rambler
       install_another_selection "rambler"
      ;;
      2)
       log "Ask photos selected"
-      echo "Ask photos selected" >> $logfile
+      log "Ask photos selected"
       patch_ask_photos
       install_another_selection "ask photos"
      ;;
      3)
       log "Ask maps selected"
-      echo "Ask maps selected" >> $logfile
+      log "Ask maps selected"
       patch_ask_maps
       install_another_selection "ask maps"
      ;;
      4)
       log "Exit menu selected"
-      echo "exit menu selected" >> $logfile
+      log "exit menu selected"
      ;;
      *)
-      echo "unkown case option: $CURRENT_SELECTION" >> $logfile
+      log "unkown case option: $CURRENT_SELECTION"
       abort "Error with ai features menu, exiting"
      ;;
     esac
@@ -101,13 +101,13 @@ install_ai_features() {
  log "    Vol Down += No"
  no_vk "INSTALL_AI_FEATURES"
  if $VKSEL; then
-  echo "Volumen up selected, showing install ai features menu" >> $logfile
+  log "Volumen up selected, showing install ai features menu"
    CURRENT_SELECTION=1
    ai_features_menu
    log " Use VOL+ for next one"
    log " And VOL- for selecting"
    user_make_selection
  else
-  echo "Volumen down selected, skipping ai features" >> $logfile
+  log "Volumen down selected, skipping ai features"
  fi
 }

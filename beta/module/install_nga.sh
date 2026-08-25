@@ -6,14 +6,14 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
     log "   Vol Down += No"
     no_vk "ENABLE_NGA"
     if $VKSEL; then
-        echo " - Installing Next generation assistant" >>$logfile
+        log " - Installing Next generation assistant"
         # Check backup is present ot not, older Pixelify uses NgaResources.apk and new ones nga.tar.xz
         if [ -f /sdcard/Pixelify/backup/nga.tar.xz ] || [ -f /sdcard/Pixelify/backup/NgaResources.apk ]; then
 
             # Check backup is upto date
             if [ "$(cat /sdcard/Pixelify/version/nga.txt)" != "$NGAVERSION" ]; then
-                echo " - New Version Detected for NGA Resources" >>$logfile
-                echo " - Installed version: $(cat /sdcard/Pixelify/version/nga.txt) , New Version: $NGAVERSION " >>$logfile
+                log " - New Version Detected for NGA Resources"
+                log " - Installed version: $(cat /sdcard/Pixelify/version/nga.txt) , New Version: $NGAVERSION "
                 log "  (Network Connection Needed)"
                 log "  New version Detected."
                 log "  Do you Want to update or use Old Backup?"
@@ -26,7 +26,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                     # check internet is avail or not
                     online
                     if [ $internet -eq 1 ]; then
-                        echo " - Downloading, Installing and creating backup NGA Resources" >>$logfile
+                        log " - Downloading, Installing and creating backup NGA Resources"
                         rm -rf /sdcard/Pixelify/backup/NgaResources.apk
                         rm -rf /sdcard/Pixelify/backup/nga.tar.xz
                         rm -rf /sdcard/Pixelify/version/nga.txt
@@ -56,10 +56,10 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                         log ""
                         log " ! Using Old backup for now."
                         log ""
-                        echo " ! using old backup for NGA Resources due to no internet" >>$logfile
+                        log " ! using old backup for NGA Resources due to no internet"
                     fi
                 else
-                    echo " - using old backup for NGA Resources" >>$logfile
+                    log " - using old backup for NGA Resources"
                 fi
             fi
             log "- Installing NgaResources from backups"
@@ -76,7 +76,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
             if $VKSEL; then
                 online
                 if [ $internet -eq 1 ]; then
-                    echo " - Downloading and Installing NGA Resources" >>$logfile
+                    log " - Downloading and Installing NGA Resources"
                     log " - Downloading NGA Resources"
                     cd $MODPATH/files
                     $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/nga-new.tar.xz -o nga.tar.xz -O &>/proc/self/fd/$OUTFD
@@ -89,7 +89,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                     log "   Vol Down += No"
                     no_vk "BACKUP_NGA"
                     if $VKSEL; then
-                        echo " - Creating backup for NGA Resources" >>$logfile
+                        log " - Creating backup for NGA Resources"
                         log "- Creating Backup"
                         mkdir -p /sdcard/Pixelify/backup
                         rm -rf /sdcard/Pixelify/backup/NgaResources.apk
@@ -106,10 +106,10 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
                     log ""
                     log "- Skipping NGA Resources."
                     log ""
-                    echo " - skipping NGA Resources due to no internet" >>$logfile
+                    log " - skipping NGA Resources due to no internet"
                 fi
             else
-                echo " - skipping NGA Resources" >>$logfile
+                log " - skipping NGA Resources"
             fi
         fi
 
@@ -139,7 +139,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
         if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
             error "- Google is not installed as a system app !!"
             log "- Making Google a system app"
-            echo " - Making Google a system app" >>$logfile
+            log " - Making Google a system app"
             log ""
             if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                 cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
@@ -155,7 +155,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
             if [ $FORCE_VELVET -eq 2 ]; then
                 error "- Google is not installed as a system app !!"
                 log "- Making Google a system app"
-                echo " - Making Google a system app" >>$logfile
+                log " - Making Google a system app"
                 log ""
                 if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                     cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet

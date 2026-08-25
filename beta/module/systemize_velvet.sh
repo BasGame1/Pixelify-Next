@@ -2,7 +2,7 @@ systemize_velvet() {
         if [ -z $(pm list packages -s com.google.android.googlequicksearchbox | grep -v nga) ] && [ ! -f /data/adb/modules/PixelifyNext/system/product/priv-app/Velvet/Velvet.apk ] || [ $FORCE_VELVET -eq 1 ]; then
             error "- Google is not installed as a system app !!"
             log "- Making Google a system app"
-            echo " - Making Google a system app" >>$logfile
+            log " - Making Google a system app"
             log ""
             if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                 cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet
@@ -18,7 +18,7 @@ systemize_velvet() {
             if [ $FORCE_VELVET -eq 2 ]; then
                 error "- Google is not installed as a system app !!"
                 log "- Making Google a system app"
-                echo " - Making Google a system app" >>$logfile
+                log " - Making Google a system app"
                 log ""
                 if [ -f $app/com.google.android.googlequicksearchbox*/base.apk ]; then
                     cp -r $app/com.google.android.googlequicksearchbox*/. $MODPATH/system/product/priv-app/Velvet

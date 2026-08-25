@@ -61,38 +61,38 @@ else
 fi
 # Set Installation type: Normal, Zygsik, Riru
 if [ "$KSU" == true ]; then
-    log "- Root App: KSU"
+    ui_print "- Root App: KSU"
     if [ -d '/data/adb/modules/rezygisk' ]; then
         # Rezygisk is installed.
         # Set the module type to Rezygisk
         MODULE_TYPE=2
-        log "- Installation Type: Rezygisk"
+        ui_print "- Installation Type: Rezygisk"
     elif [ -d '/data/adb/modules/zygisksu' ]; then
     	# ZygsikNext is installed.
         # Set the module type to ZygiskNext
         MODULE_TYPE=2
-        log "- Installation Type: ZygiskNext"
+        ui_print "- Installation Type: ZygiskNext"
     else
         # Rezygisk or zygisk next is not installed.
         # Set the module type to normal installation
         MODULE_TYPE=1
-        log "- Installation Type: normal installation"
+        ui_print "- Installation Type: normal installation"
     fi
 elif [ ! -z  "$MAGISK_CLI" ]; then 
-    log "- Root App: Magisk"
+    ui_print "- Root App: Magisk"
     if [ ! -z $riru_path ]; then
         # Riru is installed.
         # Check if Zygisk is enabled.
         if [ "$zygisk_enabled" == "value=1" ]; then
             # Set the module type to Zygsik
             MODULE_TYPE=2
-            log "! Riru Installed but disabled"
-            log "- Switching to zygisk mode"
-            log ""
-            log "- Installation Type: Zygisk"
+            ui_print "! Riru Installed but disabled"
+            ui_print "- Switching to zygisk mode"
+            ui_print ""
+            ui_print "- Installation Type: Zygisk"
         else
             # Riru is disabled.
-            log "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
+            ui_print "- Load $MAGISK_CURRENT_RIRU_MODULE_PATH/util_functions.sh"
             # Load the Riru utility functions.
             . $riru_path
             # Check the installation type.
@@ -105,23 +105,23 @@ elif [ ! -z  "$MAGISK_CLI" ]; then
             # Magisk is at least version 24000.
             # Set the module type to 2.
             MODULE_TYPE=2
-            log "- Installation Type: Zygisk"
+            ui_print "- Installation Type: Zygisk"
             # Check if zygsik is enabled.
             if [ "$zygisk_enabled" != "value=1" ]; then
                 # Riru is not enabled.
-                log "! Please enable zygisk in magisk"
+                ui_print "! Please enable zygisk in magisk"
             fi
         else
             # Magisk is not at least version 24000.
             # Set the module type normal installation
             MODULE_TYPE=1
-            log "- Installation Type: normal installation"
+            ui_print "- Installation Type: normal installation"
         fi
     fi
 else 
     # Apatch or an unkown root app is installed.
     # Set the module type to normal installation
-    log "- Root App: Apatch or unknown"
+    ui_print "- Root App: Apatch or unknown"
     if [ -d '/data/adb/modules/rezygisk' ]; then
         # Rezygisk is installed.
         # Set the module type to Rezygisk
@@ -240,6 +240,15 @@ fi
 #     esac
 # fi
 
+# Unzip split apk
+SPLIT_APK_ZIP=$MODPATH/system/priv-app/com.google.android.apps.pixel.psi158/split_config.arm64_v8a.apk.zip
+if [ -f $SPLIT_APK_ZIP ]; then
+ log "Unpacking $SPLIT_APK_ZIP"
+ unzip -o $SPLIT_APK_ZIP -d $MODPATH/system/priv-app/com.google.android.apps.pixel.psi158/
+else
+ abort "Split apk zip not found"
+fi
+
 # Clean up old logs
 rm -rf $logfile
 rm -rf $flaglogfile
@@ -346,7 +355,7 @@ if [ $LOS_FIX -eq 1 ]; then
     PL_VERSION="los_$PL_VERSION"
 fi
 
-echo "- Pixel Launcher version required for sdk $API: $PL_VERSION" >>$logfile
+log "- Pixel Launcher version required for sdk $API: $PL_VERSION"
 
 #save device info in logs
 echo "
@@ -360,7 +369,7 @@ Magisk version: $MAGISK_VER_CODE
 
 # Set version and size when Pixelify is launcher (used when device doesn't use internet)
 if [ $API -ge 34 ]; then
-    echo "Android version: $API" >>$logfile
+    log "Android version: $API"
     WNEED=1
     DPSIZE="33 Mb"
     WSIZE="6 Mb"
@@ -368,7 +377,7 @@ if [ $API -ge 34 ]; then
     DPVERSIONP=1
     PLVERSIONP=1
 elif [ $API -eq 33 ]; then
-    echo "Android version: 13" >>$logfile
+    log "Android version: 13"
     WNEED=1
     DPSIZE="35 Mb"
     WSIZE="2.2 Mb"
@@ -376,7 +385,7 @@ elif [ $API -eq 33 ]; then
     DPVERSIONP=3.6
     PLVERSIONP=1
 elif [ $API -eq 32 ]; then
-    echo "Android version: 12.1 (12L)" >>$logfile
+    log "Android version: 12.1 (12L)"
     WNEED=1
     DPSIZE="52 Mb"
     WSIZE="2.2 Mb"
@@ -389,7 +398,7 @@ elif [ $API -eq 32 ]; then
     fi
     PLSIZE="11 Mb"
 elif [ $API -eq 31 ]; then
-    echo "Android version: 12 (S)" >>$logfile
+    log "Android version: 12 (S)"
     DPSIZE="52 Mb"
     DPVERSIONP=2.5
     WSIZE="2.0 Mb"
@@ -403,19 +412,19 @@ elif [ $API -eq 31 ]; then
     fi
     PLSIZE="11 Mb"
 elif [ $API -eq 30 ]; then
-    echo "Android version: 11 (R)" >>$logfile
+    log "Android version: 11 (R)"
     DPSIZE="20 Mb"
     DPVERSIONP=1.2
     WSIZE="2.1 Mb"
     WNEED=1
 elif [ $API -eq 29 ]; then
-    echo "Android version: 10 (Q)" >>$logfile
+    log "Android version: 10 (Q)"
     WSIZE="3.6 Mb"
     DPSIZE="15 Mb"
     DPVERSIONP=1
     WNEED=1
 elif [ $API -eq 28 ]; then
-    echo "Android version: 9 (Pie)" >>$logfile
+    log "Android version: 9 (Pie)"
     WSIZE="1.6 Mb"
     DPSIZE="10 Mb"
     DPVERSIONP=1
@@ -432,7 +441,7 @@ set_version
 
 # Fixes for Pixel 4 devices, it gets hang when Android System intelligence gets spoofed to another pixel
 if [ "$(getprop ro.product.vendor.name)" == "coral" ] || [ "$(getprop ro.product.vendor.name)" == "flame" ]; then
-    echo "- Pixel 4/XL Detected !" >>$logfile
+    log "- Pixel 4/XL Detected !"
     for i in $MODPATH/zygisk/* $MODPATH/riru/*/*; do
         sed -i -e "s/com.google.android.xx/com.google.android.as/g" $i
     done
@@ -487,7 +496,7 @@ if echo "$LINEAGE_VER $LINEAGE_BUILD $MOD_VER" | grep -q "23.2"; then
     error " This version may contain bugs or bootloops."
     error " Proceed with caution!"
     error "=================================================="
-    echo "- LineageOS 23.2 warning displayed" >> $logfile
+    log "- LineageOS 23.2 warning displayed"
     sleep 3
 fi
 blue ""
@@ -495,7 +504,7 @@ blue ""
 # remove pinning of Google camera, as it is not recommended to use for device less than 6gb ram
 if [ $RAM -le "6000000" ]; then
     rm -rf $MODPATH/system$product/etc/sysconfig/GoogleCamera_6gb_or_more_ram.xml
-    echo " - Removing GoogleCamera_6gb_or_more_ram.xml as device has less than 6Gb Ram" >>$logfile
+    log " - Removing GoogleCamera_6gb_or_more_ram.xml as device has less than 6Gb Ram"
 fi
 
 DIALER1=$(find /system -name *Dialer.apk)
@@ -533,14 +542,14 @@ export TURN_OFF_SEL_VOL_PROMPT=0
 # Setup Volume keys for installation
 # Check if it is no-Vk zip
 if [ "$VOL_KEYS" -eq 0 ]; then
-    log "- Skipping Vol Keys -"
+    ui_print "- Skipping Vol Keys -"
     if [ -f /sdcard/Pixelify/config.prop ]; then
-        log ""
-        log " Using config: $vk_loc"
+        ui_print ""
+        ui_print " Using config: $vk_loc"
         VKSEL=no_vksel
     else
         error "X Config not found installation"
-        log "- Config is now placed at /sdcard/Pixelify/config.prop"
+        ui_print "- Config is now placed at /sdcard/Pixelify/config.prop"
         mkdir -p /sdcard/Pixelify
         cp -f $vk_loc /sdcard/Pixelify/config.prop
         error "- Please configure it and reinstall pixelify"
@@ -549,29 +558,29 @@ if [ "$VOL_KEYS" -eq 0 ]; then
 else
     # Use keytest to assign method (chooseport or old)
     if keytest; then
-        echo "- Using chooseport method for Volume keys" >>$logfile
+        log "- Using chooseport method for Volume keys"
         VKSEL=chooseport
     else
         VKSEL=chooseportold
-        echo "- using chooseportold method for Volume Keys" >>$logfile
+        log "- using chooseportold method for Volume Keys"
         error "  ! Legacy device detected! Using old keycheck method"
-        log " "
-        log "- Vol Key Programming -"
-        log "  Press Vol Up Again:"
+        ui_print " "
+        ui_print "- Vol Key Programming -"
+        ui_print "  Press Vol Up Again:"
         $VKSEL "UP"
-        log "  Press Vol Down"
+        ui_print "  Press Vol Down"
         $VKSEL "DOWN"
     fi
 fi
 
 # Installtion
-log ""
+ui_print ""
 blue "- Installing Pixelify Module"
 green "- Extracting Files...."
-log ""
+ui_print ""
 error "- Please don't turn off screen between the installation"
-log ""
-echo "- Extracting Files ..." >>$logfile
+ui_print ""
+log "- Extracting Files ..."
 
 # install Google Health services for Android Pie and Above
 # if [ $API -ge 28 ]; then
@@ -580,10 +589,10 @@ echo "- Extracting Files ..." >>$logfile
 
 # Allow users to use config with Volume key installation if config is placed
 if [ -f /sdcard/Pixelify/config.prop ] && [ $VOL_KEYS -eq 1 ]; then
-    log "  (Config detected)"
-    log "  Do you want to use config for installation?"
-    log "   Vol Up += Yes"
-    log "   Vol Down += No"
+    ui_print "  (Config detected)"
+    ui_print "  Do you want to use config for installation?"
+    ui_print "   Vol Up += Yes"
+    ui_print "   Vol Down += No"
     if $VKSEL; then
         VKSEL=no_vksel
         VOL_KEYS=0
@@ -594,20 +603,20 @@ fi
 FIRST_ONLINE_TIME=1
 
 # Options menu to log
-echo "$var_menu" >>$logfile
+log "$var_menu"
 
 # Internal Spoofing
 if [ ! -z $exact_prop ] && [ $API -ge 31 ]; then
     print "  Disclaimer: This Feature is in BETA"
-    log "  This features is only intended to Quick Phrase."
+    ui_print "  This features is only intended to Quick Phrase."
     #print "  Disabling Internal Spoofing can break OTA Update (rom dependent)"
-    log "  If it doesn't work properly then it causes issues to Google app"
-    log "  If you are not aware of We wont recommended to enable it."
+    ui_print "  If it doesn't work properly then it causes issues to Google app"
+    ui_print "  If you are not aware of We wont recommended to enable it."
     print ""
-    log "  Do you want to disable Internal spoofing of rom?"
-    log "  Note: This may break ota update of your rom"
-    log "   Vol Up += Yes"
-    log "   Vol Down += No"
+    ui_print "  Do you want to disable Internal spoofing of rom?"
+    ui_print "  Note: This may break ota update of your rom"
+    ui_print "   Vol Up += Yes"
+    ui_print "   Vol Down += No"
     no_vk "DISABLE_INTERNAL_SPOOFING"
     if $VKSEL; then
         echo " " >>$MODPATH/system.prop
@@ -618,30 +627,30 @@ fi
 # Google Photos Unlimited Backup Setup
 if [ $TENSOR -eq 1 ]; then
     print "(TENSOR CHIPSET DETECTED)"
-    log "  Do you want to enable Google Photos Unlimited Backup?"
-    log "  Note: Photos unblur won't work and Magic eraser may work slower"
-    log "   Vol Up += Yes"
-    log "   Vol Down += No"
+    ui_print "  Do you want to enable Google Photos Unlimited Backup?"
+    ui_print "  Note: Photos unblur won't work and Magic eraser may work slower"
+    ui_print "   Vol Up += Yes"
+    ui_print "   Vol Down += No"
     no_vk "ENABLE_PHOTOS_UNLIMITED"
     if $VKSEL; then
-        echo "- Enabling Unlimited storage in this Tensor chipset device" >>$logfile
+        log "- Enabling Unlimited storage in this Tensor chipset device"
         drop_sys
     else
-        echo "- Disabling Unlimited storage in this Tensor chipset device" >>$logfile
+        log "- Disabling Unlimited storage in this Tensor chipset device"
         rm -rf $MODPATH/zygisk $MODPATH/zygisk_1
     fi
 fi
 ###################################################################################################################################################################################################################
 if [ $API -ge 31 ]; then
 print ""
-log "Do you want to activate global spoofing?"
-log "It may break roms OTAs and show a mesage to update your pixel"
-log "   Vol Up += Yes"
-log "   Vol Down += No"
+ui_print "Do you want to activate global spoofing?"
+ui_print "It may break roms OTAs and show a mesage to update your pixel"
+ui_print "   Vol Up += Yes"
+ui_print "   Vol Down += No"
 no_vk "GLOBAL_SPOOFING"
 if $VKSEL; then
     GLOBAL_SPOOF=1
-    echo "- Global Spoofing Enabled" >>$logfile
+    log "- Global Spoofing Enabled"
     cat << 'EOF' >> $MODPATH/post-fs-data.sh
 resetprop -n "gsm.operator.iso-country" "us"
 resetprop -n "gsm.sim.operator.iso-country" "us"
@@ -660,34 +669,34 @@ resetprop -n "ro.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.01
 EOF
 else
     GLOBAL_SPOOF=0
-    echo "- Global Spoofing Disabled" >>$logfile
+    log "- Global Spoofing Disabled"
 fi
 fi
 # Disable Android System intelligence as there it already installed.
 if [ ! -z $(pm list packages -s | grep com.google.android.as) ]; then
-    echo " - Android System Intelligence is installed as system app" >>$logfile
+    log " - Android System Intelligence is installed as system app"
     # Dont disable incase if Android System Intelligence gets system app via Pixelify (case when user installs Pixelify 2nd time)
     if [ -z $(cat $pix/apps_temp.txt | grep "dp-$API") ]; then
         if [ $API -eq 30 ] && [ ! -z $($MODPATH/addon/dumpsys package com.google.android.as | grep versionName | grep pixel5) ]; then
-            echo " - Ignoring Android System Intelligence due to Pixel 5 version already installed" >>$logfile
+            log " - Ignoring Android System Intelligence due to Pixel 5 version already installed"
             DPAS=0
         elif [ $API -le 29 ]; then
             DPAS=0
-            echo " - Ignoring Android System Intelligence because it's already installed" >>$logfile
+            log " - Ignoring Android System Intelligence because it's already installed"
         fi
     fi
 fi
 
 # Android Oreo and below dont have Android System Intelligence
 if [ $API -le 27 ]; then
-    echo " - Disabling Android System Intelligence installation due to the api not supported" >>$logfile
+    log " - Disabling Android System Intelligence installation due to the api not supported"
     DPAS=0
 fi
 
 # For now disable Android System Intelligence of ONE Ui, as some bootloop reported before
 if [ "$(getprop ro.product.vendor.manufacturer)" == "samsung" ]; then
     if [ ! -z "$(getprop ro.build.PDA)" ]; then
-        echo " - Disabling Android System Intelligence installation on samsung devices" >>$logfile
+        log " - Disabling Android System Intelligence installation on samsung devices"
         DPAS=0
     fi
 fi
@@ -696,29 +705,29 @@ fi
 
 # Android System Intelligence installation
 if [ $DPAS -eq 1 ]; then
-    echo " - Installing Android System Intelligence" >>$logfile
+    log " - Installing Android System Intelligence"
     # If there is a backup, use it
     if [ -f /sdcard/Pixelify/backup/dp-$API.tar.xz ]; then
-        echo " - Backup Detected for Android System Intelligence" >>$logfile
+        log " - Backup Detected for Android System Intelligence"
         REMOVE="$REMOVE $DP"
         # Check Backup is of latest version or not.
         if [ "$(cat /sdcard/Pixelify/version/dp-$API.txt)" != "$DPVERSION" ] || [ $SEND_DPS -eq 1 ] || [ ! -f /sdcard/Pixelify/version/dp-$API.txt ]; then
-            echo " - New Version Detected for Android System Intelligence" >>$logfile
-            echo " - Installed version: $(cat /sdcard/Pixelify/version/dp-$API.txt) , New Version: $DPVERSION " >>$logfile
-            log "  (Network Connection Needed)"
-            log "  New version Detected of Android System Intelligence"
-            log "  Do you Want to update or use Old Backup?"
-            log "  Version: $DPVERSION"
-            log "  Size: $DPSIZE Mb"
-            log ""
-            log "   Vol Up += Update"
-            log "   Vol Down += Use Old Backup"
+            log " - New Version Detected for Android System Intelligence"
+            log " - Installed version: $(cat /sdcard/Pixelify/version/dp-$API.txt) , New Version: $DPVERSION "
+            ui_print "  (Network Connection Needed)"
+            ui_print "  New version Detected of Android System Intelligence"
+            ui_print "  Do you Want to update or use Old Backup?"
+            ui_print "  Version: $DPVERSION"
+            ui_print "  Size: $DPSIZE Mb"
+            ui_print ""
+            ui_print "   Vol Up += Update"
+            ui_print "   Vol Down += Use Old Backup"
             no_vk "UPDATE_DPS"
             if $VKSEL; then
                 online
                 # Download and Install Latest one
                 if [ $internet -eq 1 ]; then
-                    echo " - Downloading and installing new backup for Android System Intelligence" >>$logfile
+                    log " - Downloading and installing new backup for Android System Intelligence"
                     cd $MODPATH/files
                     rm -rf /sdcard/Pixelify/backup/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-net-$API.tar.xz /sdcard/Pixelify/version/dp.txt /sdcard/Pixelify/version/dp-$API.txt
                     # Fetch and download Android system Intelligence
@@ -738,39 +747,39 @@ if [ $DPAS -eq 1 ]; then
                     print ""
                     error " ! No internet detected"
                     print ""
-                    log "! Using Old backup for now."
-                    echo " ! Using Old backup for Android System Intelligence due to no internet services" >>$logfile
+                    ui_print "! Using Old backup for now."
+                    log " ! Using Old backup for Android System Intelligence due to no internet services"
                     print ""
                 fi
             else
-                echo " - Using Old backup for Android System Intelligence" >>$logfile
+                log " - Using Old backup for Android System Intelligence"
                 print ""
             fi
         fi
         # Install Now now playing (option is disabled)
         #now_playing
-        log "- Installing Android System Intelligence"
-        log ""
+        ui_print "- Installing Android System Intelligence"
+        ui_print ""
         # Copy Android System Intelligence overlay to grant default permissions
         cp -f $MODPATH/files/PixelifyDPS.apk $MODPATH/system/product/overlay/PixelifyDPS.apk
         tar -xf /sdcard/Pixelify/backup/dp-$API.tar.xz -C $MODPATH/system$product/priv-app
         echo dp-$API >$pix/app2.txt
     else
         # Give option to user wether to download or not in case no backup is detected
-        log ""
-        echo " - No backup Detected for Android System Intelligence" >>$logfile
-        log "  (Network Connection Needed)"
-        log "  Do you want to install and Download Android System Intelligence?"
-        log "  Size: $DPSIZE Mb"
-        log "   Vol Up += Yes"
-        log "   Vol Down += No"
+        ui_print ""
+        log " - No backup Detected for Android System Intelligence"
+        ui_print "  (Network Connection Needed)"
+        ui_print "  Do you want to install and Download Android System Intelligence?"
+        ui_print "  Size: $DPSIZE Mb"
+        ui_print "   Vol Up += Yes"
+        ui_print "   Vol Down += No"
         no_vk "ENABLE_DPS"
         if $VKSEL; then
             # Checker internet is available or not
             online
             if [ $internet -eq 1 ]; then
-                log "- Downloading Android System Intelligence"
-                echo " - Downloading and installing Android System Intelligence" >>$logfile
+                ui_print "- Downloading Android System Intelligence"
+                log " - Downloading and installing Android System Intelligence"
                 print ""
                 cd $MODPATH/files
                 # Fetch and download Android System intelligence
@@ -784,7 +793,7 @@ if [ $DPAS -eq 1 ]; then
                 cd /
                 #now_playing
                 print ""
-                log "- Installing Android System Intelligence"
+                ui_print "- Installing Android System Intelligence"
                 # copy Android system intelligence overlay to give defualt permissions
                 cp -f $MODPATH/files/PixelifyDPS.apk $MODPATH/system/product/overlay/PixelifyDPS.apk
 
@@ -796,15 +805,15 @@ if [ $DPAS -eq 1 ]; then
                 REMOVE="$REMOVE $DP"
 
                 # Create backup
-                log ""
-                log "  Do you want to create backup of Android System Intelligence?"
-                log "  so that you don't need redownload it every time."
-                log "   Vol Up += Yes"
-                log "   Vol Down += No"
+                ui_print ""
+                ui_print "  Do you want to create backup of Android System Intelligence?"
+                ui_print "  so that you don't need redownload it every time."
+                ui_print "   Vol Up += Yes"
+                ui_print "   Vol Down += No"
                 no_vk "BACKUP_DPS"
                 if $VKSEL; then
-                    echo " - Creating backup for Android System Intelligence" >>$logfile
-                    log "- Creating Backup"
+                    log " - Creating backup for Android System Intelligence"
+                    ui_print "- Creating Backup"
                     mkdir -p /sdcard/Pixelify/backup
                     rm -rf /sdcard/Pixelify/backup/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-net-$API.tar.xz /sdcard/Pixelify/version/dp.txt /sdcard/Pixelify/version/dp-$API.txt
                     cp -f $MODPATH/files/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-$API.tar.xz
@@ -818,7 +827,7 @@ if [ $DPAS -eq 1 ]; then
                 print ""
                 error "- Skipping Android System Intelligence"
                 print ""
-                echo " - Skipping Android System Intelligence due to no internet services" >>$logfile
+                log " - Skipping Android System Intelligence due to no internet services"
             fi
         fi
     fi
@@ -914,30 +923,30 @@ install_launcher
 # Pixel bootanimation (helper script install_bootanimation.sh)
 install_bootanimation
 if [ BUILT_WITH_MOSEY_SUPPORT ]; then
- echo "Built with mosey supported, asking user" >> $logfile
- log "  Do you want air drop support?"
- log "  Note: GKI 5.10, 5.15 and 6.1 only"
- log "    Vol Up += Yes"
- log "    Vol Down += No"
+ log "Built with mosey supported, asking user"
+ ui_print "  Do you want air drop support?"
+ ui_print "  Note: GKI 5.10, 5.15 and 6.1 only"
+ ui_print "    Vol Up += Yes"
+ ui_print "    Vol Down += No"
  no_vk "MOSEY_SUPPORT"
  if $VKSEL; then
    # This block will be replaced with the mosey code at compilation
    #CUSTOMIZE.SH_MOSEY_STUB
    :
   else
-   log "Selected no, skipping"
+   ui_print "Selected no, skipping"
  fi
 else
- log "This build doesnt have mosey, skipping"
- echo "Built with mosey unsupported, compile with submodules" >> $logfile
+ ui_print "This build doesnt have mosey, skipping"
+ log "Built with mosey unsupported, compile with submodules"
 fi
 
 #Adding Google san font.
-log ""
+ui_print ""
 #print "  (NOTE: Playstore or Google or GMS crashes then dont enable it)"
-log "  Do you want add Google San Fonts?"
-log "    Vol Up += Yes"
-log "    Vol Down += No"
+ui_print "  Do you want add Google San Fonts?"
+ui_print "    Vol Up += Yes"
+ui_print "    Vol Down += No"
 no_vk "GSAN_FONT"
 if $VKSEL; then
     patch_font
@@ -954,10 +963,10 @@ install_ai_features
 
 # Google Settings service
 if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
-    log "  Do you want to install Google settings service?"
+    ui_print "  Do you want to install Google settings service?"
     # log "  (Battery Widget)"
-    log "    Vol Up += Yes"
-    log "    Vol Down += No"
+    ui_print "    Vol Up += Yes"
+    ui_print "    Vol Down += No"
     no_vk "ENABLE_GSI"
     if $VKSEL; then
         SI=$(find /system -name *SettingsIntelligence* | grep -v overlay | grep -v "\.")
@@ -965,7 +974,7 @@ if [ $API -ge 28 ] && [ $TARGET_DEVICE_OP12 -eq 0 ]; then
         # cp -f $MODPATH/files/PixelifySettingsIntelligenceGoogleOverlay.apk $MODPATH/system/product/overlay/PixelifySettingsIntelligenceGoogleOverlay.apk
         # REMOVE="$REMOVE $SI"
     else
-        echo " - Skipping Google settings intelligence" >>$logfile
+        log " - Skipping Google settings intelligence"
     fi
 fi
 
@@ -973,13 +982,13 @@ fi
 
 # Rboard app fixes
 if [ ! -z "$(pm list packages | grep de.dertyp7214.rboardthememanager)" ]; then
-    log ""
-    log "- Rboard app is installed !!"
-    log ""
-    log "  Do you want to apply fix for Rboard by disabling GMS overriding flags?"
-    log "  Note: Pixelify will still try to patch other method"
-    log "    Vol Up += Yes"
-    log "    Vol Down += No"
+    ui_print ""
+    ui_print "- Rboard app is installed !!"
+    ui_print ""
+    ui_print "  Do you want to apply fix for Rboard by disabling GMS overriding flags?"
+    ui_print "  Note: Pixelify will still try to patch other method"
+    ui_print "    Vol Up += Yes"
+    ui_print "    Vol Down += No"
     no_vk "DISABLE_GBOARD_GMS_OVERRIDE"
     if $VKSEL; then
         DISABLE_GBOARD_GMS=1
@@ -988,28 +997,28 @@ fi
 
 # Google keyboard
 if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; then
-    log ""
-    log " Google keyboard is installed."
-    log "- Enabling pixel exclusive features"
+    ui_print ""
+    ui_print " Google keyboard is installed."
+    ui_print "- Enabling pixel exclusive features"
     [ $API -ge 31 ] && log "- Enabling NGA Voice typing (If Nga is installed)"
 
     # Flags patch for Gboard
-    echo " - Patching Google Keyboard's bools" >>$logfile
+    log " - Patching Google Keyboard's bools"
     patch_gboard
 
     if [ -z $(pm list packages -s com.google.android.inputmethod.latin) ] && [ -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
         error "- GBoard is not installed as a system app !!"
-        log "- Making Gboard a system app"
-        echo " - Making Google Keyboard a system app" >>$logfile
+        ui_print "- Making Gboard a system app"
+        log " - Making Google Keyboard a system app"
         cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
         mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
         rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat
         #mv $MODPATH/files/privapp-permissions-com.google.android.inputmethod.latin.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.inputmethod.latin.xml
         echo "gboard" >>$pix/app2.txt
     elif [ ! -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
-        log "- GBoard is not installed as a system app !!"
-        echo " - Making Google Keyboard as system app" >>$logfile
-        log "- Making Gboard a system app"
+        ui_print "- GBoard is not installed as a system app !!"
+        log " - Making Google Keyboard as system app"
+        ui_print "- Making Gboard a system app"
         cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
         mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
         rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat

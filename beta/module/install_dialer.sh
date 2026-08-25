@@ -42,10 +42,10 @@ install_dialer() {
                 settings put secure tethering_allow_vpn_upstreams 1 2>/dev/null || true
 
                 [ -f $MODPATH/patch_microhooks.sh ] && . $MODPATH/patch_microhooks.sh
-                echo " - Automatic Call Screening and Phenotype microhooks enabled" >>$logfile
+                log " - Automatic Call Screening and Phenotype microhooks enabled"
             else
                 $sqlite "$gms" "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'" 2>/dev/null || true
-                echo " - Automatic Call Screening not enabled" >>$logfile
+                log " - Automatic Call Screening not enabled"
             fi
 
         # Install language pack
@@ -89,7 +89,7 @@ install_dialer() {
                 if $VKSEL; then
                     online
                     if [ $internet -eq 1 ]; then
-                        echo " - Downloading CallScreening files for '$lang'" >>$logfile
+                        log " - Downloading CallScreening files for '$lang'"
                         log "  Downloading CallScreening files for '$lang'"
                         mkdir -p $MODPATH/system/product/tts/google
                         cd $MODPATH/files
@@ -125,7 +125,7 @@ install_dialer() {
                         log "   Vol Down += No"
                         no_vk "BACKUP_CALL_SCREENING_FILES"
                         if $VKSEL; then
-                            echo " - Creating backup for CallScreening files for '$lang'" >>$logfile
+                            log " - Creating backup for CallScreening files for '$lang'"
                             log "- Creating Backup"
                             mkdir -p /sdcard/Pixelify/backup
                             rm -rf /sdcard/Pixelify/backup/callscreen-$lang.tar.xz
@@ -137,10 +137,10 @@ install_dialer() {
                         log ""
                         log "- Skipping CallScreening Resources."
                         log ""
-                        echo " - skipping CallScreening Resources due to no internet" >>$logfile
+                        log " - skipping CallScreening Resources due to no internet"
                     fi
                 else
-                    echo " - skipping CallScreening Resources" >>$logfile
+                    log " - skipping CallScreening Resources"
                 fi
             fi
         fi
@@ -162,7 +162,7 @@ install_dialer() {
             print ""
             error "- Google Dialer is not installed as a system app !!"
             log "- Making Google Dialer a system app"
-            echo " - Making Google Dialer a system app" >>$logfile
+            log " - Making Google Dialer a system app"
             print ""
             cp -r $app/com.google.android.dialer*/. $MODPATH/system$product/priv-app/GoogleDialer
             mv $MODPATH/system$product/priv-app/GoogleDialer/base.apk $MODPATH/system$product/priv-app/GoogleDialer/GoogleDialer.apk
@@ -172,7 +172,7 @@ install_dialer() {
             print ""
             error "- Google Dialer is not installed as a system app !!"
             log "- Making Google Dialer a system app"
-            echo " - Making Google Dialer a system app" >>$logfile
+            log " - Making Google Dialer a system app"
             print ""
             cp -r $app/com.google.android.dialer*/. $MODPATH/system$product/priv-app/GoogleDialer
             mv $MODPATH/system$product/priv-app/GoogleDialer/base.apk $MODPATH/system$product/priv-app/GoogleDialer/GoogleDialer.apk

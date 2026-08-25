@@ -11,7 +11,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
     	log "   Vol Down += No"
     	no_vk "GEMINI_BOOTANIMATION"
 	if $VKSEL; then
-	   echo " - Installing Pixel Bootanimation" >>$logfile
+	   log " - Installing Pixel Bootanimation"
 	   if [ -f "/system/media/bootanimation.zip" ]; then
 	   	mkdir -p $MODPATH/system/media
 	   	mv $MODPATH/files/gemini-bootanimation.zip $MODPATH/system/media/bootanimation.zip
@@ -26,7 +26,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
 	  	   fi
 	  fi
        else
-        echo " - Installing Pixel Bootanimation" >>$logfile
+        log " - Installing Pixel Bootanimation"
         if [ -f /system/media/bootanimation.zip ]; then
             MEDIA_PATH=system/media
         else
@@ -59,7 +59,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
             if [ ! -f /system/bin/themed_bootanimation ]; then
                 rm -rf $MODPATH/$MEDIA_PATH/bootanimation.zip
                 cp -f $MODPATH/$MEDIA_PATH/bootanimation-dark.zip $MODPATH/$MEDIA_PATH/bootanimation.zip
-                echo " - Themed Animation not detected, using dark animation as default" >>$logfile
+                log " - Themed Animation not detected, using dark animation as default"
             fi
         else
             case "$boot_res" in
@@ -81,7 +81,7 @@ if [ $TARGET_DEVICE_OP12 -eq 0 ]; then
         fi
         fi
     else
-        echo " - Skipping Pixel Bootanimation" >>$logfile
+        log " - Skipping Pixel Bootanimation"
         rm -rf $MODPATH/system$product/media/boot*.zip
     fi
 else

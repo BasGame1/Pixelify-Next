@@ -14,7 +14,7 @@ install_pixel_launcher() {
         no_vk "ENABLE_PIXEL_LAUNCHER"
         if $VKSEL; then
                 log "- Installing Pixel Launcher"
-                echo " - Installing Pixel Launcher" >>$logfile
+                log " - Installing Pixel Launcher"
                 log ""
                 unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025/DevicePersonalizationPrebuiltPixel2025.zip $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2025
                 set_perm_recursive $MODPATH/system/etc 0 0 0755 0644
@@ -31,7 +31,7 @@ install_pixel_launcher() {
                 set_contexts $MODPATH/system/product/priv-app u:object_r:product_priv_app_file:s0
                 REMOVE="$REMOVE $PL $TR $QS $LW $TW $KW"
         else
-            echo " - Deleting Pixel Launcher" >>$logfile
+            log " - Deleting Pixel Launcher"
             for FILE in $(find "$MODPATH/system" -type f -name "*.apk"); do
                 rm -rf $FILE 2>/dev/null
             done
@@ -42,7 +42,7 @@ install_pixel_launcher() {
 
         fi
 else
-    echo " - Skipping Pixel Launcher because you dont have Android 16" >>$logfile
+    log " - Skipping Pixel Launcher because you dont have Android 16"
     ui_print "You cannot install Pixel Launcher due to being on api $API"
     for FILE in $(find "$MODPATH/system" -type f -name "*.apk"); do
         rm -rf $FILE 2>/dev/null

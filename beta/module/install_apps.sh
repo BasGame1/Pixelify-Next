@@ -6,7 +6,7 @@ if [ -d /data/data/com.google.android.googlequicksearchbox ] && [ $API -ge 29 ] 
     log "   Vol Down += No"
     no_vk "INSTALL_JOURNAL"
     if $VKSEL; then
-        echo " - Installing Google Journal" >>$logfile
+        log " - Installing Google Journal"
         log "- Installing Google Journal"
         log ""
         install_apk "Journal.apk" "$MODPATH/files/Journal.apk"
