@@ -33,15 +33,15 @@ install_dialer() {
         echo 'resetprop -n persist.vendor.radio.imei2 "'"$IMEI2"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n ro.serialno "'"$SERIAL_NO"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n ro.boot.serialno "'"$SERIAL_NO"'"' >>$MODPATH/post-fs-data.sh
-        settings put global auto_time_zone 1 2>/dev/null || true
-        settings put global private_dns_mode off 2>/dev/null || true
-        settings put global development_settings_enabled 1 2>/dev/null || true
-        settings put global non_persistent_mac_randomization_force_enabled 1 2>/dev/null || true
-        settings put global restricted_networking_mode 0 2>/dev/null || true
-        settings put global bug_report 0 2>/dev/null || true
-        settings put secure tethering_allow_vpn_upstreams 1 2>/dev/null || true
+        echo 'settings put global auto_time_zone 1 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put global private_dns_mode off 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put global development_settings_enabled 1 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put global non_persistent_mac_randomization_force_enabled 1 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put global restricted_networking_mode 0 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put global bug_report 0 2>/dev/null || true' >>$MODPATH/service.sh
+        echo 'settings put secure tethering_allow_vpn_upstreams 1 2>/dev/null || true' >>$MODPATH/service.sh
 
-        [ -f $MODPATH/patch_microhooks.sh ] && . $MODPATH/patch_microhooks.sh
+        [ -f $MODPATH/patch_microhooks.sh ] && SERVICE_BOOT=0 . $MODPATH/patch_microhooks.sh
         log " - Automatic Call Screening and Phenotype microhooks enabled"
     else
         $sqlite "$gms" "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'" 2>/dev/null || true

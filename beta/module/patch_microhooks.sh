@@ -70,10 +70,13 @@ patch_all_microhooks
 
 rm -rf /data/data/com.google.android.dialer/files/phenotype/* 2>/dev/null
 rm -rf /data/user_de/0/com.google.android.dialer/files/phenotype/* 2>/dev/null
-am force-stop com.google.android.dialer 2>/dev/null
-am force-stop com.google.android.gms 2>/dev/null
-am force-stop com.google.android.aicore 2>/dev/null
-am force-stop com.google.android.apps.pixel.psi 2>/dev/null
+
+if [ "$1" = "boot" ] || [ "$SERVICE_BOOT" = "1" ]; then
+    am force-stop com.google.android.dialer 2>/dev/null || true
+    am force-stop com.google.android.gms 2>/dev/null || true
+    am force-stop com.google.android.aicore 2>/dev/null || true
+    am force-stop com.google.android.apps.pixel.psi 2>/dev/null || true
+fi
 
 echo "ACTIVE|35|48" > "$STATUS_FILE"
 echo "Microhooks Phenotype flags successfully patched."
