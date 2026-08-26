@@ -1007,23 +1007,16 @@ if [ ! -z "$(pm list packages | grep com.google.android.inputmethod.latin)" ]; t
     patch_gboard
 
     if [ -z $(pm list packages -s com.google.android.inputmethod.latin) ] && [ -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
-        error "- GBoard is not installed as a system app !!"
-        ui_print "- Making Gboard a system app"
-        log " - Making Google Keyboard a system app"
-        cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
-        mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
-        rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat
-        #mv $MODPATH/files/privapp-permissions-com.google.android.inputmethod.latin.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.inputmethod.latin.xml
-        echo "gboard" >>$pix/app2.txt
-    elif [ ! -z "$(cat $pix/apps_temp.txt | grep gboard)" ]; then
-        ui_print "- GBoard is not installed as a system app !!"
-        log " - Making Google Keyboard as system app"
-        ui_print "- Making Gboard a system app"
-        cp -r $app/com.google.android.inputmethod.latin*/. $MODPATH/system/product/app/LatinIMEGooglePrebuilt
-        mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk
-        rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat
-        #mv $MODPATH/files/privapp-permissions-com.google.android.inputmethod.latin.xml $MODPATH/system/product/etc/permissions/privapp-permissions-com.google.android.inputmethod.latin.xml
-        echo "gboard" >>$pix/app2.txt
+        GBOARD_DIR="$(get_pkg_app_dir "com.google.android.inputmethod.latin")"
+        if [ -n "$GBOARD_DIR" -a -d "$GBOARD_DIR" ]; then
+            ui_print "- Making Gboard a system app"
+            log " - Making Google Keyboard a system app"
+            mkdir -p $MODPATH/system/product/app/LatinIMEGooglePrebuilt 2>/dev/null
+            cp -r "$GBOARD_DIR/." $MODPATH/system/product/app/LatinIMEGooglePrebuilt 2>/dev/null || true
+            [ -f $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk ] && mv $MODPATH/system/product/app/LatinIMEGooglePrebuilt/base.apk $MODPATH/system/product/app/LatinIMEGooglePrebuilt/LatinIMEGooglePrebuilt.apk 2>/dev/null || true
+            rm -rf $MODPATH/system/product/app/LatinIMEGooglePrebuilt/oat 2>/dev/null || true
+            echo "gboard" >>$pix/app2.txt
+        fi
     fi
 fi
 

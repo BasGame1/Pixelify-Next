@@ -36,6 +36,27 @@ log() {
     [ -n "$logfile" ] && echo "$@" >> "$logfile"
 }
 
+get_pkg_app_dir() {
+    TARGET_PKG="$1"
+    [ -z "$TARGET_PKG" ] && return 1
+
+    # Method 1: pm path
+    TARGET_PATH="$(pm path "$TARGET_PKG" 2>/dev/null | head -n 1 | cut -d':' -f2 | tr -d '\r')"
+    if [ -n "$TARGET_PATH" -a -f "$TARGET_PATH" ]; then
+        dirname "$TARGET_PATH"
+        return 0
+    fi
+
+    # Method 2: find in /data/app with recursion for Android 12+ double-nesting
+    FOUND_DIR="$(find /data/app -type d -name "${TARGET_PKG}*" 2>/dev/null | head -n 1)"
+    if [ -n "$FOUND_DIR" -a -d "$FOUND_DIR" ]; then
+        echo "$FOUND_DIR"
+        return 0
+    fi
+
+    return 1
+}
+
 print() {
     ui_print "$@"
     sleep 0.3
