@@ -5,7 +5,8 @@
     <library name="com.google.android.dialer.support"
       file="/product/framework/com.google.android.dialer.support.jar" />
 
-    <!-- Starting from Android O and above, this system feature is required for
-         getting Google Dialer play store updates. -->
+    <!-- System features required for Google Dialer Call Screening & Call Features -->
     <feature name="com.google.android.apps.dialer.SUPPORTED" />
+    <feature name="com.google.android.feature.CALL_SCREENING" />
+    <feature name="com.google.android.feature.AUTOMATIC_CALL_SCREENING" />
 </permissions>

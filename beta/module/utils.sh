@@ -1294,33 +1294,32 @@ drop_sys() {
         done
     fi
     if [ $KEEP_PIXEL_2021 -eq 0 ]; then
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2019_midyear.xml
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2020.xml
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2020_midyear.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2019_midyear.xml
-        #touch $MODPATH/system$product/etc/sysconfig/pixel_experience_2019_midyear.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2020.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2020_midyear.xml
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2021.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2021.xml
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2019_midyear.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2020.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2020_midyear.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2019_midyear.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2020.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2020_midyear.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2021.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2021.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2021_midyear.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2021_midyear.xml
     elif [ $KEEP_PIXEL_2020 -eq 1 ]; then
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2021.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2021.xml
-        rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
-        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2021_midyear.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2021.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2021.xml
+        rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2021_midyear.xml
+        echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2021_midyear.xml
     else
         log " - Not removing Pixel 2021 experience as roms already hide for gphotos"
     fi
-    rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2022.xml
-    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2022.xml
-    rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2022_midyear.xml
-    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2022_midyear.xml
-    rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2023.xml
-    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2023.xml
-    rm -rf $MODPATH/system$product/etc/sysconfig/pixel_experience_2023_midyear.xml
-    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/sysconfig/pixel_experience_2023_midyear.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2022.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2022.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2022_midyear.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2022_midyear.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2023.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2023.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2023_midyear.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2023_midyear.xml
 }
 
 ok_google_hotword() {

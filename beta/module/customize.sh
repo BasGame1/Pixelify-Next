@@ -491,13 +491,12 @@ LINEAGE_VER="$(getprop ro.lineage.version 2>/dev/null)"
 LINEAGE_BUILD="$(getprop ro.lineage.build.version 2>/dev/null)"
 MOD_VER="$(getprop ro.modversion 2>/dev/null)"
 if echo "$LINEAGE_VER $LINEAGE_BUILD $MOD_VER" | grep -q "23.2"; then
-    error "=================================================="
-    error " WARNING: LineageOS 23.2 Detected!"
-    error " This version may contain bugs or bootloops."
-    error " Proceed with caution!"
-    error "=================================================="
-    log "- LineageOS 23.2 warning displayed"
-    sleep 3
+    ui_print "=================================================="
+    ui_print " LineageOS 23.2 (Android 16) Detected"
+    ui_print " Applying LineageOS 23.2 compatibility fixes..."
+    ui_print "=================================================="
+    log "- LineageOS 23.2 (Android 16) compatibility fixes active"
+    sleep 1
 fi
 blue ""
 
