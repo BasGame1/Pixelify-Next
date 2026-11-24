@@ -2,6 +2,9 @@
 
 set -e
 
+[ -d /usr/lib/jvm/java-17-openjdk ] && export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+[ -n "$JAVA_HOME" ] && export PATH="$JAVA_HOME/bin:$PATH"
+
 source colors.sh 2>/dev/null || echo -e "\033[0;31m[ERROR]\033[0m Colors file could not be loaded"
 
 user_option() {

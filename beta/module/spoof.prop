@@ -1,7 +1,62 @@
 ro.product.brand=google
-ro.product.device=blazer
 ro.product.manufacturer=Google
 ro.product.model=Pixel 10 Pro
+ro.product.device=blazer
 ro.product.name=blazer
-ro.system.build.fingerprint=google/blazer/blazer:15/BP1A.250405.005.B1/13151136:user/release-keys
-ro.build.display.id=BP1A.250405.005.B1 (akita spoofed by PixelifyNext)
+ro.product.board=blazer
+ro.build.product=blazer
+ro.build.device=blazer
+
+# Partition props
+ro.product.system.brand=google
+ro.product.system.manufacturer=Google
+ro.product.system.model=Pixel 10 Pro
+ro.product.system.device=blazer
+ro.product.system.name=blazer
+
+ro.product.product.brand=google
+ro.product.product.manufacturer=Google
+ro.product.product.model=Pixel 10 Pro
+ro.product.product.device=blazer
+ro.product.product.name=blazer
+
+ro.product.system_ext.brand=google
+ro.product.system_ext.manufacturer=Google
+ro.product.system_ext.model=Pixel 10 Pro
+ro.product.system_ext.device=blazer
+ro.product.system_ext.name=blazer
+
+ro.product.vendor.brand=google
+ro.product.vendor.manufacturer=Google
+ro.product.vendor.model=Pixel 10 Pro
+ro.product.vendor.device=blazer
+ro.product.vendor.name=blazer
+
+ro.product.odm.brand=google
+ro.product.odm.manufacturer=Google
+ro.product.odm.model=Pixel 10 Pro
+ro.product.odm.device=blazer
+ro.product.odm.name=blazer
+
+# Partition fingerprints
+ro.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.system.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.product.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.system_ext.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.vendor.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.odm.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+ro.bootimage.build.fingerprint=google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
+
+# SoC & Pixel Hardware
+ro.soc.manufacturer=Google
+ro.soc.model=Tensor G5
+ro.hardware=blazer
+ro.hardware.chipname=slider
+
+# Build details
+ro.build.type=user
+ro.build.tags=release-keys
+ro.build.flavor=blazer-user
+ro.build.characteristics=nosdcard
+ro.opa.eligible_device=true
+ro.opa.eligibledevice=true

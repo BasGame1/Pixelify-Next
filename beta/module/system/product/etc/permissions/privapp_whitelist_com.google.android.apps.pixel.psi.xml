@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <permissions>
-    <feature name="com.google.android.feature.PIXEL_2025_EXPERIENCE"/>
     <privapp-permissions package="com.google.android.apps.pixel.psi">
         <permission name="android.permission.WAKE_LOCK"/>
         <permission name="android.permission.QUERY_ALL_PACKAGES"/>

@@ -30,15 +30,22 @@ if [ -z "$SQLITE_BIN" ] && command -v sqlite3 >/dev/null 2>&1; then
     SQLITE_BIN="$(command -v sqlite3)"
 fi
 
-DB_PATHS="/data/data/com.google.android.gms/databases/phenotype.db /data/user_de/0/com.google.android.gms/databases/phenotype.db /data/data/com.google.android.dialer/databases/phenotype.db /data/user_de/0/com.google.android.dialer/databases/phenotype.db"
+DB_PATHS="/data/data/com.google.android.gms/databases/phenotype.db /data/user_de/0/com.google.android.gms/databases/phenotype.db /data/user/0/com.google.android.gms/databases/phenotype.db /data/data/com.google.android.dialer/databases/phenotype.db /data/user_de/0/com.google.android.dialer/databases/phenotype.db"
 STATUS_FILE="$MODDIR/flags_status"
 
 DIALER_PKGS="com.google.android.dialer com.google.android.dialer.directboot com.google.android.dialer.directboot#com.google.android.dialer com.google.android.dialer#com.google.android.dialer com.google.android.dialer.callscreening"
 
 # 1. Function to patch sqlite phenotype db across all dialer package targets
 patch_flag() {
-    FLAG="$1"
-    VAL="$2"
+    if [ $# -ge 3 ]; then
+        TARGET_PKGS="$1"
+        FLAG="$2"
+        VAL="$3"
+    else
+        TARGET_PKGS="$DIALER_PKGS"
+        FLAG="$1"
+        VAL="$2"
+    fi
     
     [ -z "$FLAG" ] && return 1
 
@@ -47,7 +54,7 @@ patch_flag() {
         *) BVAL=0 ;;
     esac
 
-    for PKG in $DIALER_PKGS; do
+    for PKG in $TARGET_PKGS; do
         for DB in $DB_PATHS; do
             if [ -f "$DB" -a -n "$SQLITE_BIN" ]; then
                 chmod 0666 "$DB" 2>/dev/null
@@ -66,7 +73,7 @@ inject_shared_pref() {
     KEY="$1"
     VAL="$2"
     
-    PREF_FILES="/data/data/com.google.android.dialer/shared_prefs/dialer_phenotype_flags.xml /data/data/com.google.android.dialer/shared_prefs/com.google.android.dialer_preferences.xml /data/data/com.google.android.dialer/shared_prefs/phenotype_flags.xml /data/user_de/0/com.google.android.dialer/shared_prefs/dialer_phenotype_flags.xml"
+    PREF_FILES="/data/data/com.google.android.dialer/shared_prefs/dialer_phenotype_flags.xml /data/data/com.google.android.dialer/shared_prefs/com.google.android.dialer_preferences.xml /data/data/com.google.android.dialer/shared_prefs/phenotype_flags.xml /data/user_de/0/com.google.android.dialer/shared_prefs/dialer_phenotype_flags.xml /data/user/0/com.google.android.dialer/shared_prefs/dialer_phenotype_flags.xml /data/user/0/com.google.android.dialer/shared_prefs/com.google.android.dialer_preferences.xml /data/user/0/com.google.android.dialer/shared_prefs/phenotype_flags.xml"
 
     for FILE in $PREF_FILES; do
         DIR="${FILE%/*}"
@@ -100,7 +107,7 @@ patch_all_microhooks() {
     patch_flag "45730953" false
 
     # 2. Patch Phenotype Flags (Named Strings)
-    for flag in G__enable_call_screen G__enable_call_screen_transcript G__enable_auto_call_screening G__enable_manual_call_screen G__enable_hold_for_me G__enable_direct_my_call G__bypass_country_check G__force_call_screen_enabled G__enable_call_recording G__use_call_recording_geofence_overrides G__force_within_call_recording_geofence_value G__force_within_crosby_geofence_value G__enable_atlas_call_screen G__enable_beesly_call_screen G__enable_dobby_call_screen; do
+    for flag in G__enable_call_screen G__enable_call_screen_transcript G__enable_auto_call_screening G__enable_manual_call_screen G__enable_hold_for_me G__enable_direct_my_call G__bypass_country_check G__force_call_screen_enabled G__enable_call_recording G__use_call_recording_geofence_overrides G__force_within_call_recording_geofence_value G__force_within_crosby_geofence_value G__enable_atlas_call_screen G__enable_beesly_call_screen G__enable_dobby_call_screen G__enable_call_screen_v2 G__enable_gemini_call_assist G__force_call_screen_v2_enabled; do
         patch_flag "$flag" true
     done
 

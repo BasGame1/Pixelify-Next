@@ -70,6 +70,9 @@ ZYGISK_P=0
 PIXEL_SPOOF=0
 TARGET_LOGGING=0
 LOS_FIX=0
+if echo "$(getprop ro.lineage.version 2>/dev/null) $(getprop ro.lineage.build.version 2>/dev/null) $(getprop ro.modversion 2>/dev/null)" | grep -q "23.2"; then
+    LOS_FIX=1
+fi
 REQ_FIX=0
 PL_VERSION="default"
 WLPVERSIONP=1
@@ -1008,7 +1011,7 @@ gfont9='    <family customizationType="new-named-family" name="google-sans-text-
     </family>'
 
 # Call screening
-ISO=us,
+ISO=us
 MCC=331
 MNC=480
 MCCMNC=331480

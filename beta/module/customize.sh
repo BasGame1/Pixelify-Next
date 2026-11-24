@@ -45,7 +45,7 @@ chmod 0755 $sqlite
 zygisk_enabled="$(magisk --sqlite "SELECT value FROM settings WHERE (key='zygisk')")"
 
 # Update Riru Path
-if [ "$MAGISK_VER_CODE" -ge 21000 ]; then
+if [ -n "$MAGISK_VER_CODE" ] && [ "$MAGISK_VER_CODE" -ge 21000 ]; then
     MAGISK_CURRENT_RIRU_MODULE_PATH=$(magisk --path)/.magisk/modules/riru-core
 else
     MAGISK_CURRENT_RIRU_MODULE_PATH=/sbin/.magisk/modules/riru-core
@@ -60,7 +60,7 @@ else
     riru_path=""
 fi
 # Set Installation type: Normal, Zygsik, Riru
-if [ "$KSU" == true ]; then
+if [ "$KSU" = "true" ]; then
     ui_print "- Root App: KSU"
     if [ -d '/data/adb/modules/rezygisk' ]; then
         # Rezygisk is installed.
@@ -303,7 +303,7 @@ fi
 if [ -f $pix/app.txt ]; then
     rm -rf $pix/apps_temp.txt
     cp -f $pix/app.txt $pix/apps_temp.txt
-0;276;0c0;276;0c0;276;0celse
+else
     touch $pix/apps_temp.txt
 fi
 
@@ -496,6 +496,9 @@ if echo "$LINEAGE_VER $LINEAGE_BUILD $MOD_VER" | grep -q "23.2"; then
     ui_print " Applying LineageOS 23.2 compatibility fixes..."
     ui_print "=================================================="
     log "- LineageOS 23.2 (Android 16) compatibility fixes active"
+    LOS_FIX=1
+    # Strip sysconfig platform overlays that cause LineageOS overlay crashes
+    rm -rf "$MODPATH/system$product/etc/sysconfig/preinstalled-packages-platform-overlays.xml"
     sleep 1
 fi
 blue ""
@@ -661,11 +664,51 @@ resetprop -n "ro.product.brand" "google"
 resetprop -n "ro.product.manufacturer" "Google"
 resetprop -n "ro.product.model" "Pixel 10 Pro"
 resetprop -n "ro.product.device" "blazer"
-resetprop -n "ro.product.name" "blazer_beta"
+resetprop -n "ro.product.name" "blazer"
+resetprop -n "ro.product.board" "blazer"
 resetprop -n "ro.build.product" "blazer"
 resetprop -n "ro.build.device" "blazer"
+resetprop -n "ro.product.system.brand" "google"
+resetprop -n "ro.product.system.manufacturer" "Google"
+resetprop -n "ro.product.system.model" "Pixel 10 Pro"
+resetprop -n "ro.product.system.device" "blazer"
+resetprop -n "ro.product.system.name" "blazer"
+resetprop -n "ro.product.product.brand" "google"
+resetprop -n "ro.product.product.manufacturer" "Google"
+resetprop -n "ro.product.product.model" "Pixel 10 Pro"
+resetprop -n "ro.product.product.device" "blazer"
+resetprop -n "ro.product.product.name" "blazer"
+resetprop -n "ro.product.system_ext.brand" "google"
+resetprop -n "ro.product.system_ext.manufacturer" "Google"
+resetprop -n "ro.product.system_ext.model" "Pixel 10 Pro"
+resetprop -n "ro.product.system_ext.device" "blazer"
+resetprop -n "ro.product.system_ext.name" "blazer"
+resetprop -n "ro.product.vendor.brand" "google"
+resetprop -n "ro.product.vendor.manufacturer" "Google"
+resetprop -n "ro.product.vendor.model" "Pixel 10 Pro"
+resetprop -n "ro.product.vendor.device" "blazer"
+resetprop -n "ro.product.vendor.name" "blazer"
+resetprop -n "ro.product.odm.brand" "google"
+resetprop -n "ro.product.odm.manufacturer" "Google"
+resetprop -n "ro.product.odm.model" "Pixel 10 Pro"
+resetprop -n "ro.product.odm.device" "blazer"
+resetprop -n "ro.product.odm.name" "blazer"
 resetprop -n "ro.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.system.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.product.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.system_ext.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.vendor.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.odm.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.bootimage.build.fingerprint" "google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys"
+resetprop -n "ro.soc.manufacturer" "Google"
+resetprop -n "ro.soc.model" "Tensor G5"
+resetprop -n "ro.hardware" "blazer"
+resetprop -n "ro.hardware.chipname" "slider"
+resetprop -n "ro.build.characteristics" "nosdcard"
+resetprop -n "ro.opa.eligible_device" "true"
+resetprop -n "ro.opa.eligibledevice" "true"
 EOF
+    [ -f "$MODPATH/spoof.prop" ] && cat "$MODPATH/spoof.prop" >> "$MODPATH/system.prop"
 else
     GLOBAL_SPOOF=0
     log "- Global Spoofing Disabled"
@@ -730,10 +773,12 @@ if [ $DPAS -eq 1 ]; then
                     cd $MODPATH/files
                     rm -rf /sdcard/Pixelify/backup/dp-$API.tar.xz /sdcard/Pixelify/backup/dp-net-$API.tar.xz /sdcard/Pixelify/version/dp.txt /sdcard/Pixelify/version/dp-$API.txt
                     # Fetch and download Android system Intelligence
+                    DOWN_API=$API
+                    [ $DOWN_API -gt 34 ] && DOWN_API=34
                     if [ $API -eq 31 ] || [ $API -eq 32 ]; then
                         $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asi-new-31.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                     elif [ $API -ge 33 ]; then
-                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
+                        $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$DOWN_API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                     else
                         $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/dp-$API.tar.xz -O &>/proc/self/fd/$OUTFD
                     fi
@@ -782,10 +827,12 @@ if [ $DPAS -eq 1 ]; then
                 print ""
                 cd $MODPATH/files
                 # Fetch and download Android System intelligence
+                DOWN_API=$API
+                [ $DOWN_API -gt 34 ] && DOWN_API=34
                 if [ $API -eq 31 ] || [ $API -eq 32 ]; then
                     $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asi-new-31.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                 elif [ $API -ge 33 ]; then
-                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
+                    $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/asis-new-$DOWN_API.tar.xz -o dp-$API.tar.xz &>/proc/self/fd/$OUTFD
                 else
                     $MODPATH/addon/curl https://gitlab.com/Kingsman-z/pixelify-files/-/raw/master/dp-$API.tar.xz -O &>/proc/self/fd/$OUTFD
                 fi

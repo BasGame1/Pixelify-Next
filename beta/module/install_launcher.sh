@@ -1,5 +1,5 @@
 install_pixel_launcher() {
-    if [ $API -ge 36 ]; then
+    if [ $API -eq 36 ]; then
         ui_print ""
         ui_print "  Do you want to install Pixel Launcher? (Android 16 only)"
         ui_print "   Vol Up += Yes"

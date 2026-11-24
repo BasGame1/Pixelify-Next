@@ -23,19 +23,19 @@ current_selection_option() {
 check_selection() {
  case $CURRENT_SELECTION in
   1)
-   ask_features_menu
+   ai_features_menu
    current_selection_option "1) Rambler"
   ;;
   2)
-   ask_features_menu
+   ai_features_menu
    current_selection_option "2) Ask Photos"
   ;;
   3)
-   ask_features_menu
+   ai_features_menu
    current_selection_option "3) Ask Maps"
   ;;
   4)
-   ask_features_menu
+   ai_features_menu
    current_selection_option "4) Exit"
   ;;
   *)
@@ -47,7 +47,7 @@ install_another_selection() {
  log "$1 patched, install another one?"
  if $VKSEL; then
    log "Showing menu again for installing other"
-   ai_installation_menu
+   ai_features_menu
    check_selection
  else
    log "Dont install another one apart from $1"

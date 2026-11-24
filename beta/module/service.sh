@@ -51,25 +51,35 @@ MAIN_ZYGOTE_NICENAME=zygote
 CPU_ABI=$(getprop ro.product.cpu.abi)
 [ "$CPU_ABI" = "arm64-v8a" -o "$CPU_ABI" = "x86_64" ] && MAIN_ZYGOTE_NICENAME=zygote64
 
-ZYGOTE_PID1=$(pidof "$MAIN_ZYGOTE_NICENAME")
+get_zygote_pid() {
+    PID="$(pidof "$MAIN_ZYGOTE_NICENAME" 2>/dev/null | awk '{print $1}')"
+    [ -z "$PID" ] && PID="$(pidof zygote 2>/dev/null | awk '{print $1}')"
+    [ -z "$PID" ] && PID="$(pidof app_process64 2>/dev/null | awk '{print $1}')"
+    echo "$PID"
+}
+
+ZYGOTE_PID1="$(get_zygote_pid)"
 sleep 15
-ZYGOTE_PID2=$(pidof "$MAIN_ZYGOTE_NICENAME")
+ZYGOTE_PID2="$(get_zygote_pid)"
 sleep 15
-ZYGOTE_PID3=$(pidof "$MAIN_ZYGOTE_NICENAME")
+ZYGOTE_PID3="$(get_zygote_pid)"
 
 PIDS=0
 
 if [ -n "$ZYGOTE_PID1" ] && [ "$ZYGOTE_PID1" = "$ZYGOTE_PID2" ] && [ "$ZYGOTE_PID2" = "$ZYGOTE_PID3" ]; then
     PIDS=1
+elif [ -z "$ZYGOTE_PID1" ] && [ -z "$ZYGOTE_PID2" ] && [ -z "$ZYGOTE_PID3" ]; then
+    # Zygote process not matched by name in this environment - skip reboot preventer safely
+    PIDS=1
 fi
 
 if [ $PIDS -eq 0 ]; then
-    sleep 15
-    ZYGOTE_PID4=$(pidof "$MAIN_ZYGOTE_NICENAME")
+    sleep 20
+    ZYGOTE_PID4="$(get_zygote_pid)"
     if [ -n "$ZYGOTE_PID3" ] && [ "$ZYGOTE_PID3" = "$ZYGOTE_PID4" ]; then
         PIDS=1
-    elif [ "$(getprop init.svc.bootanim)" != "stopped" ] && [ -x /system/bin/reboot ]; then
-        echo -n >> $MODDIR/disable
+    elif [ -n "$ZYGOTE_PID1" ] && [ "$(getprop init.svc.bootanim)" != "stopped" ] && [ -x /system/bin/reboot ]; then
+        echo -n >> "$MODDIR/disable"
         reboot 2>/dev/null || true
     fi
 fi
@@ -87,16 +97,13 @@ DATA_PATH_USER="/data/user/0/$PKG_NAME"
 DATA_PATH_DATA="/data/data/$PKG_NAME"
 DIR_TO_CREATE="$DATA_PATH_USER/files/photos/raw"
 
-mkdir -p "$DIR_TO_CREATE"
-if [ -d "$DATA_PATH_USER" ]; then
+if [ -d "$DATA_PATH_USER" ] || [ -d "$DATA_PATH_DATA" ]; then
+  mkdir -p "$DIR_TO_CREATE"
   APP_UID=$(stat -c %u "$DATA_PATH_USER" 2>/dev/null)
+  [ -z "$APP_UID" -o "$APP_UID" -le 10000 ] && APP_UID=$(stat -c %u "$DATA_PATH_DATA" 2>/dev/null)
   if [ -n "$APP_UID" ] && [ "$APP_UID" -gt 10000 ]; then
-    chown -R $APP_UID:$APP_UID "$DATA_PATH_USER" 2>/dev/null
-    chmod -R 0700 "$DATA_PATH_USER" 2>/dev/null
-    if [ -L "$DATA_PATH_DATA" ]; then
-      chown -R $APP_UID:$APP_UID "$DATA_PATH_DATA" 2>/dev/null
-      chmod -R 0700 "$DATA_PATH_DATA" 2>/dev/null
-    fi
+    chown -R $APP_UID:$APP_UID "$DIR_TO_CREATE" 2>/dev/null
+    chmod -R 0700 "$DIR_TO_CREATE" 2>/dev/null
   fi
 fi
 
@@ -108,8 +115,15 @@ resetprop -n ro.product.locale.region US
 resetprop -n ro.product.locale.language en
 resetprop -n persist.sys.language en
 
-# Patch Phenotype microhooks flags on boot
-[ -f $MODDIR/patch_microhooks.sh ] && . $MODDIR/patch_microhooks.sh
+# Patch Phenotype microhooks flags on boot (deferred, after boot-complete)
+(
+    while ! getprop sys.boot_completed | grep -q 1; do sleep 2; done
+    sleep 10
+    CALL_SCREENING=$(grep "^CallScreening=" "$MODDIR/var.prop" 2>/dev/null | cut -d= -f2)
+    if [ "$CALL_SCREENING" = "1" ] && [ -f "$MODDIR/patch_microhooks.sh" ]; then
+        SERVICE_BOOT=1 . "$MODDIR/patch_microhooks.sh"
+    fi
+) &
 
 # Ensure SELinux contexts for mounted partitions
 chcon -R u:object_r:system_file:s0 $MODDIR/system 2>/dev/null || true

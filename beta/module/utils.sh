@@ -1320,6 +1320,14 @@ drop_sys() {
     echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2023.xml
     rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2023_midyear.xml
     echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2023_midyear.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2024.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2024.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2024_midyear.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2024_midyear.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2025.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2025.xml
+    rm -rf $MODPATH/system$product/etc/permissions/pixel_experience_2025_midyear.xml
+    echo "$EMPTY_CONFIG" >>$MODPATH/system$product/etc/permissions/pixel_experience_2025_midyear.xml
 }
 
 ok_google_hotword() {

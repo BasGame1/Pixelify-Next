@@ -10,19 +10,21 @@ install_dialer() {
         echo 'resetprop -n gsm.sim.operator.iso-country "'"$ISO,$ISO"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n gsm.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n gsm.sim.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n ro.cdma.home.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n ril.mcc.mnc0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n ril.mcc.mnc1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n debug.tracing.mcc "'"$MCC"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n debug.tracing.mnc "'"$MNC"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n gsm.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
-        echo 'resetprop -n ro.cdma.home.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n gsm.sim.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n ro.carrier.name "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+        if [ "$LOS_FIX" != "1" ]; then
+            echo 'resetprop -n ro.cdma.home.operator.numeric "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n ril.mcc.mnc0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n ril.mcc.mnc1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.0 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n persist.vendor.mtk.provision.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n vendor.gsm.ril.uicc.mccmnc.1 "'"$MCCMNC,$MCCMNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n debug.tracing.mcc "'"$MCC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n debug.tracing.mnc "'"$MNC"'"' >>$MODPATH/post-fs-data.sh
+            echo 'resetprop -n ro.cdma.home.operator.alpha "'"$OPERATOR,$OPERATOR"'"' >>$MODPATH/post-fs-data.sh
+        fi
         echo 'resetprop -n persist.sys.timezone "'"$TZ"'"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n gsm.operator.isroaming "false,false"' >>$MODPATH/post-fs-data.sh
         echo 'resetprop -n sys.wifitracing.started "0"' >>$MODPATH/post-fs-data.sh
@@ -41,7 +43,8 @@ install_dialer() {
         echo 'settings put global bug_report 0 2>/dev/null || true' >>$MODPATH/service.sh
         echo 'settings put secure tethering_allow_vpn_upstreams 1 2>/dev/null || true' >>$MODPATH/service.sh
 
-        [ -f $MODPATH/patch_microhooks.sh ] && SERVICE_BOOT=0 . $MODPATH/patch_microhooks.sh
+        [ -f $MODPATH/patch_microhooks.sh ] && SERVICE_BOOT=1 . $MODPATH/patch_microhooks.sh
+        sed -i 's/CallScreening=0/CallScreening=1/' $MODPATH/var.prop
         log " - Automatic Call Screening and Phenotype microhooks enabled"
     else
         $sqlite "$gms" "DELETE FROM FlagOverrides WHERE packageName='com.google.android.dialer.directboot#com.google.android.dialer'" 2>/dev/null || true
